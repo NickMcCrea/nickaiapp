@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import ChatHistory, { Message } from './Components//ChatHistory'; // Adjust the import path as needed
 import InputWithSendButton from './Components/InputWithSendButton'; // Adjust the import path as needed
-import DollarAmount from './Components/DollarAmount';
+import DollarAmount, { DollarAmountProvider } from './Components/DollarAmount';
+import Header from './Components/Header';
 
 function App() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -12,9 +13,12 @@ function App() {
 
   return (
     <div className="App">
+      <DollarAmountProvider>
+      <Header />
       <ChatHistory messages={messages} />
       <InputWithSendButton onSubmit={handleSendMessage} />
-      <DollarAmount amount={124.56} />
+      </DollarAmountProvider>
+     
     </div>
   );
 }
