@@ -2,10 +2,13 @@ import os
 import openai
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
+from flask_cors import CORS
+
 
 load_dotenv()
 
 app = Flask(__name__)
+CORS(app)
 openai.api_key = os.getenv("OPENAI_KEY")
 gpt_3 = "gpt-3.5-turbo"
 gpt_4 = "gpt-4"
@@ -46,4 +49,4 @@ def ask():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5001)
