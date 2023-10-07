@@ -8,8 +8,10 @@ import DataThresholdingIcon from '@mui/icons-material/DataThresholding';
 import SlideshowIcon from '@mui/icons-material/Slideshow';
 import AddBoxIcon from '@mui/icons-material/AddBox'; // Import the new icon
 import { styled } from '@mui/system';
-import DollarAmount from './DollarAmount';
-import { useDollarAmount } from './DollarAmount';  
+
+interface HeaderProps {
+  estimatedCost?: string;
+}
 
 const StyledAppBar = styled(AppBar)({
   backgroundColor: '#015C94',
@@ -34,13 +36,19 @@ const StyledButton = styled(Button)({
   color: '#C9E0F5', // Match the color scheme
 });
 
-const Header = () => {
+const EstimatedCost = styled(Typography)({
+  fontSize: '0.8rem',
+  position: 'absolute',
+  right: '2rem',
+  top: '50%',
+  transform: 'translateY(-50%)'
+});
+
+
+
+
+const Header: React.FC<HeaderProps> = ({ estimatedCost }) => {
  
-const context = useDollarAmount();
-if (!context) {
-    throw new Error("useDollarAmount must be used within a DollarAmountProvider");
-}
-const { amount, setAmount } = context;
 
   return (
     <StyledAppBar position="static">
@@ -50,8 +58,14 @@ const { amount, setAmount } = context;
         </StyledIconButton>
         <Title variant="h5">
           <i>NickAI</i>
+        
         </Title>
-        <DollarAmount amount={amount} />
+        {estimatedCost && (
+          <EstimatedCost variant="body2">
+            Estimated Cost: {estimatedCost}
+          </EstimatedCost>
+        )}
+  
       </StyledToolbar>
     </StyledAppBar>
   );
