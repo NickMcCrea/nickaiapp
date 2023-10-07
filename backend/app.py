@@ -10,9 +10,10 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)
 openai.api_key = os.getenv("OPENAI_KEY")
+
 gpt_3 = "gpt-3.5-turbo"
 gpt_4 = "gpt-4"
-
+current_model = gpt_3
 conversation_history = ConversationHistory()
 
 
@@ -24,12 +25,27 @@ COSTS = {
     "gpt-4": {"input": 0.03 / 1000, "output": 0.006 / 1000}
 }
 
+#a route to switch between the models used in the backend
+@app.route('/model', methods=['POST'])
+def model():
+    global current_mdoel
+    model = request.json.get('model', '')
+    if model == "GPT3":
+        current_model = gpt_3
+        return jsonify({'model': current_model}), 200
+    if model == "GPT4":
+        current_model = gpt_4
+        return jsonify({'model': current_model}), 200
+    else:
+        return jsonify({'error': 'Model not found'}), 500
+
+
 
 
 @app.route('/ask', methods=['POST'])
 def ask():
     user_input = request.json.get('input', '')
-    model = gpt_3
+   
 
     try:
 
@@ -37,7 +53,7 @@ def ask():
         conversation_history.add_user_message(user_input)
 
         response = openai.ChatCompletion.create(
-            model=model,
+            model=current_model,
             messages=conversation_history.get_messages()
         )
 
@@ -50,8 +66,8 @@ def ask():
         output_tokens = tokens_used - input_tokens
 
         # Calculate estimated cost
-        input_cost = COSTS[model]['input'] * input_tokens
-        output_cost = COSTS[model]['output'] * output_tokens
+        input_cost = COSTS[current_model]['input'] * input_tokens
+        output_cost = COSTS[current_model]['output'] * output_tokens
         estimated_cost = input_cost + output_cost
         
         cost_so_far = conversation_history.get_total_estimated_cost()
