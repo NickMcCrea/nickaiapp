@@ -9,17 +9,29 @@ function App() {
   const [estimatedCost, setEstimatedCost] = useState<string>(""); // New state variable
 
 
-  const chatService = new ChatService("http://localhost:5001");
+  const [selectedModel, setSelectedModel] = useState('GPT3.5'); // New state variable for selected model
 
+  const handleModelChange = (model: string) => { // New function to handle model change
+    setSelectedModel(model);
+    //console print
+    console.log(model);
+  };
 
 
   const handleSendMessage = async (content: string) => {
     // Append user's message to ChatHistory
+
+    
+    const chatService = new ChatService("http://localhost:5001");
+
     setMessages([...messages, { type: 'text', content, timestamp: new Date() }]);
     
     try {
       // Get the reply from the server
-      const reply = await chatService.sendMessage(content);
+      const reply = await chatService.sendMessage(content, selectedModel);
+
+      //print selected model
+      console.log(selectedModel);
 
       const estimatedCost = reply.estimated_cost; // Extract this from the reply
       
@@ -39,7 +51,7 @@ function App() {
   return (
     <div className="App">
      
-      <Header estimatedCost={estimatedCost}/>
+      <Header estimatedCost={estimatedCost} selectedModel={selectedModel} onModelChange={handleModelChange}/>
       <ChatHistory messages={messages} />
       <InputWithSendButton onSubmit={handleSendMessage} />
      

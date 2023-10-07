@@ -5,14 +5,14 @@ class ChatService {
       this.apiUrl = apiUrl;
     }
   
-    async sendMessage(message: string): Promise<{output: string, estimated_cost: number}> {
+    async sendMessage(message: string, model: string): Promise<{output: string, estimated_cost: number}> {
       try {
         const response = await fetch(`${this.apiUrl}/ask`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ input: message }),
+          body: JSON.stringify({ input: message, model }),
         });
   
         const data = await response.json();

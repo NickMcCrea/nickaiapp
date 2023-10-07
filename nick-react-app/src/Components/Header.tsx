@@ -8,9 +8,14 @@ import DataThresholdingIcon from '@mui/icons-material/DataThresholding';
 import SlideshowIcon from '@mui/icons-material/Slideshow';
 import AddBoxIcon from '@mui/icons-material/AddBox'; // Import the new icon
 import { styled } from '@mui/system';
+import Switch from '@mui/material/Switch';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Box from '@mui/material/Box';
 
 interface HeaderProps {
   estimatedCost?: string;
+  selectedModel: string;  // New prop
+  onModelChange: (model: string) => void;  // New prop
 }
 
 const StyledAppBar = styled(AppBar)({
@@ -22,9 +27,10 @@ const StyledToolbar = styled(Toolbar)({
 });
 
 const Title = styled(Typography)({
-  flexGrow: 1,
+  flexGrow: 0,
   color: '#C9E0F5',
-  fontFamily: '"Trade Gothic", Arial, sans-serif'
+  fontFamily: '"Trade Gothic", Arial, sans-serif',
+  marginRight: '2rem',
 });
 
 const StyledIconButton = styled(IconButton)({
@@ -47,8 +53,17 @@ const EstimatedCost = styled(Typography)({
 
 
 
-const Header: React.FC<HeaderProps> = ({ estimatedCost }) => {
+const Header: React.FC<HeaderProps> = ({ estimatedCost, selectedModel, onModelChange }) => {
  
+  const [state, setState] = React.useState({
+    checkedGPT: true,
+  });
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newCheckedState = event.target.checked;
+    setState({ ...state, [event.target.name]: newCheckedState });
+    onModelChange(newCheckedState ? 'GPT4' : 'GPT3.5'); // Call onModelChange to update model in App.tsx
+  };
 
   return (
     <StyledAppBar position="static">
@@ -60,6 +75,31 @@ const Header: React.FC<HeaderProps> = ({ estimatedCost }) => {
           <i>NickAI</i>
         
         </Title>
+
+         {/* Added Switch */}
+         <FormControlLabel
+          control={
+            <Switch
+              checked={state.checkedGPT}
+              onChange={handleChange}
+              name="checkedGPT"
+              sx={{
+                '& .MuiSwitch-thumb': {
+                  backgroundColor: '#187ABA', // Morgan Stanley blue when unchecked
+                },
+                '& .MuiSwitch-switchBase.Mui-checked': {
+                  color: '#A3CAE3', // Morgan Stanley green when checked
+                },
+                '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                  backgroundColor: '#335574', // Morgan Stanley green when checked
+                },
+              }}
+            />
+          }
+          label={state.checkedGPT ? 'GPT4' : 'GPT3.5'}
+        />
+
+
         {estimatedCost && (
           <EstimatedCost variant="body2">
             Estimated Cost: {estimatedCost}

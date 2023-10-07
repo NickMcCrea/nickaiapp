@@ -25,27 +25,23 @@ COSTS = {
     "gpt-4": {"input": 0.03 / 1000, "output": 0.006 / 1000}
 }
 
-#a route to switch between the models used in the backend
-@app.route('/model', methods=['POST'])
-def model():
-    global current_mdoel
-    model = request.json.get('model', '')
-    if model == "GPT3":
-        current_model = gpt_3
-        return jsonify({'model': current_model}), 200
-    if model == "GPT4":
-        current_model = gpt_4
-        return jsonify({'model': current_model}), 200
-    else:
-        return jsonify({'error': 'Model not found'}), 500
-
-
 
 
 @app.route('/ask', methods=['POST'])
 def ask():
     user_input = request.json.get('input', '')
-   
+
+    #log the model property from the request
+    model = request.json.get('model', '')
+    print("model: ", model)
+
+    #set current_model based on what we got from the client
+    global current_model
+    if model == "GPT3":
+        current_model = gpt_3
+    elif model == "GPT4":
+        current_model = gpt_4
+
 
     try:
 
