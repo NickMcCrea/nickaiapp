@@ -3,12 +3,12 @@ import ChatService from './Services/ChatService';
 import ChatHistory, { Message } from './Components//ChatHistory'; // Adjust the import path as needed
 import InputWithSendButton from './Components/InputWithSendButton'; // Adjust the import path as needed
 import Header from './Components/Header';
+import AIChatBox from './Components/AIChatBox'; // New import
+import { Grid } from '@mui/material'; // New import
 
 function App() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [estimatedCost, setEstimatedCost] = useState<string>(""); // New state variable
-
-
   const [selectedModel, setSelectedModel] = useState('GPT3.5'); // New state variable for selected model
 
   const handleModelChange = (model: string) => { // New function to handle model change
@@ -24,7 +24,7 @@ function App() {
     
     const chatService = new ChatService("http://localhost:5001");
 
-    setMessages([...messages, { type: 'text', content, timestamp: new Date() }]);
+    setMessages([...messages, { type: 'text', content, timestamp: new Date(), sender: 'You' }]);
     
     try {
       // Get the reply from the server
@@ -41,7 +41,7 @@ function App() {
      
       
       // Append the server's reply to ChatHistory
-      setMessages(prevMessages => [...prevMessages, { type: 'text', content: reply.output, timestamp: new Date() }]);
+      setMessages(prevMessages => [...prevMessages, { type: 'text', content: reply.output, timestamp: new Date(), sender: 'Assistant' }]);
     } catch (error) {
       console.error('Failed to send message:', error);
     }
@@ -52,8 +52,11 @@ function App() {
     <div className="App">
      
       <Header estimatedCost={estimatedCost} selectedModel={selectedModel} onModelChange={handleModelChange}/>
-      <ChatHistory messages={messages} />
-      <InputWithSendButton onSubmit={handleSendMessage} />
+      <Grid container spacing={3}>
+        <Grid item xs={4}>
+          <AIChatBox messages={messages} handleSendMessage={handleSendMessage}/> {/* Moved Grid here */}
+        </Grid>
+      </Grid>
      
     </div>
   );

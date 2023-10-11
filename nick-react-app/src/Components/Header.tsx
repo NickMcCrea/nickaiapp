@@ -62,7 +62,7 @@ const Header: React.FC<HeaderProps> = ({ estimatedCost, selectedModel, onModelCh
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newCheckedState = event.target.checked;
     setState({ ...state, [event.target.name]: newCheckedState });
-    onModelChange(newCheckedState ? 'GPT4' : 'GPT3.5'); // Call onModelChange to update model in App.tsx
+    onModelChange(newCheckedState ? 'GPT3.5' : 'GPT4'); // Call onModelChange to update model in App.tsx
   };
 
   return (
@@ -96,7 +96,7 @@ const Header: React.FC<HeaderProps> = ({ estimatedCost, selectedModel, onModelCh
               }}
             />
           }
-          label={state.checkedGPT ? 'GPT4' : 'GPT3.5'}
+          label={state.checkedGPT ? 'GPT3.5' : 'GPT4'}
         />
 
 

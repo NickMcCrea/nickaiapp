@@ -37,10 +37,12 @@ def ask():
 
     #set current_model based on what we got from the client
     global current_model
-    if model == "GPT3":
+    if model == "GPT3.5":
         current_model = gpt_3
+        print("current_model: ", current_model)
     elif model == "GPT4":
         current_model = gpt_4
+        print("current_model: ", current_model)
 
 
     try:

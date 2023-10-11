@@ -1,10 +1,12 @@
-import { Stack, Typography } from '@mui/material';
+import { Stack, Typography, Box } from '@mui/material';
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import React from 'react';
 
 export interface Message {
-  type: 'text' | 'image' | 'other'; // extended to handle image type
+  type: 'text' | 'image' | 'other';
   content: string;
   timestamp: Date;
+  sender: string;
 }
 
 interface ChatHistoryProps {
@@ -15,11 +17,17 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({ messages }) => {
   return (
     <Stack spacing={2} sx={{ width: '100%', overflowY: 'auto', padding: '16px' }}>
       {messages.map((message, index) => (
-        <Stack direction="column" key={index} spacing={1}>
-          {message.type === 'text' && <Typography>{message.content}</Typography>}
-          {message.type === 'image' && <img src={message.content} alt="message content" style={{ maxWidth: '100%' }} />}
-          {message.type === 'other' && <Typography fontStyle="italic">{message.content}</Typography>}
-        </Stack>
+        <Box display="flex" alignItems="flex-start" key={index}>
+          {message.type === 'text' && <ChatBubbleOutlineIcon fontSize="small" style={{ marginTop: '6px', marginRight: '8px' }} />}
+          <Box>
+            <Typography variant="body1">
+           
+             <strong> {message.sender}:</strong>  {message.content}
+
+            </Typography>
+          
+          </Box>
+        </Box>
       ))}
     </Stack>
   );
