@@ -30,7 +30,7 @@ const InputWithSendButton: React.FC<Props> = ({ onSubmit }) => {
         }}
         onChange={(e) => setValue(e.target.value)}
       />
-      <IconButton color="primary" onClick={handleSubmit}>
+      <IconButton color="primary" onClick={handleSubmit}  style={{ marginBottom: '5px' }}>
         <SendIcon />
       </IconButton>
     </div>
