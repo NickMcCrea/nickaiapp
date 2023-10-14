@@ -1,21 +1,23 @@
 import os
 import openai
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify,session
 from dotenv import load_dotenv
 from flask_cors import CORS
+from uuid import uuid4
 from ConversationHistory import ConversationHistory
+
 
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True)
 openai.api_key = os.getenv("OPENAI_KEY")
+app.secret_key = os.getenv("SECRET_KEY")
 
 gpt_3 = "gpt-3.5-turbo"
 gpt_4 = "gpt-4"
 current_model = gpt_3
-conversation_history = ConversationHistory()
-
+user_sessions = {}
 
 
 
@@ -29,6 +31,18 @@ COSTS = {
 
 @app.route('/ask', methods=['POST'])
 def ask():
+    session_id = session.get('session_id')
+
+    if session_id is None:
+        session_id = str(uuid4())
+        session['session_id'] = session_id
+        user_sessions[session_id] = ConversationHistory()
+
+    conversation_history = user_sessions.get(session_id)
+
+    #print session ID
+    print("session_id: ", session_id)
+
     user_input = request.json.get('input', '')
 
     #log the model property from the request

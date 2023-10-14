@@ -12,6 +12,7 @@ class ChatService {
           headers: {
             'Content-Type': 'application/json',
           },
+          credentials: 'include',
           body: JSON.stringify({ input: message, model }),
         });
   
