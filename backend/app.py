@@ -31,13 +31,17 @@ COSTS = {
 
 @app.route('/ask', methods=['POST'])
 def ask():
+
+    #get session ID from the session object
     session_id = session.get('session_id')
 
+    #if session ID is None, create a new session ID and add it to the session object
     if session_id is None:
         session_id = str(uuid4())
         session['session_id'] = session_id
         user_sessions[session_id] = ConversationHistory()
 
+    #get the conversation history for the current session ID
     conversation_history = user_sessions.get(session_id)
 
     #print session ID
