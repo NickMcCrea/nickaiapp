@@ -35,10 +35,12 @@ def ask():
     #get session ID from the session object
     session_id = session.get('session_id')
 
-    #if session ID is None, create a new session ID and add it to the session object
-    if session_id is None:
-        session_id = str(uuid4())
-        session['session_id'] = session_id
+    
+    #check if the user_sessions dictionary has a key for the current session ID
+
+    if session_id not in user_sessions:
+        #print that we're creating a new session ID
+        print("Creating new convo history...")
         user_sessions[session_id] = ConversationHistory()
 
     #get the conversation history for the current session ID
