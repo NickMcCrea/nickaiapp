@@ -1,3 +1,22 @@
 .App {
   text-align: center;
 }
+
+.react-resizable-handle-e {
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.03),  /* Adjust the opacity for a lighter line */
+    rgba(0, 0, 0, 0.03) 2px,
+    transparent 2px,
+    transparent 4px
+  );
+  cursor: ew-resize;
+  right: 0;
+  top: 200%;              /* Positioning to the vertical middle */
+  transform: translateY(-50%);
+  width: 1px;            /* Thinner line */
+  height: 50%;           /* Adjust the height if necessary */
+  z-index: 1;
+}
+
+

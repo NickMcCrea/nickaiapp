@@ -50,7 +50,7 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({ messages }) => {
       {messages.map((message, index) => (
         <FadeInBox display="flex" alignItems="flex-start" key={index} index={index}>
           {message.type === 'text' && <ChatBubbleOutlineIcon fontSize="small" style={{ marginTop: '4px', marginRight: '8px', color: '#015C94' }} />}
-          <Typography variant="body1" style={{ whiteSpace: 'pre-line' }}>
+          <Typography variant="body1" style={{ whiteSpace: 'pre-line' }} align='left'>
             <strong>{message.sender}:</strong> {message.content}
           </Typography>
         </FadeInBox>
