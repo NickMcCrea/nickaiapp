@@ -71,7 +71,7 @@ function App() {
     <div className="App">
 
       <Header estimatedCost={estimatedCost} selectedModel={selectedModel} onModelChange={handleModelChange} />
-      <Grid container spacing={3}>
+      <Grid container spacing={1}>
         <Grid item>
           {/* Wrap AIChatBox inside ResizableBox component */}
           <ResizableBox
@@ -89,9 +89,9 @@ function App() {
 
 
         </Grid>
-        <Grid item xs={9} display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-    <BasicTable data={dummyData} />
-</Grid>
+        <Grid item sx={{ marginLeft: 'auto', marginRight: 'auto', marginTop: 'auto', marginBottom: 'auto' }} >
+        //dynamic stuff goes here
+        </Grid>
       </Grid>
     </div>
   );

@@ -1,9 +1,10 @@
 class ConversationHistory:
 
-    total_estimated_cost = 0
+   
 
     def __init__(self):
         self.messages = [{"role": "system", "content": "You are a helpful assistant."}]
+        self.total_estimated_cost = 0
 
     def add_user_message(self, message):
         self.messages.append({"role": "user", "content": message})
