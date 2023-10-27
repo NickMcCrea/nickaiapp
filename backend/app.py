@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 from flask_cors import CORS
 from uuid import uuid4
 from ConversationHistory import ConversationHistory
+import json
+from functions import Functions
 
 
 load_dotenv()
@@ -14,19 +16,29 @@ CORS(app, supports_credentials=True)
 openai.api_key = os.getenv("OPENAI_KEY")
 app.secret_key = os.getenv("SECRET_KEY")
 
-gpt_3 = "gpt-3.5-turbo"
-gpt_4 = "gpt-4"
+gpt_3 = "gpt-3.5-turbo-0613"
+gpt_4 = "gpt-4-0613"
 current_model = gpt_3
 user_sessions = {}
+functions = Functions()
 
 
 
 # Costs for different models
 COSTS = {
-    "gpt-3.5-turbo": {"input": 0.0015 / 1000, "output": 0.002 / 1000},
-    "gpt-4": {"input": 0.03 / 1000, "output": 0.006 / 1000}
+    "gpt-3.5-turbo-0613": {"input": 0.0015 / 1000, "output": 0.002 / 1000},
+    "gpt-4-0613": {"input": 0.03 / 1000, "output": 0.006 / 1000}
 }
 
+def get_current_weather(location, unit="fahrenheit"):
+    """Get the current weather in a given location"""
+    weather_info = {
+        "location": location,
+        "temperature": "72",
+        "unit": unit,
+        "forecast": ["sunny", "windy"],
+    }
+    return json.dumps(weather_info)
 
 
 @app.route('/ask', methods=['POST'])
@@ -72,8 +84,30 @@ def ask():
 
         response = openai.ChatCompletion.create(
             model=current_model,
-            messages=conversation_history.get_messages()
+            messages=conversation_history.get_messages(),
+            functions=functions.get_functions(),
+            function_call="auto"
         )
+
+        #function call test
+        response_message = response["choices"][0]["message"]
+        function_response = None
+        was_function_call = response_message.get("function_call")
+        if was_function_call:
+            #print 
+            print("function call: ", response_message.get("function_call"))
+            available_functions = {
+            "get_current_weather": get_current_weather,
+             }  # only one function in this example, but you can have multiple
+            function_name = response_message["function_call"]["name"]
+            function_to_call = available_functions[function_name]
+            function_args = json.loads(response_message["function_call"]["arguments"])
+            function_response = function_to_call(
+                location=function_args.get("location"),
+                unit=function_args.get("unit"),
+            )
+
+
 
         assistant_output = response['choices'][0]['message']['content']
         conversation_history.add_assistant_message(assistant_output)  # Add assistant output to history
@@ -93,7 +127,7 @@ def ask():
 
         print("Total estimated cost: {:.10f}".format(conversation_history.get_total_estimated_cost()))
 
-        return jsonify({'output': assistant_output, 'estimated_cost': "{:.10f}".format(conversation_history.get_total_estimated_cost())}), 200
+        return jsonify({'function_response': function_response, 'function_call':  was_function_call, 'output': assistant_output, 'estimated_cost': "{:.10f}".format(conversation_history.get_total_estimated_cost())}), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
