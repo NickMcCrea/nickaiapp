@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.002.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dotnetbackend", "dotnetbackend", "{FA7AD75F-3D09-42D1-ABBF-4210F438FE98}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "gptdotnetapp", "dotnetbackend\gptdotnetapp\gptdotnetapp.csproj", "{195E47A1-BEF0-486A-8B6A-B451792645C7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{195E47A1-BEF0-486A-8B6A-B451792645C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{195E47A1-BEF0-486A-8B6A-B451792645C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{195E47A1-BEF0-486A-8B6A-B451792645C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{195E47A1-BEF0-486A-8B6A-B451792645C7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{195E47A1-BEF0-486A-8B6A-B451792645C7} = {FA7AD75F-3D09-42D1-ABBF-4210F438FE98}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DD3B4E23-E8AB-45AD-A5C6-595856F9E456}
+	EndGlobalSection
+EndGlobal
