@@ -23,7 +23,7 @@ class FunctionsWrapper:
 
 
         },
-       
+
         
         ]
 
@@ -47,11 +47,12 @@ class FunctionsWrapper:
         }
         return json.dumps(weather_info)
     
-    
 
     
     def execute_function(self, name, args):
  
+        #print the function name and arguments
+        print(f"Executing function '{name}' with arguments {args}")
         if name in self.function_mapping:
             func = self.function_mapping[name]
             return func(**args)

@@ -7,6 +7,8 @@ from uuid import uuid4
 from ConversationHistory import ConversationHistory
 import json
 from functions_wrapper import FunctionsWrapper
+import function_templates
+from datasources.data_source_loader import DataSourceLoader
 
 
 load_dotenv()
@@ -22,6 +24,18 @@ current_model = gpt_3
 user_sessions = {}
 functions = FunctionsWrapper()
 
+data_source_loader = DataSourceLoader()
+data_source_loader.load_from_file("datasources/nicktrialbalance.json")
+
+
+# print each data source
+for data_source_name, data_source_obj in data_source_loader.data_sources.items():
+    print(f"data_source name: {data_source_name}")
+    print(f"data_source details: {data_source_obj}")
+
+
+    
+
 
 
 # Costs for different models
@@ -30,6 +44,8 @@ COSTS = {
     "gpt-4-0613": {"input": 0.03 / 1000, "output": 0.006 / 1000}
 }
 
+def dummy_function():
+    return "dummy function"
 
 
 
@@ -60,10 +76,20 @@ def ask():
         # Add user message to conversation history
         conversation_history.add_user_message(user_input)
 
+        function_list=functions.get_functions()
+        #add the function from the function_templates.py file
+        function_list.append(function_templates.generate_datasources_function(data_source_loader.get_data_source_string()))
+
+        #appennd a mapping for the new function to the function_mapping dictionary. in this case it can be an empty function that does nothing
+        functions.function_mapping["get_data_sources"] = dummy_function
+        
+
         response = openai.ChatCompletion.create(
             model=current_model,
             messages=conversation_history.get_messages(),
             functions=functions.get_functions(),
+
+
             function_call="auto"
         )
 

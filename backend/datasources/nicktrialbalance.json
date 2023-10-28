@@ -1,0 +1,58 @@
+{
+    "name": "FinancialDataSource",
+    "description": "Data source schema for financial systems.",
+    "type": "SQLite",
+    "connectionInfo": {
+      "connectionType": "File",
+      "details": {
+        "file_path": "database.db"
+      }
+    },
+    "tables": [
+      {
+        "table_name": "counterparties",
+        "columns": [
+          {"name": "counterparty_id", "type": "VARCHAR(255)", "primary_key": true},
+          {"name": "counterparty_name", "type": "VARCHAR(255)"},
+          {"name": "counterparty_type", "type": "VARCHAR(255)"},
+          {"name": "gics_code", "type": "VARCHAR(255)"},
+          {"name": "gics_level_1", "type": "VARCHAR(255)"},
+          {"name": "gics_level_2", "type": "VARCHAR(255)"},
+          {"name": "gics_level_3", "type": "VARCHAR(255)"},
+          {"name": "gics_level_4", "type": "VARCHAR(255)"},
+          {"name": "country_of_organisation", "type": "VARCHAR(255)"},
+          {"name": "country_of_jurisdiction", "type": "VARCHAR(255)"},
+          {"name": "country_of_residence", "type": "VARCHAR(255)"}
+        ]
+      },
+      {
+        "table_name": "nicktrialbalance",
+        "columns": [
+          {"name": "pnl_date", "type": "DATE"},
+          {"name": "company_code", "type": "VARCHAR(255)"},
+          {"name": "account", "type": "VARCHAR(255)"},
+          {"name": "cost_code", "type": "VARCHAR(255)"},
+          {"name": "product_id", "type": "VARCHAR(255)", "foreign_key": "products.product_id"},
+          {"name": "counterparty_id", "type": "VARCHAR(255)", "foreign_key": "counterparties.counterparty_id"},
+          {"name": "currency", "type": "VARCHAR(255)"},
+          {"name": "balance", "type": "REAL"},
+          {"name": "balance_usd", "type": "REAL"}
+        ]
+      },
+      {
+        "table_name": "products",
+        "columns": [
+          {"name": "product_id", "type": "VARCHAR(255)", "primary_key": true},
+          {"name": "product_description", "type": "VARCHAR(255)"},
+          {"name": "product_type", "type": "VARCHAR(255)"},
+          {"name": "instrument_type", "type": "VARCHAR(255)"},
+          {"name": "market_type", "type": "VARCHAR(255)"},
+          {"name": "contract_type", "type": "VARCHAR(255)"},
+          {"name": "risk_type", "type": "VARCHAR(255)"},
+          {"name": "maturity_date", "type": "DATE"},
+          {"name": "start_date", "type": "DATE"}
+        ]
+      }
+    ]
+  }
+  
