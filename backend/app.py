@@ -91,13 +91,17 @@ def ask():
         function_response = None
         was_function_call = response_message.get("function_call")
 
+        chat_output = None
         if was_function_call:
             function_response = get_function_response(response_message, user_input)
-
-
-        chat_output = response['choices'][0]['message']['content']
+            if was_function_call.get("name") == "get_data_sources":
+                chat_output = function_response
+            
+        else:
+            chat_output = response['choices'][0]['message']['content']
+       
         if chat_output is None:
-            chat_output = ""
+           chat_output = ""
 
         conversation_history.add_assistant_message(chat_output)  # Add assistant output to history
 
@@ -111,7 +115,7 @@ def ask():
 
         print("Total estimated cost: {:.10f}".format(conversation_history.get_total_estimated_cost()))
 
-        return jsonify({'function_response': function_response, 'function_call':  was_function_call, 'output': chat_output, 'estimated_cost': "{:.10f}".format(conversation_history.get_total_estimated_cost())}), 200
+        return jsonify({'function_response': function_response, 'function_call':  was_function_call, 'output': chat_output, 'data': None, 'estimated_cost': "{:.10f}".format(conversation_history.get_total_estimated_cost())}), 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500

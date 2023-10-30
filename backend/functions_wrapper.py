@@ -11,27 +11,12 @@ class FunctionsWrapper:
     def __init__(self, current_model, data_source_loader):
         self.current_model = current_model
         self.data_source_loader = data_source_loader
-        self.functions = [
-        {
-            "name": "get_current_weather",
-            "description": "Get the current weather in a given location",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "location": {
-                        "type": "string",
-                        "description": "The city and state, e.g. San Francisco, CA",
-                    },
-                    "unit": {"type": "string", "enum": ["celsius", "fahrenheit"]},
-                },
-                "required": ["location"],
-            },
-
-
-        },
+        self.functions = [      
         {
          "name": "get_data_sources",
-            "description": "Use this function to answer user questions about what data sources we have available.",
+            "description": f"""Use this function to answer user questions about what data sources we have available.
+                            For example, the user may ask about data sources, or ask about a specific data source, table or column. 
+                            """,
           "parameters": {
                 "type": "object",
                 "properties": {
@@ -43,14 +28,20 @@ class FunctionsWrapper:
                     }
                 },
                 "required": ["query"],
-            },
+            }
+        },
+         {
+         "name": "fall_back_function",
+            "description": "Use this function to reply to user questions that don't match any of the other specified functions",
+             "parameters": { "type": "object", "properties": {}}
+
         }
 
         ]
 
         self.function_mapping = {
-            "get_current_weather": self.get_current_weather,
-            "get_data_sources": self.get_data_sources
+            "get_data_sources": self.get_data_sources,
+            "fall_back_function": self.fall_back_function
             # Add more function mappings here...
         }
     
@@ -68,20 +59,14 @@ class FunctionsWrapper:
         output = response['choices'][0]['message']['content']
         return output
 
+    def fall_back_function(self, user_input):
+        return "I'm sorry, I don't understand."
         
     #getter
     def get_functions(self):
         return self.functions
     
-    def get_current_weather(self, location, unit="fahrenheit"):
-        """Get the current weather in a given location"""
-        weather_info = {
-            "location": location,
-            "temperature": "72",
-            "unit": unit,
-            "forecast": ["sunny", "windy"],
-        }
-        return json.dumps(weather_info)
+   
     
 
     
