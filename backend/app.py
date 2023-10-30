@@ -92,7 +92,7 @@ def ask():
         was_function_call = response_message.get("function_call")
 
         if was_function_call:
-            function_response = get_function_response(response_message)
+            function_response = get_function_response(response_message, user_input)
 
 
         chat_output = response['choices'][0]['message']['content']
@@ -132,12 +132,12 @@ def get_convo_history():
     print("session_id: ", session_id)
     return conversation_history
 
-def get_function_response(response_message):
+def get_function_response(response_message, user_input):
     function_name = response_message["function_call"]["name"]
     #print("function_name: ", function_name)
     function_args = json.loads(response_message["function_call"]["arguments"])
     #print("function_args: ", function_args)
-    function_response = functions.execute_function(function_name, function_args)
+    function_response = functions.execute_function(response_message, user_input, function_name, function_args)
     return function_response
 
 def calculate_costs(input_tokens, output_tokens):
