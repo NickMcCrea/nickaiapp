@@ -36,7 +36,7 @@ class FunctionsWrapper:
                     "query": {
                         "type": "string",
                         "description": f"""
-                            Use this function when the user wants to know about data sources.
+                            The specific question the user asked, i.e. the query that prompted this function call."
                                 """,
                     }
                 },
@@ -56,7 +56,7 @@ class FunctionsWrapper:
 
         messages = [{"role": "system", "content": "You are an expert at reading JSON and inferring the data sources it refers to."}] 
         messages.append({"role": "system", "content": "Ignore the connectivity details or the type of underlying data source (e.g. sqlite or csv)."})
-        messages.append({"role": "user", "content": prompt_templates.generate_datasources_prompt(self.data_source_loader.get_data_source_string(), "What data sources do you have available?")})
+        messages.append({"role": "user", "content": prompt_templates.generate_datasources_prompt(self.data_source_loader.get_data_source_string(), query)})
         response = openai.ChatCompletion.create(
             model=self.current_model,
             messages=messages
