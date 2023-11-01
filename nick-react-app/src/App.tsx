@@ -14,14 +14,8 @@ function App() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [estimatedCost, setEstimatedCost] = useState<string>(""); // New state variable
   const [selectedModel, setSelectedModel] = useState('GPT3.5'); // New state variable for selected model
-
-
-  // Dummy data for the table
-  const dummyData = [
-    { Name: 'Alice', Age: 30, Email: 'alice@email.com' },
-    { Name: 'Bob', Age: 40, Email: 'bob@email.com' },
-    { Name: 'Charlie', Age: 50, Email: 'charlie@email.com' }
-  ];
+  const [tableData, setTableData] = useState<any[]>([]); // New state for table data
+ 
 
 
   const handleModelChange = (model: string) => { // New function to handle model change
@@ -58,6 +52,12 @@ function App() {
       console.log(estimatedCost);
       setEstimatedCost(reply.estimated_cost.toString()); // Update estimatedCost state
 
+       // Check if the response includes "Data" and update the tableData state
+       if (reply.data) {
+        setTableData(reply.data);
+      }
+
+
 
       // Append the server's reply to ChatHistory
       setMessages(prevMessages => [...prevMessages, { type: 'text', content: reply.output, timestamp: new Date(), sender: 'Assistant' }]);
@@ -90,7 +90,10 @@ function App() {
 
         </Grid>
         <Grid item sx={{ marginLeft: 'auto', marginRight: 'auto', marginTop: 'auto', marginBottom: 'auto' }} >
-        //dynamic stuff goes here
+
+           {/* Conditionally render the BasicTable component only if tableData has items */}
+           {tableData && tableData.length > 0 && <BasicTable data={tableData} />}
+       
         </Grid>
       </Grid>
     </div>

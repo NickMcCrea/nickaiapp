@@ -5,7 +5,7 @@ class ChatService {
       this.apiUrl = apiUrl;
     }
   
-    async sendMessage(message: string, model: string): Promise<{output: string, estimated_cost: number}> {
+    async sendMessage(message: string, model: string): Promise<{output: string, estimated_cost: number, data?: any[]}> {
       try {
         const response = await fetch(`${this.apiUrl}/ask`, {
           method: 'POST',
@@ -22,7 +22,7 @@ class ChatService {
           throw new Error(data.error || 'Something went wrong');
         }
   
-        return { output: data.output, estimated_cost: data.estimated_cost };
+        return { output: data.output, estimated_cost: data.estimated_cost, data: data.data };
       } catch (error) {
         throw error;
       }

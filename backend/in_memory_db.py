@@ -27,7 +27,10 @@ class InMemoryDB:
         """
         cur = self.conn.cursor()
         cur.execute(sql_query)
-        return cur.fetchall()
+
+        columns = [column[0] for column in cur.description]
+        results = [dict(zip(columns, row)) for row in cur.fetchall()]
+        return results
 
     def close(self):
         """Close the connection to the in-memory database."""

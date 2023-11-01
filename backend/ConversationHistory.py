@@ -6,6 +6,7 @@ class ConversationHistory:
         self.messages = [{"role": "system", "content": "You are a helpful assistant."}]
         self.messages.append({"role": "system", "content": "You are helping the user explore data sets, and answer questions about them."})
         self.messages.append({"role": "system", "content": "If the user tries to talk about other topics, gently explain what your purpose is."})
+        
         self.total_estimated_cost = 0
 
     def add_user_message(self, message):
