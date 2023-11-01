@@ -1,15 +1,14 @@
+import React from 'react';
 import { Stack, Typography, Box } from '@mui/material';
-import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import PersonIcon from '@mui/icons-material/Person';
 import ComputerIcon from '@mui/icons-material/Computer';
-import React from 'react';
 import { styled, keyframes } from '@mui/system';
 
 const FadeInBox = styled(Box)<{ index?: number }>(({ index = 0 }) => ({
   opacity: 0,
   transform: 'translateY(10px)',
-  animation: 'fadein 0.2s forwards',
-  animationDelay: `${0.2 * (index)}s`,
+  animation: 'fadein 0.05s forwards',
+  animationDelay: `${0.05 * (index)}s`,
   '@keyframes fadein': {
     '0%': {
       opacity: 0,
@@ -24,15 +23,20 @@ const FadeInBox = styled(Box)<{ index?: number }>(({ index = 0 }) => ({
 
 const pulseAnimation = keyframes`
   0% {
-    opacity: 0.5;
+    opacity: 0;
   }
   50% {
     opacity: 1;
   }
   100% {
-    opacity: 0.5;
+    opacity: 0;
   }
 `;
+
+const AnimatedComputerIcon = styled(ComputerIcon)({
+  animation: `${pulseAnimation} 1s infinite`,
+  
+});
 
 export interface Message {
   type: 'text' | 'image' | 'other';
@@ -44,12 +48,16 @@ export interface Message {
 interface ChatHistoryProps {
   messages: Message[];
 }
+
 const ChatHistory: React.FC<ChatHistoryProps> = ({ messages }) => {
+
+  const lastMessageIsFromHuman = !!messages.length && messages[messages.length - 1].sender === 'You';
+
   return (
-    <Stack 
-      spacing={2} 
-      sx={{ 
-        width: '100%', 
+    <Stack
+      spacing={2}
+      sx={{
+        width: '100%',
         maxHeight: '100%',  // Set a maximum height
         overflowY: 'auto',  // Enable vertical scrolling
         padding: '0px',
@@ -61,23 +69,20 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({ messages }) => {
         scrollbarWidth: 'none',  // Hide scrollbar for Firefox
       }}
     >
+
       {messages.map((message, index) => (
         <FadeInBox display="flex" alignItems="flex-start" key={index} index={index}>
-          {message.type === 'text' && (
-            <>
-              {message.sender === 'You' ? (
-                <PersonIcon fontSize="small" style={{ marginTop: '4px', marginRight: '8px', color: '#015C94' }}
-              />) : (
-                <ComputerIcon fontSize="small" style={{ marginTop: '4px', marginRight: '8px', color: '#015C94' }}
-              />
-              )}
-            </>
+          {message.sender === 'You' ? (
+            <PersonIcon fontSize="small" style={{ marginTop: '4px', marginRight: '8px', color: '#015C94' }} />
+          ) : (
+            <ComputerIcon fontSize="small" style={{ marginTop: '4px', marginRight: '8px', color: '#015C94' }} />
           )}
           <Typography variant="body1" style={{ whiteSpace: 'pre-line' }} align='left'>
-           {message.content}
+            {message.content}
           </Typography>
         </FadeInBox>
       ))}
+      {lastMessageIsFromHuman && <AnimatedComputerIcon fontSize="small" style={{  marginRight: '8px', color: '#015C94', alignSelf: 'flex-start' }} />}
     </Stack>
   );
 };
