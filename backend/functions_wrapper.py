@@ -42,8 +42,8 @@ class FunctionsWrapper:
         },
 
          {
-         "name": "fetch_data_from_source",
-            "description": f"""Use this function when a user asks for actual data from a source.
+         "name": "query_data",
+            "description": f"""Use this function when a user asks for a question that requires a data query.
                             If they want to see actual data, use this function. 
                             If we can infer the data source from the user's question, we should input that information. 
                             Users may ask for refined data from a previous query, e.g. "Can you filter that on restaurants with delivery times < 30 mins?"
@@ -64,7 +64,7 @@ class FunctionsWrapper:
 
         self.function_mapping = {
             "query_available_data_sources": self.data_sourcing_general_query,
-            "fetch_data_from_source": self.fetch_data_from_source
+            "query_data": self.fetch_data_from_source
             # Add more function mappings here...
         }
 
@@ -88,7 +88,7 @@ class FunctionsWrapper:
         print(response)
         data = self.data_service.query(response["SQL"], data_source_name)
         
-        return data, f"Data source name: {data_source_name}"
+        return data, f"DataQuery: Data source name: {data_source_name}, Query: {response['SQL']}"
 
     
     def determine_data_source(self, convo_history, user_input):

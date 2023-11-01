@@ -1,7 +1,9 @@
 import { Stack, Typography, Box } from '@mui/material';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
+import PersonIcon from '@mui/icons-material/Person';
+import ComputerIcon from '@mui/icons-material/Computer';
 import React from 'react';
-import { styled } from '@mui/system';
+import { styled, keyframes } from '@mui/system';
 
 const FadeInBox = styled(Box)<{ index?: number }>(({ index = 0 }) => ({
   opacity: 0,
@@ -19,6 +21,18 @@ const FadeInBox = styled(Box)<{ index?: number }>(({ index = 0 }) => ({
     },
   },
 }));
+
+const pulseAnimation = keyframes`
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
+`;
 
 export interface Message {
   type: 'text' | 'image' | 'other';
@@ -49,9 +63,18 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({ messages }) => {
     >
       {messages.map((message, index) => (
         <FadeInBox display="flex" alignItems="flex-start" key={index} index={index}>
-          {message.type === 'text' && <ChatBubbleOutlineIcon fontSize="small" style={{ marginTop: '4px', marginRight: '8px', color: '#015C94' }} />}
+          {message.type === 'text' && (
+            <>
+              {message.sender === 'You' ? (
+                <PersonIcon fontSize="small" style={{ marginTop: '4px', marginRight: '8px', color: '#015C94' }}
+              />) : (
+                <ComputerIcon fontSize="small" style={{ marginTop: '4px', marginRight: '8px', color: '#015C94' }}
+              />
+              )}
+            </>
+          )}
           <Typography variant="body1" style={{ whiteSpace: 'pre-line' }} align='left'>
-            <strong>{message.sender}:</strong> {message.content}
+           {message.content}
           </Typography>
         </FadeInBox>
       ))}
