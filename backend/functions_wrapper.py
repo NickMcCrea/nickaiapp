@@ -46,6 +46,7 @@ class FunctionsWrapper:
             "description": f"""Use this function when a user asks for actual data from a source.
                             If they want to see actual data, use this function. 
                             If we can infer the data source from the user's question, we should input that information. 
+                            Users may ask for refined data from a previous query, e.g. "Can you filter that on restaurants with delivery times < 30 mins?"
                             """,
           "parameters": {
                 "type": "object",
@@ -68,7 +69,7 @@ class FunctionsWrapper:
         }
 
 
-    def fetch_data_from_source(self, user_input, data_source_name):
+    def fetch_data_from_source(self, convo_history, user_input, data_source_name):
         #if data source is not none
         commentary = ""
 
@@ -76,21 +77,21 @@ class FunctionsWrapper:
 
         if data_source is None:
             print(f"Data set unknown. Determining data source from user input '{user_input}'")
-            data_source_json = self.determine_data_source(user_input)
+            data_source_json = self.determine_data_source(convo_history,user_input)
             data_source_name = data_source_json["data_source"]
             data_source = self.data_service.get_data_source(data_source_name)
             #print the data source name
             print(f"Data source name: {data_source_name}")
            
            
-        response = self.get_data_query(user_input, data_source["meta"])
+        response = self.get_data_query(convo_history, user_input,data_source["meta"])
         print(response)
         data = self.data_service.query(response["SQL"], data_source_name)
         
-        return data, "Data set fetched."
+        return data, ""
 
     
-    def determine_data_source(self, user_input):
+    def determine_data_source(self, convo_history, user_input):
 
         spotify_data_meta = self.data_service.get_data_source("spotify_track_data")["meta"]
         restaurants_data_meta = self.data_service.get_data_source("restaurant_info")["meta"]
@@ -102,6 +103,9 @@ class FunctionsWrapper:
                 
                 please determine the best single data source, to fetch data to answer the following questions succinctly:
                 {user_input}
+
+                Here's the conversation history so far, to help determine:
+                {convo_history.messages}
 
                 Return the answer in the following JSON format:
                 {{"data_source": "data_source_name"}}
@@ -122,7 +126,7 @@ class FunctionsWrapper:
 
     #in a real system, this would be probably combine some embeddings search with a metadata service. 
     #we'll fake it for now. 
-    def data_sourcing_general_query(self, user_input):
+    def data_sourcing_general_query(self, convo_history, user_input):
 
         spotify_data_meta = self.data_service.get_data_source("spotify_track_data")["meta"]
         restaurants_data_meta = self.data_service.get_data_source("restaurant_info")["meta"]
@@ -135,6 +139,7 @@ class FunctionsWrapper:
                 please answer the following questions succinctly:
                 {user_input}
 
+            
                 Return the answer in the following JSON format:
                 First, a list of relevant data source names.
                 Second, very brief commentary on the answer in a JSON parameter called "commentary".
@@ -170,11 +175,14 @@ class FunctionsWrapper:
         return "", commentary
 
 
-    def get_data_query(self, user_input, data_source_meta):
+    def get_data_query(self, convo_history, user_input, data_source_meta):
 
         prompt = f"""
                 Given the following data source schemas:
                 {data_source_meta}
+
+                And the previous conversation history:
+                {convo_history.messages}
                 
                 please generate JSON to help generate data, to the following questions succinctly:
                 {user_input}
@@ -208,13 +216,13 @@ class FunctionsWrapper:
     
 
     
-    def execute_function(self, response_message, user_input, name, args):
+    def execute_function(self, convo_history,  response_message, user_input, name, args):
  
         #print the function name and arguments
         print(f"Executing function '{name}' with arguments {args}")
         if name in self.function_mapping:
             func = self.function_mapping[name]
-            data, commentary = func(user_input, **args)
+            data, commentary = func(convo_history, user_input, **args)
             return data, commentary
         else:
             raise ValueError(f"Function '{name}' not found.")

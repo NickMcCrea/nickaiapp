@@ -95,8 +95,13 @@ def ask():
         chat_output = None
         data = None
         if was_function_call:
-            data, commentary = get_function_response(response_message, user_input)
-            chat_output = commentary
+            data, commentary = get_function_response(conversation_history, response_message, user_input)
+            
+            #if commentary is not empty, add it to the chat output
+            if commentary != "":
+                chat_output = commentary
+           
+
         else:
             chat_output = response['choices'][0]['message']['content']
 
@@ -145,12 +150,12 @@ def get_convo_history():
     print("session_id: ", session_id)
     return conversation_history
 
-def get_function_response(response_message, user_input):
+def get_function_response(conversation_history, response_message, user_input):
     function_name = response_message["function_call"]["name"]
     #print("function_name: ", function_name)
     function_args = json.loads(response_message["function_call"]["arguments"])
     #print("function_args: ", function_args)
-    data,commentary = functions.execute_function(response_message, user_input, function_name, function_args)
+    data,commentary = functions.execute_function(conversation_history, response_message, user_input, function_name, function_args)
     return data,commentary
 
 def calculate_costs(input_tokens, output_tokens):
