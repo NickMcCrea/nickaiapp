@@ -8,7 +8,6 @@ from ConversationHistory import ConversationHistory
 import json
 from functions_wrapper import FunctionsWrapper
 import prompt_templates as prompt_templates
-from datasources.data_source_loader import DataSourceLoader
 import time
 
 
@@ -24,16 +23,12 @@ gpt_4 = "gpt-4-0613"
 current_model = gpt_4
 user_sessions = {}
 
-data_source_loader = DataSourceLoader()
-data_source_loader.load_from_file("datasources/nicktrialbalance.json")
 
 
-# print each data source
-for data_source_name, data_source_obj in data_source_loader.data_sources.items():
-    print(f"data_source name: {data_source_name}")
-    print(f"data_source details: {data_source_obj}")
 
-functions = FunctionsWrapper(current_model, data_source_loader)
+
+
+functions = FunctionsWrapper(current_model)
 
     
 
@@ -100,9 +95,7 @@ def ask():
         chat_output = None
         if was_function_call:
             function_response = get_function_response(response_message, user_input)
-            if was_function_call.get("name") == "get_data_sources":
-                chat_output = function_response
-            
+            chat_output = function_response
         else:
             chat_output = response['choices'][0]['message']['content']
 

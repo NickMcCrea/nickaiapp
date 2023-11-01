@@ -1,5 +1,0 @@
-{
-    "country_of_residence": ["UK","GER","FRA", "USA", "ITA", "ESP", "EIR"],
-    "counterparty_type": ["Bank", "Insurance Company", "Asset Management Company", "Hedge Fund", "Pension Fund", "Sovereign Wealth Fund", "Corporation", "Non-profit", "Individual", "Government", "Brokerage", "Investment Fund", "Private Equity Fund", "Venture Capital Fund", "Mutual Fund", "Endowment", "REIT"]
-
-}

@@ -1,33 +1,33 @@
 import json
 import openai
 import prompt_templates
+import json
 
 #constructor for a functions class
 class FunctionsWrapper:
 
-    
+    def load_json(self,file_path):
+        with open(file_path, 'r') as file:
+            return json.load(file)
 
     #constructor
-    def __init__(self, current_model, data_source_loader):
+    def __init__(self, current_model):
         self.current_model = current_model
-        self.data_source_loader = data_source_loader
+      
+        
+        self.top_songs = self.load_json("datasources/top_songs.json")
+   
+
+
         self.functions = [      
         {
-         "name": "get_data_sources",
+         "name": "query_available_data_sources",
             "description": f"""Use this function to answer user questions about what data sources we have available.
-                            For example, the user may ask about data sources, or ask about a specific data source, table or column. 
+                            For example, the user may ask about data sources, or ask about a specific data source, or attribute. 
                             """,
           "parameters": {
                 "type": "object",
-                "properties": {
-                    "query": {
-                        "type": "string",
-                        "description": f"""
-                            The specific question the user asked, verbatim i.e. the query that prompted this function call."
-                                """,
-                    }
-                },
-                "required": ["query"],
+                "properties": {}
             }
         },
          {
@@ -40,18 +40,38 @@ class FunctionsWrapper:
         ]
 
         self.function_mapping = {
-            "get_data_sources": self.get_data_sources,
+            "query_available_data_sources": self.get_data_sources,
             "fall_back_function": self.fall_back_function
             # Add more function mappings here...
         }
     
-    def get_data_sources(self, user_input, query):
+    def get_data_sources(self, user_input):
+
+        prompt = f"""
+                Given the following data source schemas:
+                {self.top_songs}
+              
+
+                please answer the following questions succinctly:
+                {user_input}
+
+                Return the answer in the following JSON format:
+                First, a list of relevant data source names.
+                Second, very brief commentary on the answer in a JSON parameter called "commentary".
+                E.g.
+                {{"data_source_names": ["balances", "counterparties"], "commentary": "Here's data sources relevant to your query."}}
+
+                or e.g.
+                {{"data_source_names": ["balances", "counterparties", "products"], "commentary": "Here's all our data sources."}}
+
+                Return only JSON. No other commentary outside of the JSON.
+                """
 
         #print the user input we're using to generate a response
         print(f"User input: {user_input}")
-        messages = [{"role": "system", "content": "You are an expert at reading JSON and inferring the data sources it refers to."}] 
-        messages.append({"role": "system", "content": "Ignore the connectivity details or the type of underlying data source (e.g. sqlite or csv)."})
-        messages.append({"role": "user", "content": prompt_templates.generate_datasources_prompt(self.data_source_loader.get_data_source_string(), user_input)})
+        messages = [{"role": "system", "content": "You are a helpful assistant."}]
+        messages.append({"role": "system", "content": "You are helping the user explore data sets, and answer questions about them."}) 
+        messages.append({"role": "user", "content": prompt})
         response = openai.ChatCompletion.create(
             model=self.current_model,
             messages=messages
