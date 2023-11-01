@@ -1,0 +1,41 @@
+{
+    "name": "restaurant_info",
+    "description": "Information about various restaurants including ratings, cuisine, pricing, and safety measures",
+    "fields": [
+        {
+            "fieldName": "restaurant_name",
+            "fieldDescription": "Name of the restaurant",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "rating",
+            "fieldDescription": "Average rating of the restaurant",
+            "fieldType": "FLOAT"
+        },
+        {
+            "fieldName": "cuisine",
+            "fieldDescription": "Types of cuisines offered by the restaurant",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "average_price",
+            "fieldDescription": "Average price for one person",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "average_delivery_time",
+            "fieldDescription": "Average time taken for delivery",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "safety_measure",
+            "fieldDescription": "Safety measures followed by the restaurant",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "location",
+            "fieldDescription": "Geographical location of the restaurant",
+            "fieldType": "STRING"
+        }
+    ]
+}

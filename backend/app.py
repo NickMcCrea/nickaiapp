@@ -93,9 +93,10 @@ def ask():
         was_function_call = response_message.get("function_call")
 
         chat_output = None
+        data = None
         if was_function_call:
-            function_response = get_function_response(response_message, user_input)
-            chat_output = function_response
+            data, commentary = get_function_response(response_message, user_input)
+            chat_output = commentary
         else:
             chat_output = response['choices'][0]['message']['content']
 
@@ -120,7 +121,10 @@ def ask():
         #print the time up til now
         print("Time elapsed 3: ", time.time() - start_time)
 
-        return jsonify({'function_response': function_response, 'function_call':  was_function_call, 'output': chat_output, 'data': None, 'estimated_cost': "{:.10f}".format(conversation_history.get_total_estimated_cost())}), 200
+
+        final_response = jsonify({'function_response': function_response, 'function_call':  was_function_call, 'output': chat_output, 'data': data, 'estimated_cost': "{:.10f}".format(conversation_history.get_total_estimated_cost())})
+        print("final_response: ", final_response)
+        return final_response, 200
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -146,8 +150,8 @@ def get_function_response(response_message, user_input):
     #print("function_name: ", function_name)
     function_args = json.loads(response_message["function_call"]["arguments"])
     #print("function_args: ", function_args)
-    function_response = functions.execute_function(response_message, user_input, function_name, function_args)
-    return function_response
+    data,commentary = functions.execute_function(response_message, user_input, function_name, function_args)
+    return data,commentary
 
 def calculate_costs(input_tokens, output_tokens):
     input_cost = COSTS[current_model]['input'] * input_tokens

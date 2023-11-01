@@ -2,21 +2,31 @@ import json
 import openai
 import prompt_templates
 import json
+from in_memory_db import InMemoryDB
+from MetaDataService import MetaDataService
 
 #constructor for a functions class
 class FunctionsWrapper:
 
-    def load_json(self,file_path):
-        with open(file_path, 'r') as file:
-            return json.load(file)
+
 
     #constructor
     def __init__(self, current_model):
         self.current_model = current_model
-      
-        
-        self.top_songs = self.load_json("datasources/top_songs.json")
-   
+
+
+        self.data_service = MetaDataService()
+
+           # Example usage
+#repository = DataRepository()
+#restaurant_info = repository.get_data_source('restaurant_info')
+#if restaurant_info:
+#    meta = restaurant_info['meta']
+#    db = restaurant_info['db']
+
+        #add the names of the data sets meta data we have available to a dictionary
+
+    
 
 
         self.functions = [      
@@ -30,40 +40,71 @@ class FunctionsWrapper:
                 "properties": {}
             }
         },
+
          {
-         "name": "fall_back_function",
-            "description": "Use this function to reply to user questions that don't match any of the other specified functions",
-             "parameters": { "type": "object", "properties": {}}
-
+         "name": "fetch_data_from_source",
+            "description": f"""Use this function when a user asks for actual data from a source.
+                            If they want to see actual data, use this function. 
+                            If we can infer the data source from the user's question, we should input that information. 
+                            """,
+          "parameters": {
+                "type": "object",
+                "properties": 
+                {
+                    "data_source_name": {
+                        "type": "string",
+                        "description": "The name of the data source to fetch data from."
+                           
+                    }
+                }
+            }
         }
-
         ]
 
         self.function_mapping = {
-            "query_available_data_sources": self.get_data_sources,
-            "fall_back_function": self.fall_back_function
+            "query_available_data_sources": self.data_sourcing_general_query,
+            "fetch_data_from_source": self.fetch_data_from_source
             # Add more function mappings here...
         }
+
+
+    def fetch_data_from_source(self, user_input, data_source_name):
+        #if data source is not none
+        commentary = ""
+
+        data_source = self.data_service.get_data_source(data_source_name)
+
+        if data_source is None:
+            print(f"Data set unknown. Determining data source from user input '{user_input}'")
+            data_source_json = self.determine_data_source(user_input)
+            data_source_name = data_source_json["data_source"]
+            data_source = self.data_service.get_data_source(data_source_name)
+            #print the data source name
+            print(f"Data source name: {data_source_name}")
+           
+           
+        response = self.get_data_query(user_input, data_source["meta"])
+        print(response)
+        data = self.data_service.query(response["SQL"], data_source_name)
+        
+        return data, "Data set fetched."
+
     
-    def get_data_sources(self, user_input):
+    def determine_data_source(self, user_input):
+
+        spotify_data_meta = self.data_service.get_data_source("spotify_track_data")["meta"]
+        restaurants_data_meta = self.data_service.get_data_source("restaurant_info")["meta"]
 
         prompt = f"""
                 Given the following data source schemas:
-                {self.top_songs}
-              
-
-                please answer the following questions succinctly:
+                {spotify_data_meta}
+                {restaurants_data_meta}
+                
+                please determine the best single data source, to fetch data to answer the following questions succinctly:
                 {user_input}
 
                 Return the answer in the following JSON format:
-                First, a list of relevant data source names.
-                Second, very brief commentary on the answer in a JSON parameter called "commentary".
-                E.g.
-                {{"data_source_names": ["balances", "counterparties"], "commentary": "Here's data sources relevant to your query."}}
-
-                or e.g.
-                {{"data_source_names": ["balances", "counterparties", "products"], "commentary": "Here's all our data sources."}}
-
+                {{"data_source": "data_source_name"}}
                 Return only JSON. No other commentary outside of the JSON.
                 """
 
@@ -77,11 +118,88 @@ class FunctionsWrapper:
             messages=messages
         )
         output = response['choices'][0]['message']['content']
-        return output
+        return json.loads(output)
 
-    def fall_back_function(self, user_input):
-        return "I'm sorry, I don't understand."
-        
+    #in a real system, this would be probably combine some embeddings search with a metadata service. 
+    #we'll fake it for now. 
+    def data_sourcing_general_query(self, user_input):
+
+        spotify_data_meta = self.data_service.get_data_source("spotify_track_data")["meta"]
+        restaurants_data_meta = self.data_service.get_data_source("restaurant_info")["meta"]
+
+        prompt = f"""
+                Given the following data source schemas:
+                {spotify_data_meta}
+                {restaurants_data_meta}
+                
+                please answer the following questions succinctly:
+                {user_input}
+
+                Return the answer in the following JSON format:
+                First, a list of relevant data source names.
+                Second, very brief commentary on the answer in a JSON parameter called "commentary".
+                E.g.
+                {{"data_source_names": ["datasource1", "datasource2"], "commentary": "Here's data sources relevant to your query, they are relevant because..."}}
+
+                or e.g.
+                {{"data_source_names": ["datasource1", "datasource2", "datasource3"], "commentary": "Here's all our data sources."}}
+
+                or e.g.
+                {{"data_source_names": [], "commentary": "We don't have any data sources that match your query."}}
+
+                or e.g.
+                {{"data_source_names": ["datasource1", "commentary": "This is the only datasource available"}}
+
+                where the user is clearly looking for data, and we can identify a data source, we should write a SQL query to extract the data.
+                e.g.
+                {{"data_source_names": ["datasource1"], "commentary": "Here's the data you're looking for.", "sql_query": "SELECT * FROM datasource1 WHERE ..."}}
+
+                Return only JSON. No other commentary outside of the JSON.
+                """
+
+        #print the user input we're using to generate a response
+        print(f"User input: {user_input}")
+        messages = [{"role": "system", "content": "You are a helpful assistant."}]
+        messages.append({"role": "system", "content": "You are helping the user explore data sets, and answer questions about them."}) 
+        messages.append({"role": "user", "content": prompt})
+        response = openai.ChatCompletion.create(
+            model=self.current_model,
+            messages=messages
+        )
+        commentary = response['choices'][0]['message']['content']
+        return "", commentary
+
+
+    def get_data_query(self, user_input, data_source_meta):
+
+        prompt = f"""
+                Given the following data source schemas:
+                {data_source_meta}
+                
+                please generate JSON to help generate data, to the following questions succinctly:
+                {user_input}
+
+                Return the answer in the following JSON format:
+                E.g.
+                {{"SQL": "select * from data_source_name where ..."}}
+
+                Return only JSON. No other commentary outside of the JSON.
+                """
+
+        #print the user input we're using to generate a response
+        print(f"User input: {user_input}")
+        messages = [{"role": "system", "content": "You are a helpful assistant."}]
+        messages.append({"role": "system", "content": "You are helping the user explore data sets, and generate valid SQL queries to questions about them."}) 
+        messages.append({"role": "user", "content": prompt})
+        response = openai.ChatCompletion.create(
+            model=self.current_model,
+            messages=messages
+        )
+        output = response['choices'][0]['message']['content']
+        return json.loads(output)
+
+
+     
     #getter
     def get_functions(self):
         return self.functions
@@ -96,7 +214,8 @@ class FunctionsWrapper:
         print(f"Executing function '{name}' with arguments {args}")
         if name in self.function_mapping:
             func = self.function_mapping[name]
-            return func(user_input, **args)
+            data, commentary = func(user_input, **args)
+            return data, commentary
         else:
             raise ValueError(f"Function '{name}' not found.")
         

@@ -4,7 +4,7 @@ import pandas as pd
 class InMemoryDB:
     def __init__(self):
         """Initialize an in-memory SQLite database."""
-        self.conn = sqlite3.connect(':memory:')
+        self.conn = sqlite3.connect(':memory:', check_same_thread=False)
 
     def load_csv_to_db(self, csv_path, table_name):
         """

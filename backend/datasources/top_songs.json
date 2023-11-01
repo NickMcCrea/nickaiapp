@@ -1,6 +1,6 @@
 {
     "name": "spotify_track_data",
-    "description": "Data of tracks from Spotify with ranking and audio features",
+    "description": "Data of music tracks from Spotify with ranking and audio features",
     "fields": [
         {
             "fieldName": "spotify_id",
