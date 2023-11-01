@@ -9,6 +9,7 @@ import json
 from functions_wrapper import FunctionsWrapper
 import prompt_templates as prompt_templates
 from datasources.data_source_loader import DataSourceLoader
+import time
 
 
 load_dotenv()
@@ -52,6 +53,9 @@ def dummy_function():
 @app.route('/ask', methods=['POST'])
 def ask():
 
+    #start the timer
+    start_time = time.time()
+
     #get session ID from the session object
     conversation_history = get_convo_history()
 
@@ -85,6 +89,8 @@ def ask():
             function_call="auto"
         )
 
+        #print the time up til now
+        print("Time elapsed 1: ", time.time() - start_time)
        
         response_message = response["choices"][0]["message"]
         
@@ -99,6 +105,9 @@ def ask():
             
         else:
             chat_output = response['choices'][0]['message']['content']
+
+        #print the time up til now
+        print("Time elapsed 2: ", time.time() - start_time)
        
         if chat_output is None:
            chat_output = ""
@@ -114,6 +123,9 @@ def ask():
         conversation_history.set_total_estimated_cost(cost_so_far + estimated_cost)
 
         print("Total estimated cost: {:.10f}".format(conversation_history.get_total_estimated_cost()))
+
+        #print the time up til now
+        print("Time elapsed 3: ", time.time() - start_time)
 
         return jsonify({'function_response': function_response, 'function_call':  was_function_call, 'output': chat_output, 'data': None, 'estimated_cost': "{:.10f}".format(conversation_history.get_total_estimated_cost())}), 200
 
