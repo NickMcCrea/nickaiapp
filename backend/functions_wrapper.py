@@ -88,7 +88,7 @@ class FunctionsWrapper:
         print(response)
         data = self.data_service.query(response["SQL"], data_source_name)
         
-        return data, ""
+        return data, f"Data source name: {data_source_name}"
 
     
     def determine_data_source(self, convo_history, user_input):
@@ -139,6 +139,11 @@ class FunctionsWrapper:
                 please answer the following questions succinctly:
                 {user_input}
 
+                if needed, here's the most recent convo messages so far, if it helps to give context:
+                {convo_history.messages}
+                
+                
+                
             
                 Return the answer in the following JSON format:
                 First, a list of relevant data source names.
