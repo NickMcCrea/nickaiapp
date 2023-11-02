@@ -72,7 +72,7 @@ const Header: React.FC<HeaderProps> = ({ estimatedCost, selectedModel, onModelCh
           <DataThresholdingIcon fontSize="large" />
         </StyledIconButton>
         <Title variant="h5">
-          <i>NickAI</i>
+          <i>Talk To Your Data</i>
         
         </Title>
 

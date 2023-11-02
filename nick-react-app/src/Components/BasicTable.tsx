@@ -11,8 +11,8 @@ const BasicTable = ({ data }: any) => {
   const headers = Object.keys(data[0]);
 
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+    <TableContainer component={Paper} style={{height: '100%'}}>
+      <Table sx={{ minWidth: 650 , height: '100%'}} aria-label="simple table">
         <TableHead>
           <TableRow>
             {headers.map((header) => (
