@@ -1,0 +1,31 @@
+.field-card {
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    border-radius: 5px;
+    background-color: #fff;
+    padding: 5px;
+    margin: 5px;
+    width: 200px; /* Or use flexbox to handle widths */
+  }
+  
+  .field-card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+  }
+  
+  .field-card h4 {
+    margin-top: 0;
+  }
+  
+  .field-card p {
+    font-size: 0.9em;
+  }
+  
+  .field-type {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 0.8em;
+    margin-top: 10px;
+  }
+  
