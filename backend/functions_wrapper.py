@@ -28,6 +28,28 @@ class FunctionsWrapper:
                 "properties": {}
             }
         },
+         {
+         "name": "fetch_meta_data",
+            "description": f"""Use this function to retrieve meta data about a data source.
+                            Use this when the user asks to see meta data or schema information about a data source. 
+                            """,
+          "parameters": {
+                "type": "object",
+                "properties": 
+                {
+                    "data_source_name": {
+                        "type": "string",
+                        "description": "The name of the meta data source to fetch data from."
+                           
+                    },
+                     "ai_commentary": {
+                        "type": "string",
+                        "description": "Any comment from the assistant, on the request"
+                           
+                    }
+                }
+            }
+        },
 
          {
          "name": "fetch_data",
@@ -52,7 +74,8 @@ class FunctionsWrapper:
 
         self.function_mapping = {
             "query_meta_data": self.function_query_meta_data,
-            "fetch_data": self.function_fetch_data
+            "fetch_data": self.function_fetch_data,
+            "fetch_meta_data": self.function_fetch_meta_data
             # Add more function mappings here...
         }
 
@@ -128,6 +151,17 @@ class FunctionsWrapper:
         metadata = None
         commentary = f"DataQuery: Data source name: {data_source_name}, Query: {response['SQL']}"
         return data, metadata, commentary
+    
+    def function_fetch_meta_data(self, convo_history, user_input, data_source_name=None, ai_commentary=None):
+        data_source = self.data_service.get_data_source(data_source_name)
+        if data_source is None:
+            data_source_name, data_source = self.open_ai_infer_data_source(convo_history, user_input)
+
+        data = None
+        metadata = self.data_service.get_data_source(data_source_name)["meta"]
+        commentary = ai_commentary
+
+        return data, metadata, commentary
 
     def open_ai_infer_data_source(self, convo_history, user_input):
         print(f"Data set unknown. Determining data source from user input '{user_input}'")
@@ -202,10 +236,7 @@ class FunctionsWrapper:
         output = response['choices'][0]['message']['content']
         return json.loads(output)
 
-    def function_fetch_meta_data(self, convo_history, user_input, data_source_name):
-        data_source = self.data_service.get_data_source(data_source_name)
-        if data_source is None:
-            data_source_name, data_source = self.open_ai_infer_data_source(convo_history, user_input)
+   
 
         
   
