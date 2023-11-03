@@ -264,8 +264,7 @@ function App() {
             </div>
           )}
           
-        <DataSetCollection dataSets={dataSets} />
-          
+        
       
 
         </div>
