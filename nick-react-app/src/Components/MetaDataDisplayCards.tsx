@@ -7,7 +7,7 @@ interface DataSetCollectionProps {
   dataSets: any[]; // Array of data source manifest objects
 }
 
-const DataSetCollection: React.FC<DataSetCollectionProps> = ({ dataSets }) => {
+const MetaDataCollectionDisplay: React.FC<DataSetCollectionProps> = ({ dataSets }) => {
   return (
     <div className="data-set-collection">
       {dataSets.map((dataSourceManifest, index) => (
@@ -17,4 +17,4 @@ const DataSetCollection: React.FC<DataSetCollectionProps> = ({ dataSets }) => {
   );
 };
 
-export default DataSetCollection;
+export default MetaDataCollectionDisplay;

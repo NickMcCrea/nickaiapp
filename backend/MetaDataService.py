@@ -37,6 +37,13 @@ class MetaDataService:
     def get_data_source(self, name):
         return self.data_sources.get(name, None)
     
+    #get all meta data concatenated together in a single string
+    def get_all_meta_data(self):
+        meta_data = ""
+        for data_source in self.data_sources:
+            meta_data += str(self.data_sources[data_source]['meta'])
+        return meta_data
+    
     def query(self, sql_query, data_source_name):
         # Retrieve the data source by name
         data_source = self.get_data_source(data_source_name)

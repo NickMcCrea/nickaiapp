@@ -9,9 +9,7 @@ import { Grid } from '@mui/material';
 import "react-resizable/css/styles.css";
 import './App.css';
 import BasicTable from './Components/BasicTable';
-import FieldCard from './Components/FieldCard';
-import DataSet from './Components/DataSet';
-import DataSetCollection from './Components/DataSetCollection';
+import MetaDataDisplaySimple from './Components/MetaDataDisplaySimple';
 
 
 const dataSets: any[] = [];
@@ -22,7 +20,7 @@ function App() {
   const [selectedModel, setSelectedModel] = useState('GPT3.5');
   const [tableData, setTableData] = useState<any[]>([]);
   const [metaData, setMetaData] = useState<any[]>([]);
-  
+
   const [width, setWidth] = useState(600); // Default width for the resizable panel
   const [rightPanelWidth, setRightPanelWidth] = useState(window.innerWidth - width); // Width for the right panel
 
@@ -56,34 +54,50 @@ function App() {
     try {
       const reply = await chatService.sendMessage(content, selectedModel);
       setEstimatedCost(reply.estimated_cost.toString());
-      if (reply.data) {
-        setTableData(reply.data);
+      // If the reply is from a query_meta_data function call
+      if (reply.function_call && reply.function_call.name === "query_meta_data") {
+        // Parse the JSON output
+        const outputObject = JSON.parse(reply.output);
+
+        // Extract data source names and commentary
+        const { data_source_names, commentary } = outputObject;
+
+        // Construct a formatted JSX message
+        const metaDataMessage = (
+          <span>
+            Data Source(s): <strong>{data_source_names.join(', ')}</strong>. {commentary}
+          </span>
+        );
+
+
+        // Add the JSX formatted message to the chat history
+        setMessages(prevMessages => [...prevMessages, { type: 'jsx', content: metaDataMessage, timestamp: new Date(), sender: 'Assistant' }]);
+      } else {
+        // Handle other messages as before
+        if (reply.data) {
+          setTableData(reply.data);
+        }
+
+        if (reply.metaData) {
+          dataSets.length = 0; // Clear dataSets
+          dataSets.push(reply.metaData); // Add reply.metaData to dataSets
+          setMetaData(dataSets);
+          console.log("dataSets: " + reply.metaData); // Log the data
+        }
+
+        // Add the assistant's reply to the chat history
+        setMessages(prevMessages => [...prevMessages, { type: 'text', content: reply.output, timestamp: new Date(), sender: 'Assistant' }]);
       }
-      
-      if(reply.metaData) {
-        
-        //clear dataSets
-        dataSets.length = 0;
-
-        //add reply.metaData to dataSets
-        dataSets.push(reply.metaData);
-        setMetaData(dataSets);
-
-        //log the data we've received
-        console.log("dataSets: " + reply.metaData);
-      }
-
-      setMessages(prevMessages => [...prevMessages, { type: 'text', content: reply.output, timestamp: new Date(), sender: 'Assistant' }]);
     } catch (error) {
       console.error('Failed to send message:', error);
     }
   };
 
-  
+
   return (
     <div className="App">
       <Header estimatedCost={estimatedCost} selectedModel={selectedModel} onModelChange={handleModelChange} />
-      <div style={{ display: 'flex' , height: '800px'}}> {/* Flex container */}
+      <div style={{ display: 'flex', height: '100%' }}> {/* Flex container */}
         <ResizableBox
           width={width}
           height={300}
@@ -94,26 +108,26 @@ function App() {
         >
           <AIChatBox messages={messages} handleSendMessage={handleSendMessage} />
         </ResizableBox>
-  
+
         <div style={{ flex: 1, display: 'flex', overflow: 'auto', alignItems: 'center', justifyContent: 'center' }}>
           {tableData && tableData.length > 0 && (
-            <div style={{ width: '100%', height:'90%', overflow: 'auto' }}>
+            <div style={{ width: '100%', height: '90%', overflow: 'auto' }}>
               <BasicTable data={tableData} />
             </div>
           )}
-          
-        {dataSets && dataSets.length > 0 && (
-        <DataSetCollection dataSets={dataSets} />
-        )}
-          
-      
+
+          {dataSets && dataSets.length > 0 && (
+            <MetaDataDisplaySimple dataSets={dataSets} />
+          )}
+
+
 
         </div>
       </div>
     </div>
   );
-  
-  
+
+
 }
 
 export default App;

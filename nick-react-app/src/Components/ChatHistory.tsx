@@ -39,8 +39,8 @@ const AnimatedComputerIcon = styled(ComputerIcon)({
 });
 
 export interface Message {
-  type: 'text' | 'image' | 'other';
-  content: string;
+  type: 'text' | 'jsx';
+  content: string | JSX.Element;
   timestamp: Date;
   sender: string;
 }

@@ -79,17 +79,15 @@ class FunctionsWrapper:
             # Add more function mappings here...
         }
 
-     #in a real system, this would be probably combine some embeddings search with a metadata service. 
+    #in a real system, this would be probably combine some embeddings search with a metadata service. 
     #we'll fake it for now. 
     def function_query_meta_data(self, convo_history, user_input):
 
-        spotify_data_meta = self.data_service.get_data_source("spotify_track_data")["meta"]
-        restaurants_data_meta = self.data_service.get_data_source("restaurant_info")["meta"]
+        
 
         prompt = f"""
                 Given the following data source schemas:
-                {spotify_data_meta}
-                {restaurants_data_meta}
+                {self.data_service.get_all_meta_data()}
                 
                 please answer the following questions succinctly:
                 {user_input}
@@ -166,13 +164,11 @@ class FunctionsWrapper:
     def open_ai_infer_data_source(self, convo_history, user_input):
         print(f"Data set unknown. Determining data source from user input '{user_input}'")
 
-        spotify_data_meta = self.data_service.get_data_source("spotify_track_data")["meta"]
-        restaurants_data_meta = self.data_service.get_data_source("restaurant_info")["meta"]
+        
 
         prompt = f"""
                 Given the following data source schemas:
-                {spotify_data_meta}
-                {restaurants_data_meta}
+                {self.data_service.get_all_meta_data()} 
                 
                 please determine the best single data source, to fetch data to answer the following questions succinctly:
                 {user_input}
@@ -234,11 +230,7 @@ class FunctionsWrapper:
             messages=messages
         )
         output = response['choices'][0]['message']['content']
-        return json.loads(output)
-
-   
-
-        
+        return json.loads(output)  
   
     def execute_function(self, convo_history, response_message, user_input, name, args):
  
