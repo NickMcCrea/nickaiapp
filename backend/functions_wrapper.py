@@ -157,9 +157,9 @@ class FunctionsWrapper:
 
         data = None
         metadata = self.data_service.get_data_source(data_source_name)["meta"]
-        commentary = ai_commentary
+       
 
-        return data, metadata, commentary
+        return data, metadata, f"Here's the meta data for {data_source_name}"
 
     def open_ai_infer_data_source(self, convo_history, user_input):
         print(f"Data set unknown. Determining data source from user input '{user_input}'")

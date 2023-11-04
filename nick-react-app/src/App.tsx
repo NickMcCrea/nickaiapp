@@ -15,6 +15,9 @@ import MetaDataDisplaySimple from './Components/MetaDataDisplaySimple';
 const dataSets: any[] = [];
 
 function App() {
+  // Add a state to keep track of the current function call
+  const [currentFunctionCall, setCurrentFunctionCall] = useState<string>('');
+
   const [messages, setMessages] = useState<Message[]>([]);
   const [estimatedCost, setEstimatedCost] = useState<string>("");
   const [selectedModel, setSelectedModel] = useState('GPT3.5');
@@ -70,12 +73,25 @@ function App() {
         );
 
 
+
+
         // Add the JSX formatted message to the chat history
         setMessages(prevMessages => [...prevMessages, { type: 'jsx', content: metaDataMessage, timestamp: new Date(), sender: 'Assistant' }]);
       } else {
         // Handle other messages as before
         if (reply.data) {
           setTableData(reply.data);
+        }
+
+        //check function call name and set current function call
+        if (reply.function_call) {
+          if (reply.function_call.name === "fetch_meta_data") {
+            setCurrentFunctionCall("fetch_meta_data");
+          }
+          if (reply.function_call.name === "fetch_data") {
+              setCurrentFunctionCall("fetch_data");
+              
+          }
         }
 
         if (reply.metaData) {
@@ -110,13 +126,13 @@ function App() {
         </ResizableBox>
 
         <div style={{ flex: 1, display: 'flex', overflow: 'auto', alignItems: 'center', justifyContent: 'center' }}>
-          {tableData && tableData.length > 0 && (
+          {currentFunctionCall === "fetch_data" && tableData && tableData.length > 0 && (
             <div style={{ width: '100%', height: '90%', overflow: 'auto' }}>
               <BasicTable data={tableData} />
             </div>
           )}
 
-          {dataSets && dataSets.length > 0 && (
+          {currentFunctionCall === "fetch_meta_data" && dataSets && dataSets.length > 0 && (
             <MetaDataDisplaySimple dataSets={dataSets} />
           )}
 
