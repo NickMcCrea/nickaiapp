@@ -8,10 +8,10 @@ import AIChatBox from './Components/AIChatBox';
 import { Grid } from '@mui/material';
 import "react-resizable/css/styles.css";
 import './App.css';
-import BasicTable from './Components/BasicTable';
-import MetaDataDisplaySimple from './Components/MetaDataDisplaySimple';
-import SimpleBarChart, { BarChartData } from './Components/SimpleBarChart';
-import SimpleLineChart, {LineChartData} from './Components/SImpleLineChart';
+import BasicTable from './Components/Charts/BasicTable';
+import MetaDataDisplaySimple from './Components/MetaDataDisplay/MetaDataDisplaySimple';
+import SimpleBarChart, { BarChartData } from './Components/Charts/SimpleBarChart';
+import SimpleLineChart, {LineChartData} from './Components/Charts/SimpleLineChart';
 
 
 
