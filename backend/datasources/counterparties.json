@@ -1,0 +1,46 @@
+{
+    "name": "counterparty_data",
+    "description": "Information about various counterparties including type and industry classification",
+    "fields": [
+        {
+            "fieldName": "counterparty_id",
+            "fieldDescription": "Unique identifier for the counterparty",
+            "fieldType": "INTEGER"
+        },
+        {
+            "fieldName": "counterparty_name",
+            "fieldDescription": "Name of the counterparty",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "counterparty_type",
+            "fieldDescription": "Type of the counterparty (e.g., Corporation, Brokerage, Insurance Company)",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "gics_level_1",
+            "fieldDescription": "Global Industry Classification Standard level 1 category",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "gics_level_2",
+            "fieldDescription": "GICS level 2 category",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "gics_level_3",
+            "fieldDescription": "GICS level 3 category",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "gics_level_4",
+            "fieldDescription": "GICS level 4 category",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "country_of_residence",
+            "fieldDescription": "Country of residence of the counterparty",
+            "fieldType": "STRING"
+        }
+    ]
+}

@@ -1,0 +1,101 @@
+product_id,product_type,instrument_type,market_type,contract_type,risk_type,maturity_date,start_date
+428016929,Equity,ETF,Exchange Traded,Options Contract,Market Risk,2012-03-29,2018-12-04
+739407747,Fixed Income,CDO,Private Placement,Forwards Contract,Credit Risk,2019-03-29,1982-03-21
+512870535,Derivative,Future,Exchange Traded,Futures Contract,Market Risk,2005-03-12,2004-01-03
+238365306,Equity,Stock,Public Market,Options Contract,Equity Risk,1979-08-31,1998-02-07
+282155178,Fixed Income,Bond,Exchange Traded,Futures Contract,Credit Risk,1992-06-09,1995-09-07
+493017644,Equity,Stock,OTC,Options Contract,Market Risk,2022-01-03,1972-04-09
+359510045,Commodity,Future,Commodities Market,Futures Contract,Commodity Risk,1991-03-20,2006-10-30
+205687000,Derivative,Warrant,OTC,Options Contract,Operational Risk,1981-01-15,1971-11-12
+124943561,Derivative,Warrant,OTC,Options Contract,Operational Risk,2000-01-21,1990-04-18
+415417202,Fixed Income,CDO,Private Placement,Forwards Contract,Credit Risk,2015-12-31,2018-09-15
+301815562,Derivative,Future,Exchange Traded,Futures Contract,Market Risk,2016-02-12,1980-08-17
+506290741,Equity,Stock,Public Market,Options Contract,Equity Risk,2015-01-15,1995-12-26
+235694417,Fixed Income,Bond,Fixed Income Market,Futures Contract,Interest Rate Risk,1991-01-28,1996-10-09
+474576982,Derivative,Warrant,OTC,Options Contract,Operational Risk,2021-02-11,2000-05-17
+423529782,Equity,Stock,Public Market,Options Contract,Equity Risk,1984-11-05,2015-06-24
+408359201,Derivative,Future,Exchange Traded,Futures Contract,Market Risk,1976-07-08,1990-09-15
+575841422,Equity,Stock,OTC,Options Contract,Market Risk,2018-12-08,1988-02-19
+410028605,Equity,Mutual Fund,Public Market,Forwards Contract,Market Risk,1998-04-09,1985-02-03
+499966358,Equity,ETF,Exchange Traded,Options Contract,Market Risk,1983-02-11,2007-02-02
+644980446,Derivative,Option,OTC,Options Contract,Operational Risk,1988-07-15,1988-05-19
+778226389,Fixed Income,Bond,Fixed Income Market,Futures Contract,Interest Rate Risk,1990-12-14,2002-05-01
+721237721,Equity,Stock,Public Market,Options Contract,Equity Risk,1970-05-07,2020-01-16
+256805013,Equity,Stock,OTC,Options Contract,Market Risk,1981-02-15,1983-12-02
+439202632,Equity,Stock,OTC,Options Contract,Market Risk,2011-04-29,2001-10-06
+406269569,Equity,Stock,OTC,Options Contract,Market Risk,2019-05-14,1988-08-08
+642332086,Fixed Income,Bond,Fixed Income Market,Futures Contract,Interest Rate Risk,1977-06-11,1970-03-10
+610401574,Equity,Mutual Fund,Public Market,Forwards Contract,Market Risk,1994-05-01,1975-08-29
+717120511,Fixed Income,CDO,Private Placement,Forwards Contract,Credit Risk,1995-02-24,2008-06-02
+470605313,Fixed Income,Bond,Exchange Traded,Futures Contract,Credit Risk,2000-02-06,2000-02-27
+260322027,Equity,Stock,OTC,Options Contract,Market Risk,1975-04-09,2018-02-13
+914715792,Equity,ETF,Exchange Traded,Options Contract,Market Risk,2018-10-14,1988-12-13
+988500997,Derivative,Option,OTC,Options Contract,Operational Risk,1975-06-13,1995-10-12
+387639390,Fixed Income,CDO,Private Placement,Forwards Contract,Credit Risk,1984-02-23,1976-11-21
+911558663,Fixed Income,Bond,Exchange Traded,Futures Contract,Credit Risk,1983-12-18,1992-08-20
+804732485,Derivative,Swap,OTC,Swap Contract,Interest Rate Risk,1982-09-07,2016-01-31
+507531779,Fixed Income,MBS,Private Placement,Forwards Contract,Liquidity Risk,1983-02-25,2016-04-23
+583125965,Equity,Stock,Public Market,Options Contract,Equity Risk,1999-09-29,1983-02-05
+998131360,Fixed Income,Bond,Fixed Income Market,Futures Contract,Interest Rate Risk,2019-04-05,2014-09-10
+672710925,Commodity,Future,Commodities Market,Futures Contract,Commodity Risk,2008-06-28,1993-04-12
+250750259,Derivative,Future,Exchange Traded,Futures Contract,Market Risk,1985-07-09,2009-09-11
+748327378,Equity,Stock,Public Market,Options Contract,Equity Risk,1980-04-05,2005-11-06
+613440547,Fixed Income,Bond,Fixed Income Market,Futures Contract,Interest Rate Risk,1998-05-23,2018-05-11
+323025841,Fixed Income,MBS,Private Placement,Forwards Contract,Liquidity Risk,2011-03-01,2023-03-05
+421652749,Currency,Future,Forex Market,Futures Contract,Foreign Exchange Risk,2007-10-29,1974-03-20
+674537687,Derivative,Warrant,OTC,Options Contract,Operational Risk,1994-07-04,2011-03-01
+499708557,Fixed Income,Bond,Exchange Traded,Futures Contract,Credit Risk,1976-03-04,2016-02-16
+686235247,Equity,Mutual Fund,Public Market,Forwards Contract,Market Risk,1995-09-18,2023-08-23
+585343231,Fixed Income,MBS,Private Placement,Forwards Contract,Liquidity Risk,1984-09-06,1980-02-25
+978156858,Equity,Stock,OTC,Options Contract,Market Risk,1973-10-27,1973-05-16
+845083555,Derivative,Option,OTC,Options Contract,Operational Risk,1977-11-16,1991-03-22
+956527439,Equity,Mutual Fund,Public Market,Forwards Contract,Market Risk,2021-08-03,2019-04-11
+491112888,Equity,Stock,Public Market,Options Contract,Equity Risk,2005-10-20,2011-05-30
+278354073,Commodity,Future,Commodities Market,Futures Contract,Commodity Risk,1993-03-06,1984-01-19
+401481033,Real Estate,REIT,Public Market,Forwards Contract,Real Estate Risk,1988-11-10,2007-10-22
+591248459,Derivative,Option,OTC,Options Contract,Operational Risk,2020-02-24,1972-11-26
+980675027,Equity,Stock,Public Market,Options Contract,Equity Risk,1970-04-20,2000-07-21
+845800205,Equity,ETF,Exchange Traded,Options Contract,Market Risk,2001-02-07,2001-07-20
+263397313,Fixed Income,Bond,Exchange Traded,Futures Contract,Credit Risk,2015-08-01,1973-06-30
+844812260,Derivative,Option,OTC,Options Contract,Operational Risk,1991-06-22,1994-10-13
+251026953,Equity,ETF,Exchange Traded,Options Contract,Market Risk,1989-07-17,2021-06-16
+949373126,Derivative,Warrant,OTC,Options Contract,Operational Risk,1970-09-11,2015-03-20
+920475997,Equity,Mutual Fund,Public Market,Forwards Contract,Market Risk,1986-08-13,1992-07-28
+581551995,Commodity,Future,Commodities Market,Futures Contract,Commodity Risk,1986-10-27,1976-08-17
+299443962,Real Estate,REIT,Public Market,Forwards Contract,Real Estate Risk,2000-09-23,2019-06-24
+278895108,Equity,ETF,Exchange Traded,Options Contract,Market Risk,1972-01-18,1989-11-20
+765586978,Equity,Stock,Public Market,Options Contract,Equity Risk,2021-03-27,2005-11-04
+702414926,Fixed Income,MBS,Private Placement,Forwards Contract,Liquidity Risk,1977-04-29,1973-10-24
+334084077,Commodity,Future,Commodities Market,Futures Contract,Commodity Risk,1981-02-10,2003-08-04
+838823522,Commodity,Future,Commodities Market,Futures Contract,Commodity Risk,1995-07-26,1983-04-11
+120127236,Equity,Stock,OTC,Options Contract,Market Risk,1996-03-18,1991-12-05
+625497923,Equity,ETF,Exchange Traded,Options Contract,Market Risk,2009-07-22,1971-11-14
+851266122,Equity,Stock,Public Market,Options Contract,Equity Risk,1975-03-07,1996-07-22
+464001568,Derivative,Option,OTC,Options Contract,Operational Risk,1970-11-08,1986-10-18
+995722838,Fixed Income,CDO,Private Placement,Forwards Contract,Credit Risk,2001-03-11,2014-03-23
+755697856,Real Estate,REIT,Public Market,Forwards Contract,Real Estate Risk,1983-02-18,1990-11-14
+736547641,Derivative,Swap,OTC,Swap Contract,Interest Rate Risk,1999-12-26,1972-08-19
+285940730,Fixed Income,Bond,Exchange Traded,Futures Contract,Credit Risk,1990-02-28,1982-01-19
+478127330,Real Estate,REIT,Public Market,Forwards Contract,Real Estate Risk,2018-10-01,2010-04-28
+678752854,Derivative,Future,Exchange Traded,Futures Contract,Market Risk,1999-05-28,1997-05-30
+248159429,Equity,Stock,OTC,Options Contract,Market Risk,1985-08-25,2022-12-27
+393396080,Derivative,Swap,OTC,Swap Contract,Interest Rate Risk,1997-07-30,2006-07-07
+670630437,Equity,Stock,OTC,Options Contract,Market Risk,1980-10-09,1972-04-08
+870375904,Equity,Mutual Fund,Public Market,Forwards Contract,Market Risk,1972-10-13,1994-08-22
+171046707,Equity,Stock,Public Market,Options Contract,Equity Risk,1990-04-21,1989-11-30
+527071663,Fixed Income,Bond,Fixed Income Market,Futures Contract,Interest Rate Risk,2014-11-19,1974-10-19
+727911412,Fixed Income,Bond,Fixed Income Market,Futures Contract,Interest Rate Risk,1990-12-10,2022-12-12
+316733093,Derivative,Warrant,OTC,Options Contract,Operational Risk,2023-09-29,2008-02-06
+671832834,Real Estate,REIT,Public Market,Forwards Contract,Real Estate Risk,2017-07-30,1992-12-24
+645581004,Derivative,Option,OTC,Options Contract,Operational Risk,2015-03-11,1988-09-24
+989471530,Equity,Stock,Public Market,Options Contract,Equity Risk,2005-05-24,2004-06-14
+697105773,Currency,Future,Forex Market,Futures Contract,Foreign Exchange Risk,1996-07-29,1991-02-24
+912350028,Fixed Income,CDO,Private Placement,Forwards Contract,Credit Risk,1971-02-03,1975-01-19
+884393997,Equity,Stock,OTC,Options Contract,Market Risk,1998-07-19,2003-01-08
+539975921,Derivative,Swap,OTC,Swap Contract,Interest Rate Risk,1998-03-28,1977-09-06
+286091862,Fixed Income,Bond,Exchange Traded,Futures Contract,Credit Risk,1975-12-23,2012-03-14
+391033985,Equity,Mutual Fund,Public Market,Forwards Contract,Market Risk,1984-09-18,1977-12-10
+123610772,Currency,Future,Forex Market,Futures Contract,Foreign Exchange Risk,1979-11-26,1995-12-04
+860732739,Equity,ETF,Exchange Traded,Options Contract,Market Risk,1985-04-17,1973-06-07
+936463272,Equity,Stock,Public Market,Options Contract,Equity Risk,2002-07-03,2018-05-12
+951557365,Real Estate,REIT,Public Market,Forwards Contract,Real Estate Risk,1995-11-09,2008-04-01

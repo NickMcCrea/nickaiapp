@@ -1,0 +1,46 @@
+{
+    "name": "product_data",
+    "description": "Data on various financial products including types, risk, and dates",
+    "fields": [
+        {
+            "fieldName": "product_id",
+            "fieldDescription": "Unique identifier for the financial product",
+            "fieldType": "INTEGER"
+        },
+        {
+            "fieldName": "product_type",
+            "fieldDescription": "General category of the financial product (e.g., Equity, Fixed Income)",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "instrument_type",
+            "fieldDescription": "Specific type of financial instrument (e.g., ETF, CDO, Future)",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "market_type",
+            "fieldDescription": "Market where the product is traded (e.g., Exchange Traded, Private Placement)",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "contract_type",
+            "fieldDescription": "Type of contract the product is associated with (e.g., Options Contract, Forwards Contract)",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "risk_type",
+            "fieldDescription": "Type of risk associated with the product (e.g., Market Risk, Credit Risk)",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "maturity_date",
+            "fieldDescription": "Date when the product reaches maturity",
+            "fieldType": "DATE"
+        },
+        {
+            "fieldName": "start_date",
+            "fieldDescription": "Date when the product was first issued or started",
+            "fieldType": "DATE"
+        }
+    ]
+}

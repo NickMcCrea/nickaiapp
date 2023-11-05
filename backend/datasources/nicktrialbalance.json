@@ -1,0 +1,41 @@
+{
+    "name": "trial_balance_data",
+    "description": "Trial balance data including dates, codes, and financials",
+    "fields": [
+        {
+            "fieldName": "pnl_date",
+            "fieldDescription": "Date of the profit and loss statement",
+            "fieldType": "DATE"
+        },
+        {
+            "fieldName": "company_code",
+            "fieldDescription": "Unique code identifying the company",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "account",
+            "fieldDescription": "Account number",
+            "fieldType": "INTEGER"
+        },
+        {
+            "fieldName": "cost_code",
+            "fieldDescription": "Code identifying the cost center",
+            "fieldType": "INTEGER"
+        },
+        {
+            "fieldName": "product_id",
+            "fieldDescription": "Unique identifier for the product",
+            "fieldType": "INTEGER"
+        },
+        {
+            "fieldName": "counterparty_id",
+            "fieldDescription": "Unique identifier for the counterparty",
+            "fieldType": "INTEGER"
+        },
+        {
+            "fieldName": "balance",
+            "fieldDescription": "Financial balance amount",
+            "fieldType": "FLOAT"
+        }
+    ]
+}

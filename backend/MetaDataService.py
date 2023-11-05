@@ -10,6 +10,9 @@ class MetaDataService:
         # Load the metadata from JSON files
         top_songs_meta = self.load_json("datasources/top_songs.json")
         restaurants_meta = self.load_json("datasources/restaurants.json")
+        trial_balance_meta = self.load_json("datasources/nicktrialbalance.json")
+        counterparties_meta = self.load_json("datasources/counterparties.json")
+        products_meta = self.load_json("datasources/products.json")
         
         # Create in-memory databases
         top_song_data_db = InMemoryDB()
@@ -18,15 +21,39 @@ class MetaDataService:
         restaurants_data_db = InMemoryDB()
         restaurants_data_db.load_csv_to_db('datasources/restaurants.csv', 'restaurant_info')
 
+        trial_balance_data_db = InMemoryDB()
+        trial_balance_data_db.load_csv_to_db('datasources/nicktrialbalance.csv', 'trial_balance_data')
+
+        counterparties_data_db = InMemoryDB()
+        counterparties_data_db.load_csv_to_db('datasources/counterparties.csv', 'counterparty_data')
+
+        products_data_db = InMemoryDB()
+        products_data_db.load_csv_to_db('datasources/products.csv', 'product_data')
+
         # Add the metadata and databases to the data_sources dictionary
         self.data_sources[top_songs_meta['name']] = {
             'meta': top_songs_meta,
-            'db': top_song_data_db
+            'db': top_song_data_db,
         }
 
         self.data_sources[restaurants_meta['name']] = {
             'meta': restaurants_meta,
             'db': restaurants_data_db
+        }
+
+        self.data_sources[trial_balance_meta['name']] = {
+            'meta': trial_balance_meta,
+            'db': trial_balance_data_db
+        }
+
+        self.data_sources[counterparties_meta['name']] = {
+            'meta': counterparties_meta,
+            'db': counterparties_data_db
+        }
+
+        self.data_sources[products_meta['name']] = {
+            'meta': products_meta,
+            'db': products_data_db
         }
 
     def load_json(self, file_path):
