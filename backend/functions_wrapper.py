@@ -69,13 +69,53 @@ class FunctionsWrapper:
                     }
                 }
             }
-        }
+
+
+        },
+         {
+         "name": "fetch_bar_chart_data",
+            "description": f"""Use this function when a user asks for a question that requires a bar chart or bar graph.
+                            If we can infer the data source from the context, we should input that information. 
+                            Users may ask for refined data from a previous query, e.g. "Can you filter that on restaurants with delivery times < 30 mins?"
+                            """,
+          "parameters": {
+                "type": "object",
+                "properties": 
+                {
+                    "data_source_name": {
+                        "type": "string",
+                        "description": "The name of the data source to fetch data from."
+                           
+                    }
+                }
+            }
+         }, 
+         {
+         "name": "fetch_line_chart_data",
+            "description": f"""Use this function when a user asks for a question that requires a line chart or time series.
+                            If we can infer the data source from the context, we should input that information. 
+                            Users may ask for refined data from a previous query, e.g. "Can you filter that on restaurants with delivery times < 30 mins?"
+                            """,
+          "parameters": {
+                "type": "object",
+                "properties": 
+                {
+                    "data_source_name": {
+                        "type": "string",
+                        "description": "The name of the data source to fetch data from."
+                           
+                    }
+                }
+            }
+         }
         ]
 
         self.function_mapping = {
             "query_meta_data": self.function_query_meta_data,
             "fetch_data": self.function_fetch_data,
-            "fetch_meta_data": self.function_fetch_meta_data
+            "fetch_meta_data": self.function_fetch_meta_data,
+            "fetch_bar_chart_data": self.function_fetch_bar_chart_data,
+            "fetch_line_chart_data": self.function_fetch_line_chart_data    
             # Add more function mappings here...
         }
 
@@ -143,13 +183,45 @@ class FunctionsWrapper:
             data_source_name, data_source = self.open_ai_infer_data_source(convo_history, user_input)
            
            
-        response = self.open_ai_generate_sql(convo_history, user_input,data_source["meta"])
+        response = self.open_ai_generate_sql(convo_history, user_input,data_source["meta"], self.table_sql_prompt(convo_history, user_input, data_source["meta"]))
+
         print(response)
         data = self.data_service.query(response["SQL"], data_source_name)
         metadata = None
         commentary = f"DataQuery: Data source name: {data_source_name}, Query: {response['SQL']}"
         return data, metadata, commentary
     
+    def function_fetch_bar_chart_data(self, convo_history, user_input, data_source_name):
+        #if data source is not none
+        commentary = ""
+        data_source = self.data_service.get_data_source(data_source_name)
+        if data_source is None:
+            data_source_name, data_source = self.open_ai_infer_data_source(convo_history, user_input)
+           
+           
+        response = self.open_ai_generate_sql(convo_history, user_input,data_source["meta"], self.bar_graph_sql_prompt(convo_history, user_input, data_source["meta"]))
+        print(response)
+        data = self.data_service.query(response["SQL"], data_source_name)
+        metadata = None
+        commentary = f"DataQuery: Data source name: {data_source_name}, Query: {response['SQL']}"
+        return data, metadata, commentary
+    
+    def function_fetch_line_chart_data(self, convo_history, user_input, data_source_name):
+        #if data source is not none
+        commentary = ""
+        data_source = self.data_service.get_data_source(data_source_name)
+        if data_source is None:
+            data_source_name, data_source = self.open_ai_infer_data_source(convo_history, user_input)
+           
+           
+        response = self.open_ai_generate_sql(convo_history, user_input,data_source["meta"], self.line_graph_sql_prompt(convo_history, user_input, data_source["meta"]))
+        print(response)
+        data = self.data_service.query(response["SQL"], data_source_name)
+        metadata = None
+        commentary = f"DataQuery: Data source name: {data_source_name}, Query: {response['SQL']}"
+        return data, metadata, commentary
+    
+
     def function_fetch_meta_data(self, convo_history, user_input, data_source_name=None, ai_commentary=None):
         data_source = self.data_service.get_data_source(data_source_name)
         if data_source is None:
@@ -201,25 +273,9 @@ class FunctionsWrapper:
         
         return data_source_name, data_source
 
-    def open_ai_generate_sql(self, convo_history, user_input, data_source_meta):
+    def open_ai_generate_sql(self, convo_history, user_input, data_source_meta, prompt):
 
-        prompt = f"""
-                Given the following data source schema:
-                {data_source_meta}
-
-                And the previous conversation history:
-                {convo_history.messages}
-                
-                please generate JSON to help generate data, to the following questions succinctly:
-                {user_input}
-
-                Return the answer in the following JSON format:
-                E.g.
-                {{"SQL": "select * from data_source_name where ..."}}
-
-                Return only JSON. No other commentary outside of the JSON.
-                """
-
+       
         #print the user input we're using to generate a response
         print(f"User input: {user_input}")
         messages = [{"role": "system", "content": "You are a helpful assistant."}]
@@ -230,7 +286,63 @@ class FunctionsWrapper:
             messages=messages
         )
         output = response['choices'][0]['message']['content']
-        return json.loads(output)  
+        return json.loads(output) 
+
+    def table_sql_prompt(self, convo_history, user_input, data_source_meta):
+        prompt = f"""
+                Given the following data source schema:
+                {data_source_meta}
+                And the previous conversation history:
+                {convo_history.messages}
+                please generate JSON to help generate data, to the following questions succinctly:
+                {user_input}
+                Return the answer in the following JSON format:
+                E.g.
+                {{"SQL": "select * from data_source_name where ..."}}
+                Return only JSON. No other commentary outside of the JSON.
+                """
+                
+        return prompt 
+    
+    def bar_graph_sql_prompt(self, convo_history, user_input, data_source_meta):
+        prompt = f"""
+                Given the following data source schema:
+                {data_source_meta}
+                And the previous conversation history:
+                {convo_history.messages}
+                please generate JSON to help generate data, to the following questions succinctly:
+                {user_input}
+                Return the answer in the following JSON format:
+                E.g.
+                {{"SQL": "select * from data_source_name where ..."}}
+                Return only JSON. No other commentary outside of the JSON.
+                Generated SQL queries should be bar chart-friendly.
+                Whatever column is selected as the x-axis name as "X-Axis".
+                Whatever column is selected as the y-axis should be a number - rename it as "Total". 
+                """
+                
+        return prompt 
+    
+    def line_graph_sql_prompt(self, convo_history, user_input, data_source_meta):
+        prompt = f"""
+                Given the following data source schema:
+                {data_source_meta}
+                And the previous conversation history:
+                {convo_history.messages}
+                please generate JSON to help generate data, to the following questions succinctly:
+                {user_input}
+                Return the answer in the following JSON format:
+                E.g.
+                {{"SQL": "select * from data_source_name where ..."}}
+                Return only JSON. No other commentary outside of the JSON.
+                Generated queries should be line chart-friendly.
+                Whatever column is selected as the x-axis should be a date or timestamp. Rename it as "time".
+                Whatever column is selected as the y-axis should be a number - rename it as "total1".
+                If there are multple series, the query should return them as total1, total2, total3, etc.
+                """
+                
+        return prompt 
+  
   
     def execute_function(self, convo_history, response_message, user_input, name, args):
  
@@ -243,6 +355,5 @@ class FunctionsWrapper:
         else:
             raise ValueError(f"Function '{name}' not found.")
         
-    
     def get_functions(self):
         return self.functions

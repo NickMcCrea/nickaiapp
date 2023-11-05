@@ -10,6 +10,9 @@ import "react-resizable/css/styles.css";
 import './App.css';
 import BasicTable from './Components/BasicTable';
 import MetaDataDisplaySimple from './Components/MetaDataDisplaySimple';
+import SimpleBarChart, { BarChartData } from './Components/SimpleBarChart';
+import SimpleLineChart, {LineChartData} from './Components/SImpleLineChart';
+
 
 
 const dataSets: any[] = [];
@@ -23,6 +26,9 @@ function App() {
   const [selectedModel, setSelectedModel] = useState('GPT3.5');
   const [tableData, setTableData] = useState<any[]>([]);
   const [metaData, setMetaData] = useState<any[]>([]);
+  const [barChartData, setBarChartData] = useState<BarChartData[]>([]);
+  const [lineChartData, setLineChartData] = useState<LineChartData[]>([]);
+
 
   const [width, setWidth] = useState(600); // Default width for the resizable panel
   const [rightPanelWidth, setRightPanelWidth] = useState(window.innerWidth - width); // Width for the right panel
@@ -89,8 +95,30 @@ function App() {
             setCurrentFunctionCall("fetch_meta_data");
           }
           if (reply.function_call.name === "fetch_data") {
-              setCurrentFunctionCall("fetch_data");
-              
+            setCurrentFunctionCall("fetch_data");
+
+          }
+          if (reply.function_call && reply.function_call.name === "fetch_bar_chart_data") {
+            // Assuming the data is in the format required by the chart
+            if (Array.isArray(reply.data)) {
+              const formattedData = reply.data.map(item => ({
+                ...item,
+                Total: parseFloat(item.Total)
+              }));
+              setBarChartData(formattedData as BarChartData[]);
+              setCurrentFunctionCall("fetch_bar_chart_data");
+            } else {
+              // Handle the case where reply.data is undefined or not an array
+              console.error('Received data is not an array', reply.data);
+            }
+          }
+          if(reply.function_call && reply.function_call.name === "fetch_line_chart_data"){
+            if (Array.isArray(reply.data)) {
+
+              setLineChartData(reply.data as LineChartData[]);
+              setCurrentFunctionCall("fetch_line_chart_data");
+            }
+
           }
         }
 
@@ -113,7 +141,7 @@ function App() {
   return (
     <div className="App">
       <Header estimatedCost={estimatedCost} selectedModel={selectedModel} onModelChange={handleModelChange} />
-      <div style={{ display: 'flex', height: '100%' }}> {/* Flex container */}
+      <div style={{ display: 'flex', height: '1000px' }}> {/* Flex container */}
         <ResizableBox
           width={width}
           height={300}
@@ -127,7 +155,7 @@ function App() {
 
         <div style={{ flex: 1, display: 'flex', overflow: 'auto', alignItems: 'center', justifyContent: 'center' }}>
           {currentFunctionCall === "fetch_data" && tableData && tableData.length > 0 && (
-            <div style={{ width: '100%', height: '90%', overflow: 'auto' }}>
+            <div style={{ width: '100%', height: '100%', overflow: 'auto' }}>
               <BasicTable data={tableData} />
             </div>
           )}
@@ -136,6 +164,17 @@ function App() {
             <MetaDataDisplaySimple dataSets={dataSets} />
           )}
 
+          {currentFunctionCall === "fetch_bar_chart_data" && barChartData.length > 0 && (
+          
+              <SimpleBarChart data={barChartData} />
+       
+          )}
+
+          {currentFunctionCall === "fetch_line_chart_data" && lineChartData.length > 0 && (
+          
+              <SimpleLineChart data={lineChartData} />
+
+          )}
 
 
         </div>
