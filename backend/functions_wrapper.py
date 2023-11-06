@@ -19,7 +19,7 @@ class FunctionsWrapper:
 
         self.functions = [      
         {
-         "name": "query_meta_data",
+         "name": "query_data_catalogue",
             "description": f"""Use this function to answer user questions about what data sources we have available.
                             For example, the user may ask about data sources, or ask about a specific data source, or attribute. 
                             """,
@@ -111,7 +111,7 @@ class FunctionsWrapper:
         ]
 
         self.function_mapping = {
-            "query_meta_data": self.function_query_meta_data,
+            "query_data_catalogue": self.function_query_data_catalogue,
             "fetch_data": self.function_fetch_data,
             "fetch_meta_data": self.function_fetch_meta_data,
             "fetch_bar_chart_data": self.function_fetch_bar_chart_data,
@@ -121,7 +121,7 @@ class FunctionsWrapper:
 
     #in a real system, this would be probably combine some embeddings search with a metadata service. 
     #we'll fake it for now. 
-    def function_query_meta_data(self, socketio, session_id, convo_history, user_input):
+    def function_query_data_catalogue(self, socketio, session_id, convo_history, user_input):
 
         
 
