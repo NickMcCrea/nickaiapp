@@ -121,7 +121,7 @@ class FunctionsWrapper:
 
     #in a real system, this would be probably combine some embeddings search with a metadata service. 
     #we'll fake it for now. 
-    def function_query_meta_data(self, convo_history, user_input):
+    def function_query_meta_data(self, socketio, session_id, convo_history, user_input):
 
         
 
@@ -175,15 +175,15 @@ class FunctionsWrapper:
         return data, metadata, commentary
 
     #fetch actual data. fires off an open ai call to infer data source if we didn't infer in the function call
-    def function_fetch_data(self, convo_history, user_input, data_source_name):
+    def function_fetch_data(self, socketio, session_id, convo_history, user_input, data_source_name):
         #if data source is not none
         commentary = ""
         data_source = self.data_service.get_data_source(data_source_name)
         if data_source is None:
-            data_source_name, data_source = self.open_ai_infer_data_source(convo_history, user_input)
+            data_source_name, data_source = self.open_ai_infer_data_source(socketio, session_id, convo_history, user_input)
            
            
-        response = self.open_ai_generate_sql(convo_history, user_input,data_source["meta"], self.table_sql_prompt(convo_history, user_input, data_source["meta"]))
+        response = self.open_ai_generate_sql(socketio, session_id, convo_history, user_input,data_source["meta"], self.table_sql_prompt(convo_history, user_input, data_source["meta"]))
 
         print(response)
         data = self.data_service.query(response["SQL"], data_source_name)
@@ -191,30 +191,30 @@ class FunctionsWrapper:
         commentary = f"DataQuery: Data source name: {data_source_name}, Query: {response['SQL']}"
         return data, metadata, commentary
     
-    def function_fetch_bar_chart_data(self, convo_history, user_input, data_source_name):
+    def function_fetch_bar_chart_data(self, socketio, session_id, convo_history, user_input, data_source_name):
         #if data source is not none
         commentary = ""
         data_source = self.data_service.get_data_source(data_source_name)
         if data_source is None:
-            data_source_name, data_source = self.open_ai_infer_data_source(convo_history, user_input)
+            data_source_name, data_source = self.open_ai_infer_data_source(socketio, session_id, convo_history, user_input)
            
            
-        response = self.open_ai_generate_sql(convo_history, user_input,data_source["meta"], self.bar_graph_sql_prompt(convo_history, user_input, data_source["meta"]))
+        response = self.open_ai_generate_sql(socketio, session_id, convo_history, user_input,data_source["meta"], self.bar_graph_sql_prompt(convo_history, user_input, data_source["meta"]))
         print(response)
         data = self.data_service.query(response["SQL"], data_source_name)
         metadata = None
         commentary = f"DataQuery: Data source name: {data_source_name}, Query: {response['SQL']}"
         return data, metadata, commentary
     
-    def function_fetch_line_chart_data(self, convo_history, user_input, data_source_name):
+    def function_fetch_line_chart_data(self, socketio, session_id, convo_history, user_input, data_source_name):
         #if data source is not none
         commentary = ""
         data_source = self.data_service.get_data_source(data_source_name)
         if data_source is None:
-            data_source_name, data_source = self.open_ai_infer_data_source(convo_history, user_input)
+            data_source_name, data_source = self.open_ai_infer_data_source(socketio, session_id, convo_history, user_input)
            
            
-        response = self.open_ai_generate_sql(convo_history, user_input,data_source["meta"], self.line_graph_sql_prompt(convo_history, user_input, data_source["meta"]))
+        response = self.open_ai_generate_sql(socketio, session_id, convo_history, user_input,data_source["meta"], self.line_graph_sql_prompt(convo_history, user_input, data_source["meta"]))
         
         print(response)
         data = self.data_service.query(response["SQL"], data_source_name)
@@ -223,10 +223,10 @@ class FunctionsWrapper:
         return data, metadata, commentary
     
 
-    def function_fetch_meta_data(self, convo_history, user_input, data_source_name=None, ai_commentary=None):
+    def function_fetch_meta_data(self, socketio, session_id, convo_history, user_input, data_source_name=None, ai_commentary=None):
         data_source = self.data_service.get_data_source(data_source_name)
         if data_source is None:
-            data_source_name, data_source = self.open_ai_infer_data_source(convo_history, user_input)
+            data_source_name, data_source = self.open_ai_infer_data_source(socketio, session_id, convo_history, user_input)
 
         data = None
         metadata = self.data_service.get_data_source(data_source_name)["meta"]
@@ -234,10 +234,11 @@ class FunctionsWrapper:
 
         return data, metadata, f"Here's the meta data for {data_source_name}"
 
-    def open_ai_infer_data_source(self, convo_history, user_input):
+    def open_ai_infer_data_source(self, socketio, session_id, convo_history, user_input):
         print(f"Data set unknown. Determining data source from user input '{user_input}'")
 
-        
+        progress_data = {'status': 'data_source_inference', 'message': 'Inferring Data Source'}
+        socketio.emit('progress', progress_data, room=session_id)
 
         prompt = f"""
                 Given the following data source schemas:
@@ -274,7 +275,10 @@ class FunctionsWrapper:
         
         return data_source_name, data_source
 
-    def open_ai_generate_sql(self, convo_history, user_input, data_source_meta, prompt):
+    def open_ai_generate_sql(self, socketio, session_id, convo_history, user_input, data_source_meta, prompt):
+
+        progress_data = {'status': 'data_query_generation', 'message': 'Generating Data Query'}
+        socketio.emit('progress', progress_data, room=session_id)
 
         #get the data source name
         data_source_name = data_source_meta["name"]
@@ -361,13 +365,13 @@ class FunctionsWrapper:
         return prompt 
   
   
-    def execute_function(self, convo_history, response_message, user_input, name, args):
+    def execute_function(self,socketio, session_id, convo_history, response_message, user_input, name, args):
  
         #print the function name and arguments
         print(f"Executing function '{name}' with arguments {args}")
         if name in self.function_mapping:
             func = self.function_mapping[name]
-            data, metadata, commentary = func(convo_history, user_input, **args)
+            data, metadata, commentary = func(socketio, session_id, convo_history, user_input, **args)
             return data, metadata, commentary
         else:
             raise ValueError(f"Function '{name}' not found.")

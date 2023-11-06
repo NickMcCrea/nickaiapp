@@ -36,8 +36,6 @@ def on_connect():
     session['session_id'] = session_id
     # Join the room with the session_id
     join_room(session_id)
-    #print
-    print("Room Joined: ", session_id)
     emit('connected', {'message': 'Connected to WebSocket', 'session_id': session_id})
 
 
@@ -75,10 +73,8 @@ def ask():
     session_id = session.get('session_id')
 
     # Emit an event to the client using the session_id as room
-    progress_data = {'status': 'in_progress', 'message': 'SOMETHING WORKS'}
-    #print our session ID
-    print("ROOM session_id: ", session_id)
-    socketio.emit('progress', progress_data, room=session_id)
+    #progress_data = {'status': 'thinking', 'message': 'Thinking...'}
+    #socketio.emit('progress', progress_data, room=session_id)
 
 
 
@@ -125,7 +121,7 @@ def ask():
         metadata = None
 
         if was_function_call:
-            data, metadata, commentary = get_function_response(conversation_history, response_message, user_input)
+            data, metadata, commentary = get_function_response(socketio, session_id, conversation_history, response_message, user_input)
   
         else:
             commentary = response['choices'][0]['message']['content']
@@ -175,12 +171,17 @@ def get_convo_history():
     print("session_id: ", session_id)
     return conversation_history
 
-def get_function_response(conversation_history, response_message, user_input):
+def get_function_response(socket_io, session_id,conversation_history, response_message, user_input):
     function_name = response_message["function_call"]["name"]
     #print("function_name: ", function_name)
     function_args = json.loads(response_message["function_call"]["arguments"])
     #print("function_args: ", function_args)
-    data,metadata,commentary = functions.execute_function(conversation_history, response_message, user_input, function_name, function_args)
+
+    #emit a progress event to the client
+    progress_data = {'status': function_name, 'message': 'function called'}
+    socketio.emit('progress', progress_data, room=session_id)
+
+    data,metadata,commentary = functions.execute_function(socketio, session_id, conversation_history, response_message, user_input, function_name, function_args)
     return data,metadata, commentary
 
 def calculate_costs(input_tokens, output_tokens):

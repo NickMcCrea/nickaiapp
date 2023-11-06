@@ -1,4 +1,5 @@
 import io, { Socket } from 'socket.io-client';
+import { EventEmitter } from 'events';
 
 // Define a type for the possible function call responses
 type FunctionCallResponse = {
@@ -21,11 +22,12 @@ type ProgressData = {
 };
 
 
-class ChatService {
+class ChatService  extends EventEmitter{
   private apiUrl: string;
   private socket!: Socket;
 
   constructor(apiUrl: string) {
+    super();
     this.apiUrl = apiUrl;
     this.connectSocket(); // Connect to the socket when the service is instantiated
   }
@@ -42,8 +44,8 @@ class ChatService {
 
   private handleProgress = (progressData: any) => {
     // Assuming progressData is an object with a 'status' and 'message' property
-    console.log('Task status:', progressData.status);
-    console.log('Task message:', progressData.message);
+    
+    this.emit('progress', progressData);
     // Handle progress data
   };
   // Method to send a message via WebSocket, if needed

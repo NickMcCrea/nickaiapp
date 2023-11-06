@@ -3,6 +3,16 @@ import { Stack, Typography, Box } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import ComputerIcon from '@mui/icons-material/Computer';
 import { styled, keyframes } from '@mui/system';
+import SettingsIcon from '@mui/icons-material/Settings'; // Import the gear icon
+
+
+// Add a styled component for messages from "Working"
+const WorkingMessage = styled(Typography)({
+  border: '1px solid #b0bec5', // light grey border
+  borderRadius: '4px', // rounded corners
+  backgroundColor: '#e3f2fd', // light blue background
+  padding: '2px', // padding inside the border
+});
 
 const FadeInBox = styled(Box)<{ index?: number }>(({ index = 0 }) => ({
   opacity: 0,
@@ -51,7 +61,7 @@ interface ChatHistoryProps {
 
 const ChatHistory: React.FC<ChatHistoryProps> = ({ messages }) => {
 
-  const lastMessageIsFromHuman = !!messages.length && messages[messages.length - 1].sender === 'You';
+  const lastMessageIsFromHuman = !!messages.length && messages[messages.length - 1].sender != 'Assistant';
 
   return (
     <Stack
@@ -73,14 +83,23 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({ messages }) => {
       {messages.map((message, index) => (
         <FadeInBox display="flex" alignItems="flex-start" key={index} index={index}>
           {message.sender === 'You' ? (
-            <PersonIcon fontSize="small" style={{ marginTop: '4px', marginRight: '8px', color: '#015C94' }} />
-          ) : (
-            <ComputerIcon fontSize="small" style={{ marginTop: '4px', marginRight: '8px', color: '#015C94' }} />
-          )}
+          <PersonIcon fontSize="small" style={{ marginTop: '4px', marginRight: '8px', color: '#015C94' }} />
+        ) : message.sender === 'Working' ? ( // Check if the sender is 'Working'
+          <SettingsIcon fontSize="small" style={{ marginTop: '4px', marginRight: '8px', color: '#015C94' }} /> // Use the gear icon for 'Working'
+        ) : (
+          <ComputerIcon fontSize="small" style={{ marginTop: '4px', marginRight: '8px', color: '#015C94' }} />
+        )}
+
+        {message.sender === 'Working' ? (
+          <WorkingMessage variant="body1" align='left'>
+            {message.content}
+          </WorkingMessage>
+        ) : (
           <Typography variant="body1" style={{ whiteSpace: 'pre-line' }} align='left'>
             {message.content}
           </Typography>
-        </FadeInBox>
+        )}
+      </FadeInBox>
       ))}
       {lastMessageIsFromHuman && <AnimatedComputerIcon fontSize="small" style={{  marginRight: '8px', color: '#015C94', alignSelf: 'flex-start' }} />}
     </Stack>

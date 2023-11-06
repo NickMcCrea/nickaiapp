@@ -13,6 +13,7 @@ import MetaDataDisplaySimple from './Components/MetaDataDisplay/MetaDataDisplayS
 import MetaDataCollectionDisplay from './Components/MetaDataDisplay/MetaDataDisplayCards';
 import SimpleBarChart, { BarChartData } from './Components/Charts/SimpleBarChart';
 import SimpleLineChart, {LineChartData} from './Components/Charts/SimpleLineChart';
+import ProgressData from './Services/ChatService';
 
 
 
@@ -38,11 +39,20 @@ function App() {
   // Instantiate ChatService once for the entire lifecycle of the component
   // Move the instantiation inside useEffect to prevent re-instantiation on every render
   const [chatService, setChatService] = useState<ChatService | null>(null);
-
+  const handleProgress = (progressData: ProgressData) => {
+    console.log('Received progress update:', progressData);
+    // You can now set this data to state, if needed, or perform other actions
+  };
   useEffect(() => {
     // Instantiate ChatService and store it in the state
     const service = new ChatService("http://localhost:5001");
     setChatService(service);
+
+    service.on('progress', (progressData: any) => 
+    {
+      //set a message using the progressData.status
+      setMessages(prevMessages => [...prevMessages, { type: 'text', content: progressData.status, timestamp: new Date(), sender: 'Working' }]);
+    });
 
     // Cleanup function to be called on component unmount
     return () => {
