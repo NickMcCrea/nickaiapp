@@ -9,6 +9,7 @@ import json
 from functions_wrapper import FunctionsWrapper
 import prompt_templates as prompt_templates
 import time
+from flask_socketio import SocketIO, emit, join_room, leave_room
 
 
 load_dotenv()
@@ -18,11 +19,26 @@ CORS(app, supports_credentials=True)
 openai.api_key = os.getenv("OPENAI_KEY")
 app.secret_key = os.getenv("SECRET_KEY")
 
+
+# After your Flask app initialization
+socketio = SocketIO(app, cors_allowed_origins="*")
+
 gpt_3 = "gpt-3.5-turbo-0613"
 gpt_4 = "gpt-4-0613"
 current_model = gpt_4
 user_sessions = {}
 
+@socketio.on('connect')
+def on_connect():
+    # Access the session_id from the Flask session
+    session_id = session.get('session_id', str(uuid4()))
+    # Save the session_id back to the session to persist it
+    session['session_id'] = session_id
+    # Join the room with the session_id
+    join_room(session_id)
+    #print
+    print("Connected to WebSocket")
+    emit('connected', {'message': 'Connected to WebSocket', 'session_id': session_id})
 
 
 
@@ -53,6 +69,14 @@ def ask():
 
     #get session ID from the session object
     conversation_history = get_convo_history()
+
+    
+    #I WANT TO EMIT SOMETHING HERE SHOW ME HOW
+    session_id = session.get('session_id')
+
+    # Emit an event to the client using the session_id as room
+    socketio.emit('progress', 'SOMETHING WORKS', room=session_id)
+
 
     user_input = request.json.get('input', '')
 

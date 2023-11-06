@@ -13,6 +13,7 @@ import MetaDataDisplaySimple from './Components/MetaDataDisplay/MetaDataDisplayS
 import MetaDataCollectionDisplay from './Components/MetaDataDisplay/MetaDataDisplayCards';
 import SimpleBarChart, { BarChartData } from './Components/Charts/SimpleBarChart';
 import SimpleLineChart, {LineChartData} from './Components/Charts/SimpleLineChart';
+import io, {Socket} from 'socket.io-client';
 
 
 
@@ -33,6 +34,36 @@ function App() {
 
   const [width, setWidth] = useState(600); // Default width for the resizable panel
   const [rightPanelWidth, setRightPanelWidth] = useState(window.innerWidth - width); // Width for the right panel
+
+// Declare the state to hold the socket instance
+const [socket, setSocket] = useState<Socket | null>(null);
+
+useEffect(() => {
+  // Initialize the socket connection
+  const newSocket = io('http://localhost:5001'); // Your server URL
+  setSocket(newSocket);
+
+  // Define the clean-up function
+  return () => {
+    newSocket.disconnect();
+  };
+}, []);
+
+useEffect(() => {
+  if (socket) {
+    // Handle the 'progress' event
+    socket.on('progress', (progressData) => {
+      console.log('Task progress:', progressData);
+      // Update the UI with the progress data
+    });
+
+    // Clean up this effect by removing the event listener when the socket or component is unmounted
+    return () => {
+      socket.off('progress');
+    };
+  }
+}, [socket]);
+
 
   // This effect adjusts the right panel width when the left panel resizes or the window resizes
   useEffect(() => {
