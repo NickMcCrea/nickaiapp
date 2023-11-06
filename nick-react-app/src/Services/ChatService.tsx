@@ -1,3 +1,5 @@
+import io, { Socket } from 'socket.io-client';
+
 // Define a type for the possible function call responses
 type FunctionCallResponse = {
   name: string;
@@ -13,14 +15,49 @@ type ChatServiceResponse = {
   function_call?: FunctionCallResponse; // This is the new property to handle function call responses
 };
 
+type ProgressData = {
+  status: string;
+  message: string;
+};
+
+
 class ChatService {
   private apiUrl: string;
+  private socket!: Socket;
 
   constructor(apiUrl: string) {
     this.apiUrl = apiUrl;
+    this.connectSocket(); // Connect to the socket when the service is instantiated
   }
 
-  // Update the method signature to return the extended type
+  private connectSocket = () => {
+    // Initialize the socket connection
+    this.socket = io(this.apiUrl);
+
+    // Listen for events
+    this.socket.on('progress', this.handleProgress);
+    
+    // Add other event listeners as needed
+  };
+
+  private handleProgress = (progressData: any) => {
+    // Assuming progressData is an object with a 'status' and 'message' property
+    console.log('Task status:', progressData.status);
+    console.log('Task message:', progressData.message);
+    // Handle progress data
+  };
+  // Method to send a message via WebSocket, if needed
+  sendSocketMessage = (event: string, message: any) => {
+    this.socket.emit(event, message);
+  };
+
+  // Call this method to clean up when the service is no longer needed
+  cleanup = () => {
+    this.socket.off('progress', this.handleProgress);
+    this.socket.disconnect();
+  };
+
+  // The sendMessage method remains the same as your existing implementation
   async sendMessage(message: string, model: string): Promise<ChatServiceResponse> {
     try {
       const response = await fetch(`${this.apiUrl}/ask`, {
@@ -38,13 +75,12 @@ class ChatService {
         throw new Error(data.error || 'Something went wrong');
       }
 
-      // Construct the response with the new function_call property
       const chatResponse: ChatServiceResponse = {
         output: data.output,
         estimated_cost: data.estimated_cost,
         data: data.data,
         metaData: data.metadata,
-        function_call: data.function_call // Handle function call responses
+        function_call: data.function_call,
       };
 
       return chatResponse;
@@ -52,6 +88,8 @@ class ChatService {
       throw error;
     }
   }
+
+  // Add any additional methods as necessary
 }
 
 export default ChatService;

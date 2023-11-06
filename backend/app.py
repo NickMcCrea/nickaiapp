@@ -37,7 +37,7 @@ def on_connect():
     # Join the room with the session_id
     join_room(session_id)
     #print
-    print("Connected to WebSocket")
+    print("Room Joined: ", session_id)
     emit('connected', {'message': 'Connected to WebSocket', 'session_id': session_id})
 
 
@@ -75,7 +75,11 @@ def ask():
     session_id = session.get('session_id')
 
     # Emit an event to the client using the session_id as room
-    socketio.emit('progress', 'SOMETHING WORKS', room=session_id)
+    progress_data = {'status': 'in_progress', 'message': 'SOMETHING WORKS'}
+    #print our session ID
+    print("ROOM session_id: ", session_id)
+    socketio.emit('progress', progress_data, room=session_id)
+
 
 
     user_input = request.json.get('input', '')

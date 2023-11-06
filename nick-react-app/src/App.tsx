@@ -13,7 +13,7 @@ import MetaDataDisplaySimple from './Components/MetaDataDisplay/MetaDataDisplayS
 import MetaDataCollectionDisplay from './Components/MetaDataDisplay/MetaDataDisplayCards';
 import SimpleBarChart, { BarChartData } from './Components/Charts/SimpleBarChart';
 import SimpleLineChart, {LineChartData} from './Components/Charts/SimpleLineChart';
-import io, {Socket} from 'socket.io-client';
+
 
 
 
@@ -35,34 +35,20 @@ function App() {
   const [width, setWidth] = useState(600); // Default width for the resizable panel
   const [rightPanelWidth, setRightPanelWidth] = useState(window.innerWidth - width); // Width for the right panel
 
-// Declare the state to hold the socket instance
-const [socket, setSocket] = useState<Socket | null>(null);
+  // Instantiate ChatService once for the entire lifecycle of the component
+  // Move the instantiation inside useEffect to prevent re-instantiation on every render
+  const [chatService, setChatService] = useState<ChatService | null>(null);
 
-useEffect(() => {
-  // Initialize the socket connection
-  const newSocket = io('http://localhost:5001'); // Your server URL
-  setSocket(newSocket);
+  useEffect(() => {
+    // Instantiate ChatService and store it in the state
+    const service = new ChatService("http://localhost:5001");
+    setChatService(service);
 
-  // Define the clean-up function
-  return () => {
-    newSocket.disconnect();
-  };
-}, []);
-
-useEffect(() => {
-  if (socket) {
-    // Handle the 'progress' event
-    socket.on('progress', (progressData) => {
-      console.log('Task progress:', progressData);
-      // Update the UI with the progress data
-    });
-
-    // Clean up this effect by removing the event listener when the socket or component is unmounted
+    // Cleanup function to be called on component unmount
     return () => {
-      socket.off('progress');
+      service.cleanup(); // Cleanup the chat service when the component unmounts
     };
-  }
-}, [socket]);
+  }, []); // Empty dependency array to ensure this effect runs once on mount and once on unmount
 
 
   // This effect adjusts the right panel width when the left panel resizes or the window resizes
@@ -88,9 +74,11 @@ useEffect(() => {
   };
 
   const handleSendMessage = async (content: string) => {
-    const chatService = new ChatService("http://localhost:5001");
+    
 
-    setMessages([...messages, { type: 'text', content, timestamp: new Date(), sender: 'You' }]);
+    if (chatService) {
+      setMessages([...messages, { type: 'text', content, timestamp: new Date(), sender: 'You' }]);
+
 
     try {
       const reply = await chatService.sendMessage(content, selectedModel);
@@ -167,6 +155,7 @@ useEffect(() => {
     } catch (error) {
       console.error('Failed to send message:', error);
     }
+  }
   };
 
 
