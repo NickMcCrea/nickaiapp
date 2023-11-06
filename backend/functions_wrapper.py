@@ -281,7 +281,11 @@ class FunctionsWrapper:
 
         prompt_additions = f"""
         The user may use shorthand for values (e.g. IS for Insitutional Securities), make sure to refer to 
-        the data source schema for the full list of values.
+        the data source schema for the full list of values. Always use the proper values, i.e. Institution Securities, not IS.
+        Permitted values for each column are as follows:
+        category - 'Revenues', 'Underwriting', 'Non Interest Expenses', 'Provision for Credit Losses'
+        segment - 'Institutional Securities', 'Wealth Management', 'Investment Management'
+        quarter - the format is YYYYQ1, YYYYQ2, YYYYQ3, YYYYQ4 etc. 
         """
      
         #if data source name is "financial_results", add on the prompt additions

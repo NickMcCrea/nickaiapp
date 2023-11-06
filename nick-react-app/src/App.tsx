@@ -156,7 +156,7 @@ function App() {
 
         <div style={{ flex: 1, display: 'flex', overflow: 'auto', alignItems: 'center', justifyContent: 'center' }}>
           {currentFunctionCall === "fetch_data" && tableData && tableData.length > 0 && (
-            <div style={{ width: '100%', height: '100%', overflow: 'auto' }}>
+            <div style={{ width: '90%', height: '80%', overflow: 'auto' }}>
               <BasicTable data={tableData} />
             </div>
           )}
