@@ -318,7 +318,7 @@ class FunctionsWrapper:
         return json.loads(output) 
 
     def add_custom_prompt_elements(self, prompt, data_source_name):
-        prompt_additions = f"""
+        finance_result_prompt_customisations = f"""
         The user may use shorthand for values (e.g. IS for Insitutional Securities), make sure to refer to 
         the data source schema for the full list of values. Always use the proper values, i.e. Institution Securities, not IS.
         Permitted values for each column are as follows:
@@ -330,8 +330,15 @@ class FunctionsWrapper:
         #if data source name is "financial_results", add on the prompt additions
         if data_source_name == "financial_results":
             print("Financial results data source detected. Adding prompt additions.")
-            prompt += prompt_additions
+            prompt += finance_result_prompt_customisations
         
+
+        if data_source_name == "restaurant_info":
+            print("Restaurant info data source detected. Adding prompt additions.")
+            prompt += """
+            If the user asks about top restaurants, make sure to exclude restaurants with a rating of New.
+            """
+
         return prompt
 
     def table_sql_prompt(self, convo_history, user_input, data_source_meta):
