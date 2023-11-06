@@ -7,6 +7,8 @@ class ConversationHistory:
         self.messages.append({"role": "system", "content": "You are helping the user explore data sets, and answer questions about them."})
         self.messages.append({"role": "system", "content": "You can answer questions about what data is available, and also help the user explore the data."})
         self.messages.append({"role": "system", "content": "If the user tries to talk about other topics, gently explain what your purpose is."})
+
+        self.last_executed_query = ""
         
         self.total_estimated_cost = 0
 
@@ -25,4 +27,10 @@ class ConversationHistory:
 
     def get_total_estimated_cost(self):
         return self.total_estimated_cost
+    
+    def set_last_executed_query(self, query):
+        self.last_executed_query = query
+
+    def get_last_executed_query(self):
+        return self.last_executed_query
     

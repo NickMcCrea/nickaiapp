@@ -26,7 +26,7 @@ function App() {
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [estimatedCost, setEstimatedCost] = useState<string>("");
-  const [selectedModel, setSelectedModel] = useState('GPT3.5');
+  const [selectedModel, setSelectedModel] = useState('GPT4');
   const [tableData, setTableData] = useState<any[]>([]);
   const [metaData, setMetaData] = useState<any[]>([]);
   const [barChartData, setBarChartData] = useState<BarChartData[]>([]);
@@ -128,6 +128,17 @@ function App() {
             setCurrentFunctionCall("fetch_data");
 
           }
+
+          //if the function call is clear data, clear the data
+          if (reply.function_call.name === "clear") {
+            setTableData([]);
+            setMetaData([]);
+            setBarChartData([]);
+            setLineChartData([]);
+            //clear the messages
+            setMessages([]);
+          }
+
           if (reply.function_call && reply.function_call.name === "fetch_bar_chart_data") {
             // Assuming the data is in the format required by the chart
             if (Array.isArray(reply.data)) {

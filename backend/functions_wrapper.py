@@ -4,6 +4,7 @@ import prompt_templates
 import json
 from in_memory_db import InMemoryDB
 from MetaDataService import MetaDataService
+from ConversationHistory import ConversationHistory
 
 #constructor for a functions class
 class FunctionsWrapper:
@@ -22,6 +23,15 @@ class FunctionsWrapper:
          "name": "query_data_catalogue",
             "description": f"""Use this function to answer user questions about what data sources we have available.
                             For example, the user may ask about data sources, or ask about a specific data source, or attribute. 
+                            """,
+          "parameters": {
+                "type": "object",
+                "properties": {}
+            }
+        },
+        {
+         "name": "clear",
+            "description": f"""Use this function to clear the conversation history, and start a new conversation.
                             """,
           "parameters": {
                 "type": "object",
@@ -115,9 +125,15 @@ class FunctionsWrapper:
             "fetch_data": self.function_fetch_data,
             "fetch_meta_data": self.function_fetch_meta_data,
             "fetch_bar_chart_data": self.function_fetch_bar_chart_data,
-            "fetch_line_chart_data": self.function_fetch_line_chart_data    
+            "fetch_line_chart_data": self.function_fetch_line_chart_data,
+            "clear": self.function_clear  
             # Add more function mappings here...
         }
+
+    def function_clear(self, socketio, session_id, convo_history, user_input):
+        convo_history = ConversationHistory()
+        return None, None, "Conversation history cleared."
+
 
     #in a real system, this would be probably combine some embeddings search with a metadata service. 
     #we'll fake it for now. 
@@ -187,6 +203,7 @@ class FunctionsWrapper:
 
         print(response)
         data = self.data_service.query(response["SQL"], data_source_name)
+        convo_history.set_last_executed_query(response["SQL"])
         metadata = None
         commentary = f"DataQuery: Data source name: {data_source_name}, Query: {response['SQL']}"
         return data, metadata, commentary
@@ -200,6 +217,7 @@ class FunctionsWrapper:
            
            
         response = self.open_ai_generate_sql(socketio, session_id, convo_history, user_input,data_source["meta"], self.bar_graph_sql_prompt(convo_history, user_input, data_source["meta"]))
+        convo_history.set_last_executed_query(response["SQL"])
         print(response)
         data = self.data_service.query(response["SQL"], data_source_name)
         metadata = None
@@ -215,7 +233,7 @@ class FunctionsWrapper:
            
            
         response = self.open_ai_generate_sql(socketio, session_id, convo_history, user_input,data_source["meta"], self.line_graph_sql_prompt(convo_history, user_input, data_source["meta"]))
-        
+        convo_history.set_last_executed_query(response["SQL"])
         print(response)
         data = self.data_service.query(response["SQL"], data_source_name)
         metadata = None
@@ -283,6 +301,23 @@ class FunctionsWrapper:
         #get the data source name
         data_source_name = data_source_meta["name"]
 
+        prompt = self.add_custom_prompt_elements(prompt, data_source_name)
+
+        #print the user input we're using to generate a response
+        print(f"User input: {user_input}")
+        messages = [{"role": "system", "content": "You are a helpful assistant."}]
+        messages.append({"role": "system", "content": "You are helping the user explore data sets, and generate valid SQL queries to questions about them."}) 
+        messages.append({"role": "user", "content": prompt})
+        response = openai.ChatCompletion.create(
+            model=self.current_model,
+            messages=messages
+        )
+        output = response['choices'][0]['message']['content']
+
+
+        return json.loads(output) 
+
+    def add_custom_prompt_elements(self, prompt, data_source_name):
         prompt_additions = f"""
         The user may use shorthand for values (e.g. IS for Insitutional Securities), make sure to refer to 
         the data source schema for the full list of values. Always use the proper values, i.e. Institution Securities, not IS.
@@ -296,18 +331,8 @@ class FunctionsWrapper:
         if data_source_name == "financial_results":
             print("Financial results data source detected. Adding prompt additions.")
             prompt += prompt_additions
-
-        #print the user input we're using to generate a response
-        print(f"User input: {user_input}")
-        messages = [{"role": "system", "content": "You are a helpful assistant."}]
-        messages.append({"role": "system", "content": "You are helping the user explore data sets, and generate valid SQL queries to questions about them."}) 
-        messages.append({"role": "user", "content": prompt})
-        response = openai.ChatCompletion.create(
-            model=self.current_model,
-            messages=messages
-        )
-        output = response['choices'][0]['message']['content']
-        return json.loads(output) 
+        
+        return prompt
 
     def table_sql_prompt(self, convo_history, user_input, data_source_meta):
         prompt = f"""
@@ -317,6 +342,8 @@ class FunctionsWrapper:
                 {convo_history.messages}
                 please generate JSON to help generate data, to the following questions succinctly:
                 {user_input}
+                if needed, here's the most recent SQL query generated, if it helps to give context:
+                {convo_history.get_last_executed_query()}
                 Return the answer in the following JSON format:
                 E.g.
                 {{"SQL": "select * from data_source_name where ..."}}
@@ -333,6 +360,8 @@ class FunctionsWrapper:
                 {convo_history.messages}
                 please generate JSON to help generate data, to the following questions succinctly:
                 {user_input}
+                 if needed, here's the most recent SQL query generated, if it helps to give context:
+                {convo_history.get_last_executed_query()}
                 Return the answer in the following JSON format:
                 E.g.
                 {{"SQL": "select * from data_source_name where ..."}}
@@ -352,6 +381,8 @@ class FunctionsWrapper:
                 {convo_history.messages}
                 please generate JSON to help generate data, to the following questions succinctly:
                 {user_input}
+                if needed, here's the most recent SQL query generated, if it helps to give context:
+                {convo_history.get_last_executed_query()}
                 Return the answer in the following JSON format:
                 E.g.
                 {{"SQL": "select * from data_source_name where ..."}}

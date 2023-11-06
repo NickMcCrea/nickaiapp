@@ -11,6 +11,7 @@ import { styled } from '@mui/system';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Box from '@mui/material/Box';
+import logo from '../MS_Standard_Logo_2022_White.png'; // Import the logo
 
 interface HeaderProps {
   estimatedCost?: string;
@@ -51,12 +52,20 @@ const EstimatedCost = styled(Typography)({
 });
 
 
-
+const Logo = styled('div')({
+  width: '170px', // Set the width of your logo
+  height: '26px', // Set the height of your logo
+  backgroundImage: `url(${logo})`,
+  backgroundSize: 'contain',
+  backgroundRepeat: 'no-repeat',
+  backgroundPosition: 'center',
+  marginRight: '2rem',
+});
 
 const Header: React.FC<HeaderProps> = ({ estimatedCost, selectedModel, onModelChange }) => {
  
   const [state, setState] = React.useState({
-    checkedGPT: true,
+    checkedGPT: false,
   });
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,12 +77,12 @@ const Header: React.FC<HeaderProps> = ({ estimatedCost, selectedModel, onModelCh
   return (
     <StyledAppBar position="static">
       <StyledToolbar>
-        <StyledIconButton edge="start">
+     {/*    <StyledIconButton edge="start">
           <DataThresholdingIcon fontSize="large" />
-        </StyledIconButton>
-        <Title variant="h5">
-          <i>Talk To Your Data</i>
-        
+        </StyledIconButton> */}
+        <Logo /> {/* Use your Logo component */}
+        <Title variant="body1">
+          <i>Talk To Your Finance Data</i>
         </Title>
 
          {/* Added Switch */}
@@ -93,18 +102,21 @@ const Header: React.FC<HeaderProps> = ({ estimatedCost, selectedModel, onModelCh
                 '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
                   backgroundColor: '#335574', // Morgan Stanley green when checked
                 },
+             
               }}
             />
+            
           }
+          sx={{position: 'absolute', right: '2rem', top: '50%', transform: 'translateY(-50%)'}}
           label={state.checkedGPT ? 'GPT3.5' : 'GPT4'}
         />
 
 
-        {estimatedCost && (
-          <EstimatedCost variant="body2">
+     {/*    {estimatedCost && (
+          <EstimatedCost variant="body1">
             Estimated Cost: {estimatedCost}
           </EstimatedCost>
-        )}
+        )} */}
   
       </StyledToolbar>
     </StyledAppBar>

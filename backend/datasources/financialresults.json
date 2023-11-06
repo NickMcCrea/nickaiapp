@@ -4,17 +4,17 @@
     "fields": [
         {
             "fieldName": "category",
-            "fieldDescription": "General category of the data. Can be Revenues, Non Interest Expenses",
+            "fieldDescription": "General category of the data. E.g. Revenues, Non Interest Expenses",
             "fieldType": "STRING"
         },
         {
             "fieldName": "segment",
-            "fieldDescription": "Segment of the business. E.g Institutional Securities, Wealth Management or Investment Management. User may refer to them via shorthand (e.g. IS, WM or IM)",
+            "fieldDescription": "Segment of the business.",
             "fieldType": "STRING"
         },
         {
             "fieldName": "subsegment1",
-            "fieldDescription": "Subsegment level 1. Subdivision of the segment. E.g. Investment Banking, Sales & Trading or Asset Management",
+            "fieldDescription": "Subsegment level 1",
             "fieldType": "STRING"
         },
         {
@@ -24,12 +24,12 @@
         },
         {
             "fieldName": "quarter",
-            "fieldDescription": "Fiscal quarter of the data entry",
+            "fieldDescription": "Fiscal quarter",
             "fieldType": "STRING"
         },
         {
             "fieldName": "balance",
-            "fieldDescription": "Numerical balance value for the entry",
+            "fieldDescription": "Dollar balance value in $millions",
             "fieldType": "FLOAT"
         }
     ]
