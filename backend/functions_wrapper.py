@@ -215,6 +215,7 @@ class FunctionsWrapper:
            
            
         response = self.open_ai_generate_sql(convo_history, user_input,data_source["meta"], self.line_graph_sql_prompt(convo_history, user_input, data_source["meta"]))
+        
         print(response)
         data = self.data_service.query(response["SQL"], data_source_name)
         metadata = None
@@ -275,7 +276,19 @@ class FunctionsWrapper:
 
     def open_ai_generate_sql(self, convo_history, user_input, data_source_meta, prompt):
 
-       
+        #get the data source name
+        data_source_name = data_source_meta["name"]
+
+        prompt_additions = f"""
+        The user may use shorthand for values (e.g. IS for Insitutional Securities), make sure to refer to 
+        the data source schema for the full list of values.
+        """
+     
+        #if data source name is "financial_results", add on the prompt additions
+        if data_source_name == "financial_results":
+            print("Financial results data source detected. Adding prompt additions.")
+            prompt += prompt_additions
+
         #print the user input we're using to generate a response
         print(f"User input: {user_input}")
         messages = [{"role": "system", "content": "You are a helpful assistant."}]

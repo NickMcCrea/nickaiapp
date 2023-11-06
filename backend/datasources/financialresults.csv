@@ -1,0 +1,59 @@
+category,segment,subsegment1,subsegment2,quarter,balance
+Revenues,Institutional Securities,Investment Banking,Advisory,2023Q3,449
+Revenues,Institutional Securities,Investment Banking,Equity,2023Q3,237
+Revenues,Institutional Securities,Investment Banking,Fixed Income,2023Q3,252
+Underwriting,Institutional Securities,Investment Banking,,2023Q3,489
+Revenues,Institutional Securities,Sales and Trading,Equities,2023Q3,2507
+Revenues,Institutional Securities,Sales and Trading,Fixed Income,2023Q3,1947
+Revenues,Institutional Securities,Sales and Trading,Other,2023Q3,277
+Provision for Credit Losses,Institutional Securities,Provision for Credit Losses,,2023Q3,93
+Non Interest Expenses,Institutional Securities,Compensation and Benefits,,2023Q3,2057
+Non Interest Expenses,Institutional Securities,Non-Compensation Expenses,,2023Q3,2320
+Revenues,Institutional Securities,Investment Banking,Advisory,2023Q2,455
+Revenues,Institutional Securities,Investment Banking,Equity,2023Q2,225
+Revenues,Institutional Securities,Investment Banking,Fixed Income,2023Q2,395
+Underwriting,Institutional Securities,Investment Banking,,2023Q2,620
+Revenues,Institutional Securities,Sales and Trading,Equities,2023Q2,2548
+Revenues,Institutional Securities,Sales and Trading,Fixed Income,2023Q2,1716
+Revenues,Institutional Securities,Sales and Trading,Other,2023Q2,315
+Provision for Credit Losses,Institutional Securities,Provision for Credit Losses,,2023Q2,97
+Non Interest Expenses,Institutional Securities,Compensation and Benefits,,2023Q2,2215
+Non Interest Expenses,Institutional Securities,Non-Compensation Expenses,,2023Q2,2320
+Revenues,Institutional Securities,Investment Banking,Advisory,2023Q1,638
+Revenues,Institutional Securities,Investment Banking,Equity,2023Q1,202
+Revenues,Institutional Securities,Investment Banking,Fixed Income,2023Q1,407
+Underwriting,Institutional Securities,Investment Banking,,2023Q1,609
+Revenues,Institutional Securities,Sales and Trading,Equities,2023Q1,2729
+Revenues,Institutional Securities,Sales and Trading,Fixed Income,2023Q1,2576
+Revenues,Institutional Securities,Sales and Trading,Other,2023Q1,245
+Provision for Credit Losses,Institutional Securities,,,2023Q1,189
+Non Interest Expenses,Institutional Securities,Compensation and Benefits,,2023Q1,2365
+Non Interest Expenses,Institutional Securities,Non-Compensation Expenses,,2023Q1,2351
+Revenues,Wealth Management,Asset Management,,2023Q3,3629
+Revenues,Wealth Management,Transactional,,2023Q3,678
+Revenues,Wealth Management,Net Interest Income,,2023Q3,1952
+Revenues,Wealth Management,Other,,2023Q3,145
+Provision for Credit Losses,Wealth Management,,,2023Q3,41
+Non Interest Expenses,Wealth Management,Compensation and Benefits,,2023Q3,3352
+Non Interest Expenses,Wealth Management,Non-Compensation Expenses,,2023Q3,3352
+Revenues,Wealth Management,Asset Management,,2023Q2,3452
+Revenues,Wealth Management,Transactional,,2023Q2,869
+Revenues,Wealth Management,Net Interest Income,,2023Q2,2156
+Revenues,Wealth Management,Other,,2023Q2,183
+Provision for Credit Losses,Wealth Management,,,2023Q2,64
+Non Interest Expenses,Wealth Management,Compensation and Benefits,,2023Q2,3503
+Non Interest Expenses,Wealth Management,Non-Compensation Expenses,,2023Q2,1402
+Revenues,Wealth Management,Asset Management,,2023Q1,3382
+Revenues,Wealth Management,Transactional,,2023Q1,921
+Revenues,Wealth Management,Net Interest Income,,2023Q1,2158
+Revenues,Wealth Management,Other,,2023Q1,98
+Provision for Credit Losses,Wealth Management,,,2023Q1,45
+Non Interest Expenses,Wealth Management,Compensation and Benefits,,2023Q1,3477
+Non Interest Expenses,Wealth Management,Non-Compensation Expenses,,2023Q1,1325
+
+
+
+
+
+
+

@@ -13,6 +13,7 @@ class MetaDataService:
         trial_balance_meta = self.load_json("datasources/nicktrialbalance.json")
         counterparties_meta = self.load_json("datasources/counterparties.json")
         products_meta = self.load_json("datasources/products.json")
+        financial_results_meta = self.load_json("datasources/financialresults.json")
         
         # Create in-memory databases
         top_song_data_db = InMemoryDB()
@@ -29,6 +30,9 @@ class MetaDataService:
 
         products_data_db = InMemoryDB()
         products_data_db.load_csv_to_db('datasources/products.csv', 'product_data')
+
+        financial_results_data_db = InMemoryDB()
+        financial_results_data_db.load_csv_to_db('datasources/financialresults.csv', 'financial_results')
 
         # Add the metadata and databases to the data_sources dictionary
         self.data_sources[top_songs_meta['name']] = {
@@ -54,6 +58,11 @@ class MetaDataService:
         self.data_sources[products_meta['name']] = {
             'meta': products_meta,
             'db': products_data_db
+        }
+
+        self.data_sources[financial_results_meta['name']] = {
+            'meta': financial_results_meta,
+            'db': financial_results_data_db
         }
 
     def load_json(self, file_path):

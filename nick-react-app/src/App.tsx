@@ -10,6 +10,7 @@ import "react-resizable/css/styles.css";
 import './App.css';
 import BasicTable from './Components/Charts/BasicTable';
 import MetaDataDisplaySimple from './Components/MetaDataDisplay/MetaDataDisplaySimple';
+import MetaDataCollectionDisplay from './Components/MetaDataDisplay/MetaDataDisplayCards';
 import SimpleBarChart, { BarChartData } from './Components/Charts/SimpleBarChart';
 import SimpleLineChart, {LineChartData} from './Components/Charts/SimpleLineChart';
 
@@ -141,7 +142,7 @@ function App() {
   return (
     <div className="App">
       <Header estimatedCost={estimatedCost} selectedModel={selectedModel} onModelChange={handleModelChange} />
-      <div style={{ display: 'flex', height: '1000px' }}> {/* Flex container */}
+      <div style={{ display: 'flex', height: '800px' }}> {/* Flex container */}
         <ResizableBox
           width={width}
           height={300}
@@ -161,19 +162,20 @@ function App() {
           )}
 
           {currentFunctionCall === "fetch_meta_data" && dataSets && dataSets.length > 0 && (
-            <MetaDataDisplaySimple dataSets={dataSets} />
+            <MetaDataCollectionDisplay dataSets={dataSets} />
           )}
 
           {currentFunctionCall === "fetch_bar_chart_data" && barChartData.length > 0 && (
-          
+          <div style={{ width: '80%', height: '70%'}}>
               <SimpleBarChart data={barChartData} />
+              </div>
        
           )}
 
           {currentFunctionCall === "fetch_line_chart_data" && lineChartData.length > 0 && (
-          
+           <div style={{ width: '80%', height: '70%'}}>
               <SimpleLineChart data={lineChartData} />
-
+              </div>
           )}
 
 

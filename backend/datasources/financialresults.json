@@ -1,0 +1,36 @@
+{
+    "name": "financial_results",
+    "description": "Information about financial results such as revenues and expenses across different segments and quarters",
+    "fields": [
+        {
+            "fieldName": "category",
+            "fieldDescription": "General category of the data. Can be Revenues, Non Interest Expenses",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "segment",
+            "fieldDescription": "Segment of the business. E.g Institutional Securities, Wealth Management or Investment Management. User may refer to them via shorthand (e.g. IS, WM or IM)",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "subsegment1",
+            "fieldDescription": "Subsegment level 1. Subdivision of the segment. E.g. Investment Banking, Sales & Trading or Asset Management",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "subsegment2",
+            "fieldDescription": "Subsegment level 2",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "quarter",
+            "fieldDescription": "Fiscal quarter of the data entry",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "balance",
+            "fieldDescription": "Numerical balance value for the entry",
+            "fieldType": "FLOAT"
+        }
+    ]
+}
