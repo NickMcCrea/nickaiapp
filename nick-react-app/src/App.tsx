@@ -205,7 +205,7 @@ function App() {
   return (
     <div className="App">
       <Header estimatedCost={estimatedCost} selectedModel={selectedModel} onModelChange={handleModelChange} />
-      <div style={{ display: 'flex', height: '800px' }}> {/* Flex container */}
+      <div style={{ display: 'flex', height: '1000px' }}> {/* Flex container */}
         <ResizableBox
           width={width}
           height={300}
