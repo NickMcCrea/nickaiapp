@@ -159,6 +159,10 @@ class FunctionsWrapper:
 
         #if we have both the data source name and the query, fetch the data
         if data_source_name is not None and query is not None:
+
+            #add a limit to the query
+            query += " LIMIT 100"
+
             data = self.data_service.query(query, data_source_name)
             metadata = None
             commentary = ""
@@ -177,6 +181,7 @@ class FunctionsWrapper:
                     and the user's input:
                     {user_input}
                     Please very briefly comment on the data, given the context. Provide any analysis you think is relevant. Keep it to a couple hnundred words or less.
+                    When commenting on the data, stick to insights gleaned from the data, rather than the structure or schema of the data itself.
                     """
             messages = [{"role": "system", "content": "You are a helpful assistant."}]
             messages.append({"role": "system", "content": "You are helping the user explore data sets, and answer questions about them."}) 
