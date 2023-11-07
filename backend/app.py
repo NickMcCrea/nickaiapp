@@ -141,12 +141,12 @@ def ask():
         if chat_output is None:
            chat_output = ""
 
-        conversation_history.add_assistant_message(chat_output)  # Add assistant output to history
+        conversation_history.add_assistant_message(commentary)  # Add assistant output to history
 
 
         #if data and metadata are None,
         #set the chat output to "Sorry, I didn't understand - can you rephrase that?"
-        if data is None and metadata is None and commentary is None:
+        if data is None and metadata is None and commentary is '':
             commentary = "Sorry, I didn't understand - can you rephrase that?"
 
         input_tokens, output_tokens = calculate_tokens(response)
