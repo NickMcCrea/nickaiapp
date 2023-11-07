@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Stack, Typography, Box } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import ComputerIcon from '@mui/icons-material/Computer';
@@ -61,6 +61,17 @@ interface ChatHistoryProps {
 
 const ChatHistory: React.FC<ChatHistoryProps> = ({ messages }) => {
 
+
+  const endOfMessagesRef = useRef<null | HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    endOfMessagesRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
   const lastMessageIsFromHuman = !!messages.length && messages[messages.length - 1].sender != 'Assistant';
 
   return (
@@ -101,6 +112,7 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({ messages }) => {
         )}
       </FadeInBox>
       ))}
+       <div ref={endOfMessagesRef} />
       {lastMessageIsFromHuman && <AnimatedComputerIcon fontSize="small" style={{  marginRight: '8px', color: '#015C94', alignSelf: 'flex-start' }} />}
     </Stack>
   );

@@ -31,6 +31,29 @@ class FunctionsWrapper:
             }
         },
         {
+         "name": "comment_on_data",
+            "description": f"""Use this function to comment on specific data.
+                            For example, the user may ask for analysis or commentary on a data set that's just been returned.
+                            """,
+          "parameters": {
+                "type": "object",
+                "properties": 
+                {
+                    "data_source_name": {
+                        "type": "string",
+                        "description": "The name of the data source to fetch from"
+                           
+                    },
+                    "query": {
+                        "type": "string",
+                        "description": "The query that was used to fetch the data"
+                           
+                    }
+                    
+            }
+        }
+        },
+        {
          "name": "clear",
             "description": f"""Use this function to clear the conversation history, and start a new conversation.
                             """,
@@ -127,9 +150,47 @@ class FunctionsWrapper:
             "fetch_meta_data": self.function_fetch_meta_data,
             "fetch_bar_chart_data": self.function_fetch_bar_chart_data,
             "fetch_line_chart_data": self.function_fetch_line_chart_data,
+            "comment_on_data": self.function_comment_on_data,
             "clear": self.function_clear  
             # Add more function mappings here...
         }
+
+    def function_comment_on_data(self, socketio, session_id, convo_history, user_input, data_source_name, query):
+
+        #if we have both the data source name and the query, fetch the data
+        if data_source_name is not None and query is not None:
+            data = self.data_service.query(query, data_source_name)
+            metadata = None
+            commentary = ""
+
+            #emit that we're analysing the data
+            progress_data = {'status': 'analysing_data', 'message': 'Analysing Data'}
+            socketio.emit('progress', progress_data, room=session_id)
+
+            #get the data set in a string format
+            data_str = str(data)
+            prompt = f"""
+                    Given the following data:
+                    {data_str}
+                    And the previous conversation history:
+                    {convo_history.messages}
+                    and the user's input:
+                    {user_input}
+                    Please very briefly comment on the data, given the context. Provide any analysis you think is relevant. Keep it to a couple hnundred words or less.
+                    """
+            messages = [{"role": "system", "content": "You are a helpful assistant."}]
+            messages.append({"role": "system", "content": "You are helping the user explore data sets, and answer questions about them."}) 
+            messages.append({"role": "user", "content": prompt})
+            response = openai.ChatCompletion.create(
+                model=self.current_model,
+                messages=messages
+            )
+            commentary = response['choices'][0]['message']['content']
+            data = None
+            metadata= None
+
+            return data, metadata, commentary
+
 
     def function_clear(self, socketio, session_id, convo_history, user_input):
         convo_history = ConversationHistory()
@@ -140,7 +201,7 @@ class FunctionsWrapper:
     #we'll fake it for now. 
     def function_query_data_catalogue(self, socketio, session_id, convo_history, user_input):
 
-        
+
 
         prompt = f"""
                 Given the following data source schemas:
@@ -314,7 +375,8 @@ class FunctionsWrapper:
         )
         output = response['choices'][0]['message']['content']
 
-        #if the string has "```json" at the start, remove the "json" characters only
+        #GPT-4-Turbo generally tags JSON output with "json" at the start of the string.
+        #Remove the json tagging if it exists.
         if output.startswith("```json"):
             output = output.replace("```json", "")
             output = output.replace("```", "")
