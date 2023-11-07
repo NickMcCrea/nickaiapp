@@ -174,7 +174,7 @@ class FunctionsWrapper:
                 e.g.
                 {{"data_source_names": ["datasource1"], "commentary": "Here's the data you're looking for.", "sql_query": "SELECT * FROM datasource1 WHERE ..."}}
 
-                Return only JSON. No other commentary outside of the JSON.
+                Return only JSON. No other commentary outside of the JSON. Don't prefix the JSON object with "json" or any other text.
                 """
 
         #print the user input we're using to generate a response
@@ -269,9 +269,8 @@ class FunctionsWrapper:
                 Here's the conversation history so far, to help determine:
                 {convo_history.messages}
 
-                Return the answer in the following JSON format:
+                Return the answer in the following JSON format. Return only JSON. No other commentary outside of the JSON. Don't prefix the JSON object with "json" or any other text.
                 {{"data_source": "data_source_name"}}
-                Return only JSON. No other commentary outside of the JSON.
                 """
 
         #print the user input we're using to generate a response
@@ -315,6 +314,12 @@ class FunctionsWrapper:
         )
         output = response['choices'][0]['message']['content']
 
+        #if the string has "```json" at the start, remove the "json" characters only
+        if output.startswith("```json"):
+            output = output.replace("```json", "")
+            output = output.replace("```", "")
+
+           
 
         return json.loads(output) 
 
@@ -352,10 +357,10 @@ class FunctionsWrapper:
                 {user_input}
                 if needed, here's the most recent SQL query generated, if it helps to give context:
                 {convo_history.get_last_executed_query()}
-                Return the answer in the following JSON format:
+                Return the answer in the following JSON format. Return only JSON. No other commentary outside of the JSON. Don't prefix the JSON object with "json" or any other text.
                 E.g.
                 {{"SQL": "select * from data_source_name where ..."}}
-                Return only JSON. No other commentary outside of the JSON.
+                Return only JSON. No other commentary outside of the JSON. Don't prefix the JSON object with "json" or any other text.
                 """
                 
         return prompt 
@@ -370,10 +375,9 @@ class FunctionsWrapper:
                 {user_input}
                  if needed, here's the most recent SQL query generated, if it helps to give context:
                 {convo_history.get_last_executed_query()}
-                Return the answer in the following JSON format:
+                Return the answer in the following JSON format. Return only JSON. No other commentary outside of the JSON. Don't prefix the JSON object with "json" or any other text.
                 E.g.
                 {{"SQL": "select * from data_source_name where ..."}}
-                Return only JSON. No other commentary outside of the JSON.
                 Generated SQL queries should be bar chart-friendly.
                 Whatever column is selected as the x-axis name as "X-Axis".
                 Whatever column is selected as the y-axis should be a number - rename it as "Total". 
@@ -391,10 +395,9 @@ class FunctionsWrapper:
                 {user_input}
                 if needed, here's the most recent SQL query generated, if it helps to give context:
                 {convo_history.get_last_executed_query()}
-                Return the answer in the following JSON format:
+                Return the answer in the following JSON format. Return only JSON. No other commentary outside of the JSON. Don't prefix the JSON object with "json" or any other text.
                 E.g.
                 {{"SQL": "select * from data_source_name where ..."}}
-                Return only JSON. No other commentary outside of the JSON.
                 Generated queries should be line chart-friendly.
                 Whatever column is selected as the x-axis should be a date or timestamp. Rename it as "time".
                 Whatever column is selected as the y-axis should be a number - rename it as "total1".

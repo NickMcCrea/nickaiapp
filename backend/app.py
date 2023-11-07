@@ -24,8 +24,8 @@ app.secret_key = os.getenv("SECRET_KEY")
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 gpt_3 = "gpt-3.5-turbo-0613"
-gpt_4 = "gpt-4-0613"
-#gpt_4 = "gpt-4-1106-preview"
+#gpt_4 = "gpt-4-0613"
+gpt_4 = "gpt-4-1106-preview"
 current_model = gpt_4
 user_sessions = {}
 
@@ -60,7 +60,8 @@ functions = FunctionsWrapper(current_model)
 # Costs for different models
 COSTS = {
     "gpt-3.5-turbo-0613": {"input": 0.0015 / 1000, "output": 0.002 / 1000},
-    "gpt-4-0613": {"input": 0.03 / 1000, "output": 0.006 / 1000}
+    "gpt-4-0613": {"input": 0.03 / 1000, "output": 0.006 / 1000},
+    "gpt-4-1106-preview": {"input": 0.01 / 1000, "output": 0.003 / 1000}
 }
 
 def dummy_function():
@@ -146,7 +147,7 @@ def ask():
 
         #if data and metadata are None,
         #set the chat output to "Sorry, I didn't understand - can you rephrase that?"
-        if data is None and metadata is None and commentary is '':
+        if data is None and metadata is None and commentary == '':
             commentary = "Sorry, I didn't understand - can you rephrase that?"
 
         input_tokens, output_tokens = calculate_tokens(response)
@@ -167,6 +168,7 @@ def ask():
         return final_response, 200
 
     except Exception as e:
+        print("Exception: ", e)
         return jsonify({'error': str(e)}), 500
 
 def get_convo_history():
