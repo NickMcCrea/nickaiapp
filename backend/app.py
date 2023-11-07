@@ -25,6 +25,7 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 
 gpt_3 = "gpt-3.5-turbo-0613"
 gpt_4 = "gpt-4-0613"
+#gpt_4 = "gpt-4-1106-preview"
 current_model = gpt_4
 user_sessions = {}
 
@@ -39,6 +40,14 @@ def on_connect():
     emit('connected', {'message': 'Connected to WebSocket', 'session_id': session_id})
 
 
+@socketio.on('disconnect')
+def on_disconnect():
+    session_id = session.get('session_id')
+    if session_id:
+        leave_room(session_id)
+        # Perform additional cleanup if needed, e.g., removing session from user_sessions dict
+        user_sessions.pop(session_id, None)
+        print(f"Session {session_id} has disconnected.")
 
 
 
@@ -134,6 +143,11 @@ def ask():
 
         conversation_history.add_assistant_message(chat_output)  # Add assistant output to history
 
+
+        #if data and metadata are None,
+        #set the chat output to "Sorry, I didn't understand - can you rephrase that?"
+        if data is None and metadata is None and commentary is None:
+            commentary = "Sorry, I didn't understand - can you rephrase that?"
 
         input_tokens, output_tokens = calculate_tokens(response)
 

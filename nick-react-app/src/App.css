@@ -20,3 +20,29 @@
 }
 
 
+.fade-enter {
+  opacity: 0;
+  transform: translateX(-50px);
+  transition: opacity 300ms, transform 300ms;
+  width: 90%;
+  height: 900%;
+flex: 1;
+display: 'flex';
+overflow: 'auto';
+align-items: center;
+justify-content: 'center';
+}
+ 
+
+.fade-enter-active {
+  opacity: 1;
+  transform: translateX(0px);
+  width: 90%;
+  height: 90%;
+flex: 1;
+display: 'flex';
+overflow: 'auto';
+align-items: center;
+justify-content: 'center';
+}
+

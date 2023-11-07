@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { ResizableBox } from 'react-resizable';
 import ChatService from './Services/ChatService';
 import ChatHistory, { Message } from './Components/ChatHistory';
@@ -12,8 +12,9 @@ import BasicTable from './Components/Charts/BasicTable';
 import MetaDataDisplaySimple from './Components/MetaDataDisplay/MetaDataDisplaySimple';
 import MetaDataCollectionDisplay from './Components/MetaDataDisplay/MetaDataDisplayCards';
 import SimpleBarChart, { BarChartData } from './Components/Charts/SimpleBarChart';
-import SimpleLineChart, {LineChartData} from './Components/Charts/SimpleLineChart';
+import SimpleLineChart, { LineChartData } from './Components/Charts/SimpleLineChart';
 import ProgressData from './Services/ChatService';
+import DataSourceCatalogueDisplay from './Components/DataCatalogueDisplay';
 
 
 
@@ -31,6 +32,12 @@ function App() {
   const [metaData, setMetaData] = useState<any[]>([]);
   const [barChartData, setBarChartData] = useState<BarChartData[]>([]);
   const [lineChartData, setLineChartData] = useState<LineChartData[]>([]);
+  // Add state for tracking data source names and commentary
+  const [dataSourceNames, setDataSourceNames] = useState<string[]>([]);
+  const [catalogueCommentary, setCatalogueCommentary] = useState<string>("");
+
+  const [fadeIn, setFadeIn] = useState(false);
+
 
 
   const [width, setWidth] = useState(600); // Default width for the resizable panel
@@ -48,8 +55,7 @@ function App() {
     const service = new ChatService("http://localhost:5001");
     setChatService(service);
 
-    service.on('progress', (progressData: any) => 
-    {
+    service.on('progress', (progressData: any) => {
       //set a message using the progressData.status
       setMessages(prevMessages => [...prevMessages, { type: 'text', content: progressData.status, timestamp: new Date(), sender: 'Working' }]);
     });
@@ -59,6 +65,17 @@ function App() {
       service.cleanup(); // Cleanup the chat service when the component unmounts
     };
   }, []); // Empty dependency array to ensure this effect runs once on mount and once on unmount
+
+  // Use a callback to add the fade-in class when the component mounts
+  const toggleFadeIn = useCallback(() => {
+    setFadeIn(true);
+  }, []);
+
+  useEffect(() => {
+    // Whenever the component mounts, we start the fade-in animation
+    toggleFadeIn();
+  }, [toggleFadeIn]);
+
 
 
   // This effect adjusts the right panel width when the left panel resizes or the window resizes
@@ -84,99 +101,104 @@ function App() {
   };
 
   const handleSendMessage = async (content: string) => {
-    
+
 
     if (chatService) {
       setMessages([...messages, { type: 'text', content, timestamp: new Date(), sender: 'You' }]);
 
 
-    try {
-      const reply = await chatService.sendMessage(content, selectedModel);
-      setEstimatedCost(reply.estimated_cost.toString());
-      // If the reply is from a query_meta_data function call
-      if (reply.function_call && reply.function_call.name === "query_data_catalogue") {
-        // Parse the JSON output
-        const outputObject = JSON.parse(reply.output);
-
-        // Extract data source names and commentary
-        const { data_source_names, commentary } = outputObject;
-
-        // Construct a formatted JSX message
-        const metaDataMessage = (
-          <span>
-            Data Source(s): <strong>{data_source_names.join(', ')}</strong>. {commentary}
-          </span>
-        );
+      try {
+        const reply = await chatService.sendMessage(content, selectedModel);
+        setEstimatedCost(reply.estimated_cost.toString());
+        // If the reply is from a query_meta_data function call
+        if (reply.function_call && reply.function_call.name === "query_data_catalogue") {
+          // Parse the JSON output
+          const outputObject = JSON.parse(reply.output);
+          setDataSourceNames(outputObject.data_source_names);
+          setCurrentFunctionCall("query_data_catalogue");
 
 
+          // Extract data source names and commentary
+          const { data_source_names, commentary } = outputObject;
+
+          // Construct a formatted JSX message
+          const metaDataMessage = (
+            <span>
+              Data Source(s): <strong>{data_source_names.join(', ')}</strong>. {commentary}
+            </span>
+          );
 
 
-        // Add the JSX formatted message to the chat history
-        setMessages(prevMessages => [...prevMessages, { type: 'jsx', content: metaDataMessage, timestamp: new Date(), sender: 'Assistant' }]);
-      } else {
-        // Handle other messages as before
-        if (reply.data) {
-          setTableData(reply.data);
-        }
 
-        //check function call name and set current function call
-        if (reply.function_call) {
-          if (reply.function_call.name === "fetch_meta_data") {
-            setCurrentFunctionCall("fetch_meta_data");
-          }
-          if (reply.function_call.name === "fetch_data") {
-            setCurrentFunctionCall("fetch_data");
 
+
+
+          // Add the JSX formatted message to the chat history
+          setMessages(prevMessages => [...prevMessages, { type: 'jsx', content: metaDataMessage, timestamp: new Date(), sender: 'Assistant' }]);
+        } else {
+          // Handle other messages as before
+          if (reply.data) {
+            setTableData(reply.data);
           }
 
-          //if the function call is clear data, clear the data
-          if (reply.function_call.name === "clear") {
-            setTableData([]);
-            setMetaData([]);
-            setBarChartData([]);
-            setLineChartData([]);
-            //clear the messages
-            setMessages([]);
-          }
-
-          if (reply.function_call && reply.function_call.name === "fetch_bar_chart_data") {
-            // Assuming the data is in the format required by the chart
-            if (Array.isArray(reply.data)) {
-              const formattedData = reply.data.map(item => ({
-                ...item,
-                Total: parseFloat(item.Total)
-              }));
-              setBarChartData(formattedData as BarChartData[]);
-              setCurrentFunctionCall("fetch_bar_chart_data");
-            } else {
-              // Handle the case where reply.data is undefined or not an array
-              console.error('Received data is not an array', reply.data);
+          //check function call name and set current function call
+          if (reply.function_call) {
+            if (reply.function_call.name === "fetch_meta_data") {
+              setCurrentFunctionCall("fetch_meta_data");
             }
-          }
-          if(reply.function_call && reply.function_call.name === "fetch_line_chart_data"){
-            if (Array.isArray(reply.data)) {
+            if (reply.function_call.name === "fetch_data") {
+              setCurrentFunctionCall("fetch_data");
 
-              setLineChartData(reply.data as LineChartData[]);
-              setCurrentFunctionCall("fetch_line_chart_data");
             }
 
+            //if the function call is clear data, clear the data
+            if (reply.function_call.name === "clear") {
+              setTableData([]);
+              setMetaData([]);
+              setBarChartData([]);
+              setLineChartData([]);
+              //clear the messages
+              setMessages([]);
+            }
+
+            if (reply.function_call && reply.function_call.name === "fetch_bar_chart_data") {
+              // Assuming the data is in the format required by the chart
+              if (Array.isArray(reply.data)) {
+                const formattedData = reply.data.map(item => ({
+                  ...item,
+                  Total: parseFloat(item.Total)
+                }));
+                setBarChartData(formattedData as BarChartData[]);
+                setCurrentFunctionCall("fetch_bar_chart_data");
+              } else {
+                // Handle the case where reply.data is undefined or not an array
+                console.error('Received data is not an array', reply.data);
+              }
+            }
+            if (reply.function_call && reply.function_call.name === "fetch_line_chart_data") {
+              if (Array.isArray(reply.data)) {
+
+                setLineChartData(reply.data as LineChartData[]);
+                setCurrentFunctionCall("fetch_line_chart_data");
+              }
+
+            }
           }
-        }
 
-        if (reply.metaData) {
-          dataSets.length = 0; // Clear dataSets
-          dataSets.push(reply.metaData); // Add reply.metaData to dataSets
-          setMetaData(dataSets);
-          console.log("dataSets: " + reply.metaData); // Log the data
-        }
+          if (reply.metaData) {
+            dataSets.length = 0; // Clear dataSets
+            dataSets.push(reply.metaData); // Add reply.metaData to dataSets
+            setMetaData(dataSets);
+            console.log("dataSets: " + reply.metaData); // Log the data
+          }
 
-        // Add the assistant's reply to the chat history
-        setMessages(prevMessages => [...prevMessages, { type: 'text', content: reply.output, timestamp: new Date(), sender: 'Assistant' }]);
+          // Add the assistant's reply to the chat history
+          setMessages(prevMessages => [...prevMessages, { type: 'text', content: reply.output, timestamp: new Date(), sender: 'Assistant' }]);
+        }
+      } catch (error) {
+        console.error('Failed to send message:', error);
       }
-    } catch (error) {
-      console.error('Failed to send message:', error);
     }
-  }
   };
 
 
@@ -203,20 +225,28 @@ function App() {
           )}
 
           {currentFunctionCall === "fetch_meta_data" && dataSets && dataSets.length > 0 && (
-            <MetaDataCollectionDisplay dataSets={dataSets} />
+            <div style={{ width: '80%', height: '70%' }}>
+              <MetaDataCollectionDisplay dataSets={dataSets} />
+            </div>
           )}
 
           {currentFunctionCall === "fetch_bar_chart_data" && barChartData.length > 0 && (
-          <div style={{ width: '80%', height: '70%'}}>
+            <div style={{ width: '80%', height: '70%' }}>
               <SimpleBarChart data={barChartData} />
-              </div>
-       
+            </div>
+
           )}
 
           {currentFunctionCall === "fetch_line_chart_data" && lineChartData.length > 0 && (
-           <div style={{ width: '80%', height: '70%'}}>
+            <div style={{ width: '80%', height: '70%' }}>
               <SimpleLineChart data={lineChartData} />
-              </div>
+            </div>
+          )}
+
+          {currentFunctionCall === "query_data_catalogue" && dataSourceNames.length > 0 && (
+            <div style={{ width: '90%', height: '90%', overflow: 'auto' }}>
+              <DataSourceCatalogueDisplay dataSources={dataSourceNames} commentary={catalogueCommentary} />
+            </div>
           )}
 
 

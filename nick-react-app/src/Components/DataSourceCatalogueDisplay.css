@@ -1,0 +1,40 @@
+.data-source-catalogue-display {
+    margin: 16px;
+    text-align: left;
+  }
+  
+  .data-source-cards-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .data-source-card {
+    display: flex;
+    align-items: center;
+    width: 100%; /* Set to the desired fixed width */
+    max-width: 300px; /* Adjust as necessary */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-sizing: border-box;
+    background-color: #f9f9f9; /* Light grey background */
+  }
+  
+  .icon-container {
+    background-color: #e3f2fd; /* Light blue background */
+    border-radius: 50%;
+    padding: 8px;
+    margin-right: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid #bbdefb; /* Border color */
+  }
+  
+  .icon {
+    color: #2196f3; /* Blue icon color */
+    font-size: 2rem; /* Adjust icon size as needed */
+  }
+  

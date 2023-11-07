@@ -23,6 +23,7 @@ class FunctionsWrapper:
          "name": "query_data_catalogue",
             "description": f"""Use this function to answer user questions about what data sources we have available.
                             For example, the user may ask about data sources, or ask about a specific data source, or attribute. 
+                            Or they may ask about the data catalogue. 
                             """,
           "parameters": {
                 "type": "object",

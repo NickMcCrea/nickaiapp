@@ -63,7 +63,7 @@ const Logo = styled('div')({
 });
 
 const Header: React.FC<HeaderProps> = ({ estimatedCost, selectedModel, onModelChange }) => {
- 
+
   const [state, setState] = React.useState({
     checkedGPT: false,
   });
@@ -77,16 +77,17 @@ const Header: React.FC<HeaderProps> = ({ estimatedCost, selectedModel, onModelCh
   return (
     <StyledAppBar position="static">
       <StyledToolbar>
-     {/*    <StyledIconButton edge="start">
+        {/*    <StyledIconButton edge="start">
           <DataThresholdingIcon fontSize="large" />
         </StyledIconButton> */}
         <Logo /> {/* Use your Logo component */}
         <Title variant="body1">
-          <i>Talk To Your Finance Data</i>
+          <i>Talk To Your <b>{"{"}Finance{"}"}</b> Data</i>
         </Title>
 
-         {/* Added Switch */}
-         <FormControlLabel
+
+        {/* Added Switch */}
+        <FormControlLabel
           control={
             <Switch
               checked={state.checkedGPT}
@@ -102,22 +103,22 @@ const Header: React.FC<HeaderProps> = ({ estimatedCost, selectedModel, onModelCh
                 '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
                   backgroundColor: '#335574', // Morgan Stanley green when checked
                 },
-             
+
               }}
             />
-            
+
           }
-          sx={{position: 'absolute', right: '2rem', top: '50%', transform: 'translateY(-50%)'}}
+          sx={{ position: 'absolute', right: '2rem', top: '50%', transform: 'translateY(-50%)' }}
           label={state.checkedGPT ? 'GPT3.5' : 'GPT4'}
         />
 
 
-     {/*    {estimatedCost && (
+        {/*    {estimatedCost && (
           <EstimatedCost variant="body1">
             Estimated Cost: {estimatedCost}
           </EstimatedCost>
         )} */}
-  
+
       </StyledToolbar>
     </StyledAppBar>
   );
