@@ -5,9 +5,11 @@ from in_memory_db import InMemoryDB
 from meta_data_service import MetaDataService
 from ConversationHistory import ConversationHistory
 from typing import List, Dict, Any
+import function_defs as function_defs
+import completion_builder as completion_builder
 
 #constructor for a functions class
-class FunctionsWrapper:
+class ActionsManager:
 
 
     #constructor
@@ -17,132 +19,7 @@ class FunctionsWrapper:
 
         self.data_service = MetaDataService()
 
-
-        self.functions = [      
-        {
-         "name": "query_data_catalogue",
-            "description": f"""Use this function to answer user questions about what data sources we have available.
-                            For example, the user may ask about data sources, or ask about a specific data source, or attribute. 
-                            Or they may ask about the data catalogue. 
-                            """,
-          "parameters": {
-                "type": "object",
-                "properties": {}
-            }
-        },
-        {
-         "name": "comment_on_data",
-            "description": f"""Use this function to comment on specific data.
-                            For example, the user may ask for analysis or commentary on a data set that's just been returned.
-                            """,
-          "parameters": {
-                "type": "object",
-                "properties": 
-                {
-                    "data_source_name": {
-                        "type": "string",
-                        "description": "The name of the data source to fetch from"
-                           
-                    },
-                    "query": {
-                        "type": "string",
-                        "description": "The query that was used to fetch the data"
-                           
-                    }
-                    
-            }
-        }
-        },
-        {
-         "name": "clear",
-            "description": f"""Use this function to clear the conversation history, and start a new conversation.
-                            """,
-          "parameters": {
-                "type": "object",
-                "properties": {}
-            }
-        },
-         {
-         "name": "fetch_meta_data",
-            "description": f"""Use this function to retrieve meta data about a data source.
-                            Use this when the user asks to see meta data or schema information about a data source. 
-                            """,
-          "parameters": {
-                "type": "object",
-                "properties": 
-                {
-                    "data_source_name": {
-                        "type": "string",
-                        "description": "The name of the meta data source to fetch data from."
-                           
-                    },
-                     "ai_commentary": {
-                        "type": "string",
-                        "description": "Any comment from the assistant, on the request"
-                           
-                    }
-                }
-            }
-        },
-
-         {
-         "name": "fetch_data",
-            "description": f"""Use this function when a user asks for a question that requires a data query.
-                            If they want to see actual data, use this function. 
-                            If we can infer the data source from the context, we should input that information. 
-                            Users may ask for refined data from a previous query, e.g. "Can you filter that on restaurants with delivery times < 30 mins?"
-                            """,
-          "parameters": {
-                "type": "object",
-                "properties": 
-                {
-                    "data_source_name": {
-                        "type": "string",
-                        "description": "The name of the data source to fetch data from."
-                           
-                    }
-                }
-            }
-
-
-        },
-         {
-         "name": "fetch_bar_chart_data",
-            "description": f"""Use this function when a user asks for a question that requires a bar chart or bar graph.
-                            If we can infer the data source from the context, we should input that information. 
-                            Users may ask for refined data from a previous query, e.g. "Can you filter that on restaurants with delivery times < 30 mins?"
-                            """,
-          "parameters": {
-                "type": "object",
-                "properties": 
-                {
-                    "data_source_name": {
-                        "type": "string",
-                        "description": "The name of the data source to fetch data from."
-                           
-                    }
-                }
-            }
-         }, 
-         {
-         "name": "fetch_line_chart_data",
-            "description": f"""Use this function when a user asks for a question that requires a line chart or time series.
-                            If we can infer the data source from the context, we should input that information. 
-                            Users may ask for refined data from a previous query, e.g. "Can you filter that on restaurants with delivery times < 30 mins?"
-                            """,
-          "parameters": {
-                "type": "object",
-                "properties": 
-                {
-                    "data_source_name": {
-                        "type": "string",
-                        "description": "The name of the data source to fetch data from."
-                           
-                    }
-                }
-            }
-         }
-        ]
+        self.functions = function_defs.get_open_ai_function_defs()
 
         self.function_mapping = {
             "query_data_catalogue": self.function_query_data_catalogue,
@@ -155,13 +32,25 @@ class FunctionsWrapper:
             # Add more function mappings here...
         }
 
+   
+
     def function_comment_on_data(self, socketio, session_id, convo_history, user_input: str, data_source_name: str, query: str):
 
         #if we have both the data source name and the query, fetch the data
         if data_source_name is not None and query is not None:
 
-            #add a limit to the query
-            query += " LIMIT 100"
+            #add a limit to the query if it doesn't already have one
+            if "LIMIT" not in query.upper():
+                query += " LIMIT 100"
+
+            #if it does have a limit, make sure the limit is 100 or less
+            else:
+                query = query.upper()
+                limit_index = query.find("LIMIT")
+                limit = int(query[limit_index + 5:])
+                if limit > 100:
+                    query = query[:limit_index + 5] + "100"
+            
 
             data = self.data_service.query(query, data_source_name)
             metadata = None
@@ -173,19 +62,8 @@ class FunctionsWrapper:
 
             #get the data set in a string format
             data_str = str(data)
-            prompt = f"""
-                    Given the following data:
-                    {data_str}
-                    And the previous conversation history:
-                    {convo_history.messages}
-                    and the user's input:
-                    {user_input}
-                    Please very briefly comment on the data, given the context. Provide any analysis you think is relevant. Keep it to a couple hnundred words or less.
-                    When commenting on the data, stick to insights gleaned from the data, rather than the structure or schema of the data itself.
-                    """
-            messages = [{"role": "system", "content": "You are a helpful assistant."}]
-            messages.append({"role": "system", "content": "You are helping the user explore data sets, and answer questions about them."}) 
-            messages.append({"role": "user", "content": prompt})
+            prompt = completion_builder.build_data_analysis_prompt(convo_history, user_input, data_str)
+            messages = completion_builder.build_basic_message_list(prompt)
             response = openai.ChatCompletion.create(
                 model=self.current_model,
                 messages=messages
@@ -196,6 +74,8 @@ class FunctionsWrapper:
 
             return data, metadata, commentary
 
+   
+
 
     def function_clear(self, socketio, session_id, convo_history, user_input):
         convo_history = ConversationHistory()
@@ -205,7 +85,6 @@ class FunctionsWrapper:
     #in a real system, this would be probably combine some embeddings search with a metadata service. 
     #we'll fake it for now. 
     def function_query_data_catalogue(self, socketio, session_id, convo_history, user_input : str):
-
 
 
         prompt = f"""
@@ -253,6 +132,7 @@ class FunctionsWrapper:
             messages=messages
         )
         commentary = response['choices'][0]['message']['content']
+        commentary = self.check_for_json_tag(commentary)
         data = None
         metadata= None
         return data, metadata, commentary
@@ -382,13 +262,17 @@ class FunctionsWrapper:
 
         #GPT-4-Turbo generally tags JSON output with "json" at the start of the string.
         #Remove the json tagging if it exists.
-        if output.startswith("```json"):
-            output = output.replace("```json", "")
-            output = output.replace("```", "")
+        output = self.check_for_json_tag(output)
 
            
 
         return json.loads(output) 
+
+    def check_for_json_tag(self, output):
+        if output.startswith("```json"):
+            output = output.replace("```json", "")
+            output = output.replace("```", "")
+        return output
 
     def add_custom_prompt_elements(self, prompt, data_source_name):
         finance_result_prompt_customisations = f"""

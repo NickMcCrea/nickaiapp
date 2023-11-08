@@ -6,8 +6,7 @@ from flask_cors import CORS
 from uuid import uuid4
 from ConversationHistory import ConversationHistory
 import json
-from functions_wrapper import FunctionsWrapper
-import prompt_templates as prompt_templates
+from actions import ActionsManager
 import time
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from typing import Dict, List, Any
@@ -53,7 +52,7 @@ def on_disconnect():
 
 
 
-functions = FunctionsWrapper(current_model)
+actions_manager = ActionsManager(current_model)
 
     
 
@@ -116,7 +115,7 @@ def ask():
         response = openai.ChatCompletion.create(
             model=current_model,
             messages=conversation_history.get_messages(),
-            functions=functions.get_functions(),
+            functions=actions_manager.get_functions(),
             function_call="auto"
         )
 
@@ -199,7 +198,7 @@ def get_function_response(socket_io: SocketIO, session_id: str,conversation_hist
     progress_data = {'status': function_name, 'message': 'function called'}
     socketio.emit('progress', progress_data, room=session_id)
 
-    data,metadata,commentary = functions.execute_function(socketio, session_id, conversation_history, response_message, user_input, function_name, function_args)
+    data,metadata,commentary = actions_manager.execute_function(socketio, session_id, conversation_history, response_message, user_input, function_name, function_args)
     return data,metadata, commentary
 
 def calculate_costs(input_tokens, output_tokens):
