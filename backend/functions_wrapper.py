@@ -1,7 +1,5 @@
 import json
 import openai
-import prompt_templates
-import json
 from in_memory_db import InMemoryDB
 from MetaDataService import MetaDataService
 from ConversationHistory import ConversationHistory
