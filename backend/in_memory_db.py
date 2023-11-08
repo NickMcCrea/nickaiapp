@@ -1,5 +1,6 @@
 import sqlite3
 import pandas as pd
+from typing import List, Dict, Any
 
 class InMemoryDB:
     def __init__(self):
@@ -18,7 +19,7 @@ class InMemoryDB:
         # Write the data into SQLite
         df.to_sql(table_name, self.conn, if_exists='replace', index=False)
 
-    def query(self, sql_query):
+    def query(self, sql_query: str) -> List[Dict[str, Any]]:
         """
         Execute a SQL query on the in-memory database.
 

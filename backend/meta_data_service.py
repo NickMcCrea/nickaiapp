@@ -1,5 +1,6 @@
 import json
 from in_memory_db import InMemoryDB
+from typing import List, Dict, Any
 
 class MetaDataService:
     def __init__(self):
@@ -80,7 +81,7 @@ class MetaDataService:
             meta_data += str(self.data_sources[data_source]['meta'])
         return meta_data
     
-    def query(self, sql_query, data_source_name):
+    def query(self, sql_query: str, data_source_name: str) -> List[Dict[str, Any]]:
         # Retrieve the data source by name
         data_source = self.get_data_source(data_source_name)
         

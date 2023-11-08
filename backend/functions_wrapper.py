@@ -1,8 +1,10 @@
 import json
+from flask_socketio import SocketIO
 import openai
 from in_memory_db import InMemoryDB
-from MetaDataService import MetaDataService
+from meta_data_service import MetaDataService
 from ConversationHistory import ConversationHistory
+from typing import List, Dict, Any
 
 #constructor for a functions class
 class FunctionsWrapper:
@@ -153,7 +155,7 @@ class FunctionsWrapper:
             # Add more function mappings here...
         }
 
-    def function_comment_on_data(self, socketio, session_id, convo_history, user_input, data_source_name, query):
+    def function_comment_on_data(self, socketio, session_id, convo_history, user_input: str, data_source_name: str, query: str):
 
         #if we have both the data source name and the query, fetch the data
         if data_source_name is not None and query is not None:
@@ -202,7 +204,7 @@ class FunctionsWrapper:
 
     #in a real system, this would be probably combine some embeddings search with a metadata service. 
     #we'll fake it for now. 
-    def function_query_data_catalogue(self, socketio, session_id, convo_history, user_input):
+    def function_query_data_catalogue(self, socketio, session_id, convo_history, user_input : str):
 
 
 
@@ -472,13 +474,13 @@ class FunctionsWrapper:
         return prompt 
   
   
-    def execute_function(self,socketio, session_id, convo_history, response_message, user_input, name, args):
+    def execute_function(self,socket_io: SocketIO, session_id: str,conversation_history: ConversationHistory, response_message: Dict[str,Any], user_input: str, name: str, args) -> tuple[List[Dict[str, Any]], Dict[str, Any], str ]:
  
         #print the function name and arguments
         print(f"Executing function '{name}' with arguments {args}")
         if name in self.function_mapping:
             func = self.function_mapping[name]
-            data, metadata, commentary = func(socketio, session_id, convo_history, user_input, **args)
+            data, metadata, commentary = func(socket_io, session_id, conversation_history, user_input, **args)
             return data, metadata, commentary
         else:
             raise ValueError(f"Function '{name}' not found.")

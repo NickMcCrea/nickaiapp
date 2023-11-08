@@ -10,6 +10,8 @@ from functions_wrapper import FunctionsWrapper
 import prompt_templates as prompt_templates
 import time
 from flask_socketio import SocketIO, emit, join_room, leave_room
+from typing import Dict, List, Any
+
 
 
 load_dotenv()
@@ -122,6 +124,7 @@ def ask():
         print("Time elapsed 1: ", time.time() - start_time)
        
         response_message = response["choices"][0]["message"]
+        print("response_message: ", response_message)
         
         function_response = None
         was_function_call = response_message.get("function_call")
@@ -144,6 +147,7 @@ def ask():
 
         conversation_history.add_assistant_message(commentary)  # Add assistant output to history
 
+        
 
         #if data and metadata are None,
         #set the chat output to "Sorry, I didn't understand - can you rephrase that?"
@@ -171,7 +175,7 @@ def ask():
         print("Exception: ", e)
         return jsonify({'error': str(e)}), 500
 
-def get_convo_history():
+def get_convo_history() -> ConversationHistory:
     session_id = session.get('session_id')
 
     #check if the user_sessions dictionary has a key for the current session ID
@@ -187,11 +191,9 @@ def get_convo_history():
     print("session_id: ", session_id)
     return conversation_history
 
-def get_function_response(socket_io, session_id,conversation_history, response_message, user_input):
+def get_function_response(socket_io: SocketIO, session_id: str,conversation_history: ConversationHistory, response_message: Dict[str,Any], user_input: str):
     function_name = response_message["function_call"]["name"]
-    #print("function_name: ", function_name)
     function_args = json.loads(response_message["function_call"]["arguments"])
-    #print("function_args: ", function_args)
 
     #emit a progress event to the client
     progress_data = {'status': function_name, 'message': 'function called'}
