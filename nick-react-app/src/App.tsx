@@ -29,12 +29,14 @@ function App() {
   const [estimatedCost, setEstimatedCost] = useState<string>("");
   const [selectedModel, setSelectedModel] = useState('GPT4');
   const [tableData, setTableData] = useState<any[]>([]);
-  const [metaData, setMetaData] = useState<any[]>([]);
+  const [metaData, setMetaData] = useState<{ [key: string]: any }>({});
   const [barChartData, setBarChartData] = useState<BarChartData[]>([]);
   const [lineChartData, setLineChartData] = useState<LineChartData[]>([]);
   // Add state for tracking data source names and commentary
   const [dataSourceNames, setDataSourceNames] = useState<string[]>([]);
   const [catalogueCommentary, setCatalogueCommentary] = useState<string>("");
+ 
+
 
   const [fadeIn, setFadeIn] = useState(false);
 
@@ -110,6 +112,22 @@ function App() {
       try {
         const reply = await chatService.sendMessage(content, selectedModel);
         setEstimatedCost(reply.estimated_cost.toString());
+
+        if (reply.metaData) {
+          dataSets.length = 0; // Clear dataSets
+          dataSets.push(reply.metaData); // Add reply.metaData to dataSets
+
+          // Parse the metadata if it's a string, or use it directly if it's already an object
+          const metaDataObject = typeof reply.metaData === 'string' ? JSON.parse(reply.metaData) : reply.metaData;
+          console.log(metaDataObject);
+          console.log("meta data received")
+          setMetaData(metaDataObject);
+
+        }
+        else{
+          console.log("No meta data")
+        }
+
         // If the reply is from a query_meta_data function call
         if (reply.function_call && reply.function_call.name === "query_data_catalogue") {
           // Parse the JSON output
@@ -127,6 +145,9 @@ function App() {
               Data Source(s): <strong>{data_source_names.join(', ')}</strong>. {commentary}
             </span>
           );
+
+
+
 
 
 
@@ -168,7 +189,13 @@ function App() {
                   ...item,
                   Total: parseFloat(item.Total)
                 }));
-                setBarChartData(formattedData as BarChartData[]);
+
+                //set  bar chart data
+                setBarChartData(formattedData)
+
+                // Update chartMetadata state with the metadata from the reply
+
+
                 setCurrentFunctionCall("fetch_bar_chart_data");
               } else {
                 // Handle the case where reply.data is undefined or not an array
@@ -185,12 +212,7 @@ function App() {
             }
           }
 
-          if (reply.metaData) {
-            dataSets.length = 0; // Clear dataSets
-            dataSets.push(reply.metaData); // Add reply.metaData to dataSets
-            setMetaData(dataSets);
-            console.log("dataSets: " + reply.metaData); // Log the data
-          }
+          
 
           // Add the assistant's reply to the chat history
           setMessages(prevMessages => [...prevMessages, { type: 'text', content: reply.output, timestamp: new Date(), sender: 'Assistant' }]);
@@ -205,7 +227,7 @@ function App() {
   return (
     <div className="App">
       <Header estimatedCost={estimatedCost} selectedModel={selectedModel} onModelChange={handleModelChange} />
-      <div style={{ display: 'flex', height: '1000px' }}> {/* Flex container */}
+      <div style={{ display: 'flex', height: '900px' }}> {/* Flex container */}
         <ResizableBox
           width={width}
           height={300}
@@ -232,7 +254,14 @@ function App() {
 
           {currentFunctionCall === "fetch_bar_chart_data" && barChartData.length > 0 && (
             <div style={{ width: '80%', height: '70%' }}>
-              <SimpleBarChart data={barChartData} />
+
+
+              {/* ///display the simple chart and map in the data and get the titles from the meta data */}
+              <SimpleBarChart data={barChartData} 
+              XAxisTitle={metaData["x_axis_title"] || "Default Title"}
+              YAxisTitle= {metaData["y_axis_title"] || "Default Title"}
+              ChartTitle={metaData["chart_title"] || "Default Title"}/>
+
             </div>
 
           )}
