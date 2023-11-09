@@ -3,10 +3,10 @@ from flask_socketio import SocketIO
 import openai
 from in_memory_db import InMemoryDB
 from meta_data_service import MetaDataService
-from ConversationHistory import ConversationHistory
 from typing import List, Dict, Any
 import function_defs as function_defs
 import completion_builder as completion_builder
+from conversation_history import ConversationHistory
 
 #constructor for a functions class
 class ActionsManager:
@@ -39,7 +39,7 @@ class ActionsManager:
         #if we have both the data source name and the query, fetch the data
         if data_source_name is not None and query is not None:
 
-            #add a limit to the query if it doesn't already have one
+            #add a limit to the query if it doesn't already have one. Stops wallet annihilation.
             if "LIMIT" not in query.upper():
                 query += " LIMIT 100"
 
@@ -86,47 +86,13 @@ class ActionsManager:
     #we'll fake it for now. 
     def function_query_data_catalogue(self, socketio, session_id, convo_history, user_input : str):
 
+        all_meta_data = self.data_service.get_all_meta_data()
 
-        prompt = f"""
-                Given the following data source schemas:
-                {self.data_service.get_all_meta_data()}
-                
-                please answer the following questions succinctly:
-                {user_input}
-
-                if needed, here's the most recent convo messages so far, if it helps to give context:
-                {convo_history.messages}
-                
-                
-                
-            
-                Return the answer in the following JSON format:
-                First, a list of relevant data source names.
-                Second, very brief commentary on the answer in a JSON parameter called "commentary".
-                E.g.
-                {{"data_source_names": ["datasource1", "datasource2"], "commentary": "Here's data sources relevant to your query, they are relevant because..."}}
-
-                or e.g.
-                {{"data_source_names": ["datasource1", "datasource2", "datasource3"], "commentary": "Here's all our data sources."}}
-
-                or e.g.
-                {{"data_source_names": [], "commentary": "We don't have any data sources that match your query."}}
-
-                or e.g.
-                {{"data_source_names": ["datasource1", "commentary": "This is the only datasource available"}}
-
-                where the user is clearly looking for data, and we can identify a data source, we should write a SQL query to extract the data.
-                e.g.
-                {{"data_source_names": ["datasource1"], "commentary": "Here's the data you're looking for.", "sql_query": "SELECT * FROM datasource1 WHERE ..."}}
-
-                Return only JSON. No other commentary outside of the JSON. Don't prefix the JSON object with "json" or any other text.
-                """
+        prompt = completion_builder.build_query_catalogue_prompt(convo_history, user_input, all_meta_data)
 
         #print the user input we're using to generate a response
         print(f"User input: {user_input}")
-        messages = [{"role": "system", "content": "You are a helpful assistant."}]
-        messages.append({"role": "system", "content": "You are helping the user explore data sets, and answer questions about them."}) 
-        messages.append({"role": "user", "content": prompt})
+        messages = completion_builder.build_basic_message_list(prompt)
         response = openai.ChatCompletion.create(
             model=self.current_model,
             messages=messages
@@ -137,8 +103,10 @@ class ActionsManager:
         metadata= None
         return data, metadata, commentary
 
+   
+
     #fetch actual data. fires off an open ai call to infer data source if we didn't infer in the function call
-    def function_fetch_data(self, socketio, session_id, convo_history, user_input, data_source_name):
+    def function_fetch_data(self, socketio, session_id, convo_history: ConversationHistory, user_input, data_source_name):
         #if data source is not none
         commentary = ""
         data_source = self.data_service.get_data_source(data_source_name)
@@ -146,7 +114,7 @@ class ActionsManager:
             data_source_name, data_source = self.open_ai_infer_data_source(socketio, session_id, convo_history, user_input)
            
            
-        response = self.open_ai_generate_sql(socketio, session_id, convo_history, user_input,data_source["meta"], self.table_sql_prompt(convo_history, user_input, data_source["meta"]))
+        response = self.open_ai_generate_sql(socketio, session_id, convo_history, user_input,data_source["meta"], completion_builder.table_sql_prompt(convo_history, user_input, data_source["meta"]))
 
         print(response)
         data = self.data_service.query(response["SQL"], data_source_name)
@@ -163,7 +131,7 @@ class ActionsManager:
             data_source_name, data_source = self.open_ai_infer_data_source(socketio, session_id, convo_history, user_input)
            
            
-        response = self.open_ai_generate_sql(socketio, session_id, convo_history, user_input,data_source["meta"], self.bar_graph_sql_prompt(convo_history, user_input, data_source["meta"]))
+        response = self.open_ai_generate_sql(socketio, session_id, convo_history, user_input,data_source["meta"], completion_builder.bar_graph_sql_prompt(convo_history, user_input, data_source["meta"]))
         convo_history.set_last_executed_query(response["SQL"])
         print(response)
         data = self.data_service.query(response["SQL"], data_source_name)
@@ -171,7 +139,7 @@ class ActionsManager:
         commentary = f"DataQuery: Data source name: {data_source_name}, Query: {response['SQL']}"
         return data, metadata, commentary
     
-    def function_fetch_line_chart_data(self, socketio, session_id, convo_history, user_input, data_source_name):
+    def function_fetch_line_chart_data(self, socketio, session_id, convo_history: ConversationHistory, user_input, data_source_name):
         #if data source is not none
         commentary = ""
         data_source = self.data_service.get_data_source(data_source_name)
@@ -179,7 +147,7 @@ class ActionsManager:
             data_source_name, data_source = self.open_ai_infer_data_source(socketio, session_id, convo_history, user_input)
            
            
-        response = self.open_ai_generate_sql(socketio, session_id, convo_history, user_input,data_source["meta"], self.line_graph_sql_prompt(convo_history, user_input, data_source["meta"]))
+        response = self.open_ai_generate_sql(socketio, session_id, convo_history, user_input,data_source["meta"], completion_builder.line_graph_sql_prompt(convo_history, user_input, data_source["meta"]))
         convo_history.set_last_executed_query(response["SQL"])
         print(response)
         data = self.data_service.query(response["SQL"], data_source_name)
@@ -205,25 +173,12 @@ class ActionsManager:
         progress_data = {'status': 'data_source_inference', 'message': 'Inferring Data Source'}
         socketio.emit('progress', progress_data, room=session_id)
 
-        prompt = f"""
-                Given the following data source schemas:
-                {self.data_service.get_all_meta_data()} 
-                
-                please determine the best single data source, to fetch data to answer the following questions succinctly:
-                {user_input}
-
-                Here's the conversation history so far, to help determine:
-                {convo_history.messages}
-
-                Return the answer in the following JSON format. Return only JSON. No other commentary outside of the JSON. Don't prefix the JSON object with "json" or any other text.
-                {{"data_source": "data_source_name"}}
-                """
+        all_meta_data = self.data_service.get_all_meta_data()
+        prompt = completion_builder.build_data_source_inference_prompt(convo_history, user_input, all_meta_data)
 
         #print the user input we're using to generate a response
         print(f"User input: {user_input}")
-        messages = [{"role": "system", "content": "You are a helpful assistant."}]
-        messages.append({"role": "system", "content": "You are helping the user explore data sets, and answer questions about them."}) 
-        messages.append({"role": "user", "content": prompt})
+        messages = completion_builder.build_basic_message_list(prompt)
         response = openai.ChatCompletion.create(
             model=self.current_model,
             messages=messages
@@ -239,6 +194,8 @@ class ActionsManager:
         
         return data_source_name, data_source
 
+   
+
     def open_ai_generate_sql(self, socketio, session_id, convo_history, user_input, data_source_meta, prompt):
 
         progress_data = {'status': 'data_query_generation', 'message': 'Generating Data Query'}
@@ -247,13 +204,13 @@ class ActionsManager:
         #get the data source name
         data_source_name = data_source_meta["name"]
 
-        prompt = self.add_custom_prompt_elements(prompt, data_source_name)
+        prompt = completion_builder.add_custom_prompt_elements(prompt, data_source_name)
 
         #print the user input we're using to generate a response
         print(f"User input: {user_input}")
-        messages = [{"role": "system", "content": "You are a helpful assistant."}]
-        messages.append({"role": "system", "content": "You are helping the user explore data sets, and generate valid SQL queries to questions about them."}) 
-        messages.append({"role": "user", "content": prompt})
+
+        messages = completion_builder.build_message_list_for_sql_generation(prompt)
+
         response = openai.ChatCompletion.create(
             model=self.current_model,
             messages=messages
@@ -264,9 +221,8 @@ class ActionsManager:
         #Remove the json tagging if it exists.
         output = self.check_for_json_tag(output)
 
-           
-
         return json.loads(output) 
+    
 
     def check_for_json_tag(self, output):
         if output.startswith("```json"):
@@ -274,89 +230,6 @@ class ActionsManager:
             output = output.replace("```", "")
         return output
 
-    def add_custom_prompt_elements(self, prompt, data_source_name):
-        finance_result_prompt_customisations = f"""
-        The user may use shorthand for values (e.g. IS for Insitutional Securities), make sure to refer to 
-        the data source schema for the full list of values. Always use the proper values, i.e. Institution Securities, not IS.
-        Permitted values for each column are as follows:
-        category - 'Revenues', 'Underwriting', 'Non Interest Expenses', 'Provision for Credit Losses'
-        segment - 'Institutional Securities', 'Wealth Management', 'Investment Management'
-        quarter - the format is YYYYQ1, YYYYQ2, YYYYQ3, YYYYQ4 etc. 
-        """
-     
-        #if data source name is "financial_results", add on the prompt additions
-        if data_source_name == "financial_results":
-            print("Financial results data source detected. Adding prompt additions.")
-            prompt += finance_result_prompt_customisations
-        
-
-        if data_source_name == "restaurant_info":
-            print("Restaurant info data source detected. Adding prompt additions.")
-            prompt += """
-            If the user asks about top restaurants, make sure to exclude restaurants with a rating of New.
-            """
-
-        return prompt
-
-    def table_sql_prompt(self, convo_history, user_input, data_source_meta):
-        prompt = f"""
-                Given the following data source schema:
-                {data_source_meta}
-                And the previous conversation history:
-                {convo_history.messages}
-                please generate JSON to help generate data, to the following questions succinctly:
-                {user_input}
-                if needed, here's the most recent SQL query generated, if it helps to give context:
-                {convo_history.get_last_executed_query()}
-                Return the answer in the following JSON format. Return only JSON. No other commentary outside of the JSON. Don't prefix the JSON object with "json" or any other text.
-                E.g.
-                {{"SQL": "select * from data_source_name where ..."}}
-                Return only JSON. No other commentary outside of the JSON. Don't prefix the JSON object with "json" or any other text.
-                """
-                
-        return prompt 
-    
-    def bar_graph_sql_prompt(self, convo_history, user_input, data_source_meta):
-        prompt = f"""
-                Given the following data source schema:
-                {data_source_meta}
-                And the previous conversation history:
-                {convo_history.messages}
-                please generate JSON to help generate data, to the following questions succinctly:
-                {user_input}
-                 if needed, here's the most recent SQL query generated, if it helps to give context:
-                {convo_history.get_last_executed_query()}
-                Return the answer in the following JSON format. Return only JSON. No other commentary outside of the JSON. Don't prefix the JSON object with "json" or any other text.
-                E.g.
-                {{"SQL": "select * from data_source_name where ..."}}
-                Generated SQL queries should be bar chart-friendly.
-                Whatever column is selected as the x-axis name as "X-Axis".
-                Whatever column is selected as the y-axis should be a number - rename it as "Total". 
-                """
-                
-        return prompt 
-    
-    def line_graph_sql_prompt(self, convo_history, user_input, data_source_meta):
-        prompt = f"""
-                Given the following data source schema:
-                {data_source_meta}
-                And the previous conversation history:
-                {convo_history.messages}
-                please generate JSON to help generate data, to the following questions succinctly:
-                {user_input}
-                if needed, here's the most recent SQL query generated, if it helps to give context:
-                {convo_history.get_last_executed_query()}
-                Return the answer in the following JSON format. Return only JSON. No other commentary outside of the JSON. Don't prefix the JSON object with "json" or any other text.
-                E.g.
-                {{"SQL": "select * from data_source_name where ..."}}
-                Generated queries should be line chart-friendly.
-                Whatever column is selected as the x-axis should be a date or timestamp. Rename it as "time".
-                Whatever column is selected as the y-axis should be a number - rename it as "total1".
-                If there are multple series, the query should return them as total1, total2, total3, etc.
-                """
-                
-        return prompt 
-  
   
     def execute_function(self,socket_io: SocketIO, session_id: str,conversation_history: ConversationHistory, response_message: Dict[str,Any], user_input: str, name: str, args) -> tuple[List[Dict[str, Any]], Dict[str, Any], str ]:
  
