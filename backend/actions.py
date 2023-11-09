@@ -142,7 +142,7 @@ class ActionsManager:
         commentary = f"DataQuery: Data source name: {data_source_name}, Query: {response['SQL']}"
         return data, metadata, commentary
     
-    def function_fetch_line_chart_data(self, socketio, session_id, convo_history: ConversationHistory, user_input, data_source_name):
+    def function_fetch_line_chart_data(self, socketio, session_id, convo_history: ConversationHistory, user_input, data_source_name,x_axis_title,y_axis_title,chart_title):
         #if data source is not none
         commentary = ""
         data_source = self.data_service.get_data_source(data_source_name)
@@ -154,7 +154,9 @@ class ActionsManager:
         convo_history.set_last_executed_query(response["SQL"])
         print(response)
         data = self.data_service.query(response["SQL"], data_source_name)
-        metadata = None
+         #let's put the chart axis and title in a JSON object in metadata
+        metadata = {"x_axis_title": x_axis_title, "y_axis_title": y_axis_title, "chart_title": chart_title}
+       
         commentary = f"DataQuery: Data source name: {data_source_name}, Query: {response['SQL']}"
         return data, metadata, commentary
     

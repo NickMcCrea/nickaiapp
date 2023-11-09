@@ -268,7 +268,10 @@ function App() {
 
           {currentFunctionCall === "fetch_line_chart_data" && lineChartData.length > 0 && (
             <div style={{ width: '80%', height: '70%' }}>
-              <SimpleLineChart data={lineChartData} />
+              <SimpleLineChart data={lineChartData} 
+               XAxisTitle={metaData["x_axis_title"] || "Default Title"}
+               YAxisTitle= {metaData["y_axis_title"] || "Default Title"}
+               ChartTitle={metaData["chart_title"] || "Default Title"}/>
             </div>
           )}
 

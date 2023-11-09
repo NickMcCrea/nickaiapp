@@ -120,6 +120,18 @@ def get_open_ai_function_defs():
                     "data_source_name": {
                         "type": "string",
                         "description": "The name of the data source to fetch data from."
+                    },
+                     "x_axis_title": {
+                        "type": "string",
+                        "description": "Suggested name for the x-axis"
+                    },
+                    "y_axis_title": {
+                        "type": "string",
+                        "description": "Suggested name for the y-axis"
+                    },
+                     "chart_title": {
+                        "type": "string",
+                        "description": "Suggested title for the chart. Keep it short and sweet."
                     }
                 }
             }
