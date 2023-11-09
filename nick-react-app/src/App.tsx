@@ -35,7 +35,7 @@ function App() {
   // Add state for tracking data source names and commentary
   const [dataSourceNames, setDataSourceNames] = useState<string[]>([]);
   const [catalogueCommentary, setCatalogueCommentary] = useState<string>("");
- 
+
 
 
   const [fadeIn, setFadeIn] = useState(false);
@@ -124,7 +124,7 @@ function App() {
           setMetaData(metaDataObject);
 
         }
-        else{
+        else {
           console.log("No meta data")
         }
 
@@ -212,7 +212,7 @@ function App() {
             }
           }
 
-          
+
 
           // Add the assistant's reply to the chat history
           setMessages(prevMessages => [...prevMessages, { type: 'text', content: reply.output, timestamp: new Date(), sender: 'Assistant' }]);
@@ -257,10 +257,10 @@ function App() {
 
 
               {/* ///display the simple chart and map in the data and get the titles from the meta data */}
-              <SimpleBarChart data={barChartData} 
-              XAxisTitle={metaData["x_axis_title"] || "Default Title"}
-              YAxisTitle= {metaData["y_axis_title"] || "Default Title"}
-              ChartTitle={metaData["chart_title"] || "Default Title"}/>
+              <SimpleBarChart data={barChartData}
+                XAxisTitle={metaData["x_axis_title"] || "Default Title"}
+                YAxisTitle={metaData["y_axis_title"] || "Default Title"}
+                ChartTitle={metaData["chart_title"] || "Default Title"} />
 
             </div>
 
@@ -268,10 +268,10 @@ function App() {
 
           {currentFunctionCall === "fetch_line_chart_data" && lineChartData.length > 0 && (
             <div style={{ width: '80%', height: '70%' }}>
-              <SimpleLineChart data={lineChartData} 
-               XAxisTitle={metaData["x_axis_title"] || "Default Title"}
-               YAxisTitle= {metaData["y_axis_title"] || "Default Title"}
-               ChartTitle={metaData["chart_title"] || "Default Title"}/>
+              <SimpleLineChart data={lineChartData}
+                XAxisTitle={metaData["x_axis_title"] || "Default Title"}
+                YAxisTitle={metaData["y_axis_title"] || "Default Title"}
+                ChartTitle={metaData["chart_title"] || "Default Title"} />
             </div>
           )}
 
