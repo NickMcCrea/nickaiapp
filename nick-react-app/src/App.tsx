@@ -6,11 +6,9 @@ import Header from './Components/Header';
 import AIChatBox from './Components/AIChatBox';
 import "react-resizable/css/styles.css";
 import './App.css';
-import BasicTable from './Components/Charts/BasicTable';
 import MetaDataCollectionDisplay from './Components/MetaDataDisplay/MetaDataDisplayCards';
 import { BarChartData } from './Components/Charts/SimpleBarChart';
 import { LineChartData } from './Components/Charts/SimpleLineChart';
-import ProgressData from './Services/ChatService';
 import DataSourceCatalogueDisplay from './Components/DataCatalogueDisplay';
 import GenericChart from './Components/Charts/GenericChart';
 
@@ -36,9 +34,6 @@ function App() {
   const [chatService, setChatService] = useState<ChatService | null>(null);
 
 
-  const handleProgress = (progressData: ProgressData) => {
-    console.log('Received progress update:', progressData);
-  };
 
   useEffect(() => {
     // Instantiate ChatService and store it in the state
@@ -150,6 +145,7 @@ function App() {
         const reply = await chatService.sendMessage(content, selectedModel);
         setEstimatedCost(reply.estimated_cost.toString());
 
+
         if(reply.function_call)
           setCurrentFunctionCall(reply.function_call.name);
 
@@ -172,8 +168,7 @@ function App() {
           // Parse the JSON output
           const outputObject = JSON.parse(reply.output);
           setDataSourceNames(outputObject.data_source_names);
-          setCurrentFunctionCall("query_data_catalogue");
-
+          
           // Extract data source names and commentary
           const { data_source_names, commentary } = outputObject;
 
@@ -183,9 +178,6 @@ function App() {
               Data Source(s): <strong>{data_source_names.join(', ')}</strong>. {commentary}
             </span>
           );
-
-
-
 
           // Add the JSX formatted message to the chat history
           setMessages(prevMessages => [...prevMessages, { type: 'jsx', content: metaDataMessage, timestamp: new Date(), sender: 'Assistant' }]);
@@ -197,20 +189,13 @@ function App() {
 
           //check function call name and set current function call
           if (reply.function_call) {
-            if (reply.function_call.name === "fetch_meta_data") {
-              setCurrentFunctionCall("fetch_meta_data");
-            }
-            if (reply.function_call.name === "fetch_data") {
-              setCurrentFunctionCall("fetch_data");
-            }
-
+           
             //if the function call is clear data, clear the data
             if (reply.function_call.name === "clear") {
               setTableData([]);
               setMetaData([]);
               setBarChartData([]);
               setLineChartData([]);
-              //clear the messages
               setMessages([]);
             }
 
@@ -225,10 +210,7 @@ function App() {
                 //set  bar chart data
                 setBarChartData(formattedData)
 
-                // Update chartMetadata state with the metadata from the reply
-
-
-                setCurrentFunctionCall("fetch_bar_chart_data");
+               
               } else {
                 // Handle the case where reply.data is undefined or not an array
                 console.error('Received data is not an array', reply.data);
@@ -238,9 +220,7 @@ function App() {
               if (Array.isArray(reply.data)) {
 
                 setLineChartData(reply.data as LineChartData[]);
-                setCurrentFunctionCall("fetch_line_chart_data");
               }
-
             }
           }
 
@@ -264,6 +244,8 @@ function App() {
           <p>Give me a bar chart of revenues from the financial data set.</p>
           <p>Give me a time series of balances from the trial balance.</p>
           <p>Give me 10 sample rows from the spotify data.</p> 
+          <p>Show me the data catalogue</p> 
+          <p>Show me the restaurant data structure</p> 
           <AIChatBox messages={messages} handleSendMessage={handleSendMessage} />
         </ResizableBox>
 
