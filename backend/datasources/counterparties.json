@@ -1,6 +1,7 @@
 {
     "name": "counterparty_data",
     "description": "Information about various counterparties including type and industry classification",
+    "category": "Reference",
     "fields": [
         {
             "fieldName": "counterparty_id",

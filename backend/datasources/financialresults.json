@@ -1,6 +1,7 @@
 {
     "name": "financial_results",
     "description": "Information about financial results such as revenues and expenses across different segments and quarters",
+    "category": "Earnings",
     "fields": [
         {
             "fieldName": "category",
