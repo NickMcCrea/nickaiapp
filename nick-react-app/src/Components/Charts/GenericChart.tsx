@@ -5,12 +5,14 @@ import SimpleLineChart, { LineChartData } from './SimpleLineChart';
 import BasicTable from './BasicTable';
 import { PieChartData } from './SimplePieChart';
 import SimplePieChart from './SimplePieChart';
+import SimpleScatterChart from './SimpleScatterChart';
+import { ScatterChartData } from './SimpleScatterChart';
 
-type ChartType = 'bar' | 'line' | 'table' | 'pie';
+type ChartType = 'bar' | 'line' | 'table' | 'pie' | 'scatter';
 
 interface GenericChartProps {
   type: ChartType;
-  data: BarChartData[] | LineChartData[] | PieChartData[];
+  data: BarChartData[] | LineChartData[] | PieChartData[] | ScatterChartData[];
   metaData: {
     XAxisTitle: string;
     YAxisTitle: string;
@@ -27,6 +29,10 @@ const GenericChart: React.FC<GenericChartProps> = ({ type, data, metaData }) => 
 
     case 'pie':
       return <SimplePieChart data={data as PieChartData[]} {...metaData} />;
+
+    case 'scatter':
+      return <SimpleScatterChart data={data as ScatterChartData[]} {...metaData} />;  
+
     case 'table':
       return <BasicTable data={data} />;
     default:

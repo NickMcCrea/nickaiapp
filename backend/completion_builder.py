@@ -126,6 +126,27 @@ def bar_graph_sql_prompt(convo_history, user_input, data_source_meta):
             
     return prompt 
 
+def scatter_graph_sql_prompt(convo_history, user_input, data_source_meta):
+    prompt = f"""
+            Given the following data source schema:
+            {data_source_meta}
+            And the previous conversation history:
+            {convo_history.messages}
+            please generate JSON to help generate data, to the following questions succinctly:
+            {user_input}
+                if needed, here's the most recent SQL query generated, if it helps to give context:
+            {convo_history.get_last_executed_query()}
+            Return the answer in the following JSON format. Return only JSON. No other commentary outside of the JSON. Don't prefix the JSON object with "json" or any other text.
+            E.g.
+            {{"SQL": "select * from data_source_name where ..."}}
+            Generated SQL queries should be scatter chart-friendly. X and Y axis should be numbers.
+            Whatever column is selected as the x-axis name as "X".
+            Whatever column is seleted as the y-axis name as "Y".
+            Whatever column is selected as the item we're plotting on X and Y should be named as Z.
+            """
+            
+    return prompt 
+
 def pie_graph_sql_prompt(convo_history, user_input, data_source_meta):
     prompt = f"""
             Given the following data source schema:

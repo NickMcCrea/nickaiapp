@@ -137,6 +137,36 @@ def get_open_ai_function_defs():
             }
          },
          {
+         "name": "fetch_scatter_chart_data",
+            "description": f"""Use this function when a user asks for a question that requires a scatter chart or scatter plot.
+                            Users may ask to see the relationship between two values, e.g. "Can you show me the relationship between delivery times and customer ratings?"
+                            If we can infer the data source from the context, we should input that information. 
+                            Users may ask for refined data from a previous query, e.g. "Can you filter that on restaurants with delivery times < 30 mins?"
+                            """,
+          "parameters": {
+                "type": "object",
+                "properties": 
+                {
+                    "data_source_name": {
+                        "type": "string",
+                        "description": "The name of the data source to fetch data from."
+                    },
+                     "x_axis_title": {
+                        "type": "string",
+                        "description": "Suggested name for the x-axis"
+                    },
+                    "y_axis_title": {
+                        "type": "string",
+                        "description": "Suggested name for the y-axis"
+                    },
+                     "chart_title": {
+                        "type": "string",
+                        "description": "Suggested title for the chart. Keep it short and sweet."
+                    }
+                }
+            }
+         },
+         {
          "name": "fetch_pie_chart_data",
             "description": f"""Use this function when a user asks for a question that requires a pie chart or pie graph.
                             If we can infer the data source from the context, we should input that information. 

@@ -12,6 +12,7 @@ import { LineChartData } from './Components/Charts/SimpleLineChart';
 import DataSourceCatalogueDisplay from './Components/DataCatalogueDisplay';
 import GenericChart from './Components/Charts/GenericChart';
 import { PieChartData } from './Components/Charts/SimplePieChart';
+import { ScatterChartData } from './Components/Charts/SimpleScatterChart';
 
 
 
@@ -28,6 +29,7 @@ function App() {
   const [barChartData, setBarChartData] = useState<BarChartData[]>([]);
   const [lineChartData, setLineChartData] = useState<LineChartData[]>([]);
   const [pieChartData, setPieChartData] = useState<PieChartData[]>([]);
+  const[scatterChartData, setScatterChartData] = useState<ScatterChartData[]>([]);
   const [dataSourceNames, setDataSourceNames] = useState<string[]>([]);
   const [catalogueCommentary, setCatalogueCommentary] = useState<string>("");
   const [fadeIn, setFadeIn] = useState(false);
@@ -95,7 +97,7 @@ function App() {
 
     //if current funnction call is bar chart, set to bar.
     //declare chartdata, it can be bar or line or plain data
-    let chartData: BarChartData[] | LineChartData[] | PieChartData[] = [];
+    let chartData: BarChartData[] | LineChartData[] | PieChartData[] | ScatterChartData[] = [];
     if (currentFunctionCall === "fetch_bar_chart_data") 
       chartData = barChartData;
     if (currentFunctionCall === "fetch_line_chart_data") 
@@ -104,15 +106,20 @@ function App() {
       chartData = tableData;
     if (currentFunctionCall === "fetch_pie_chart_data")
       chartData = pieChartData;
+    if (currentFunctionCall === "fetch_scatter_chart_data")
+      chartData = scatterChartData;
+
       
     // Set the chart type based on the current function call
-    let chartType: 'bar' | 'line' | 'table' | 'pie' = 'bar';
+    let chartType: 'bar' | 'line' | 'table' | 'pie' | 'scatter'= 'bar';
     if (currentFunctionCall === "fetch_line_chart_data") 
       chartType = 'line';    
     if (currentFunctionCall === "fetch_data") 
       chartType = 'table';
     if (currentFunctionCall === "fetch_pie_chart_data")
       chartType = 'pie';
+    if (currentFunctionCall === "fetch_scatter_chart_data")
+      chartType = 'scatter';
     
 
     //set an overflow variable to be off for charts, auto for table
@@ -236,6 +243,15 @@ function App() {
               }
             }
 
+            if (reply.function_call && reply.function_call.name === "fetch_scatter_chart_data") {
+              if (Array.isArray(reply.data)) {
+
+                setScatterChartData(reply.data as ScatterChartData[]);
+              }
+            }
+
+         
+
           }
 
 
@@ -272,7 +288,7 @@ function App() {
           )}
 
           {
-            ["fetch_bar_chart_data", "fetch_line_chart_data","fetch_pie_chart_data", "fetch_data"].includes(currentFunctionCall) && renderChart()
+            ["fetch_bar_chart_data", "fetch_line_chart_data","fetch_pie_chart_data", "fetch_scatter_chart_data", "fetch_data"].includes(currentFunctionCall) && renderChart()
           }
 
           {currentFunctionCall === "query_data_catalogue" && dataSourceNames.length > 0 && (
