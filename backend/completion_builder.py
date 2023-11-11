@@ -23,6 +23,20 @@ def build_data_analysis_prompt(convo_history, user_input, data_str):
         When commenting on the data, stick to insights gleaned from the data, rather than the structure or schema of the data itself.
         """
 
+
+def build_analysis_recommendation_prompt(convo_history, user_input, data_source_meta):
+        prompt = f"""
+                Given the following data source schema:
+                {data_source_meta}
+                please answer the following questions succinctly:
+                {user_input}
+                if needed, here's the most recent convo messages so far, if it helps to give context:
+                {convo_history.messages}
+                Recommend some SQL that could be used to generate data for the analysis, or what could be gleaned from charts of the data (pie, bar, scatter, line).
+                """
+                
+        return prompt
+
 def build_query_catalogue_prompt(convo_history, user_input, all_meta_data):
         prompt = f"""
                 Given the following data source schemas:

@@ -30,9 +30,36 @@ class ActionsManager:
             "fetch_pie_chart_data": self.function_fetch_pie_chart_data,
             "fetch_scatter_chart_data": self.function_fetch_scatter_chart_data, 
             "comment_on_data": self.function_comment_on_data,
-            "clear": self.function_clear  
+            "clear": self.function_clear,
+            "recommend_analysis": self.function_recommend_analysis,  
             # Add more function mappings here...
         }
+
+
+    def function_recommend_analysis(self, socketio, session_id, convo_history, user_input: str, data_source_name: str):
+        
+        data_source = self.data_service.get_data_source(data_source_name)
+        if data_source is None:
+            data_source_name, data_source = self.open_ai_infer_data_source(socketio, session_id, convo_history, user_input)
+
+        #get the meta data for the data source
+        data_source_meta = data_source["meta"]
+
+        prompt = completion_builder.build_analysis_recommendation_prompt(convo_history, user_input, data_source_meta)
+        messages = completion_builder.build_basic_message_list(prompt)
+        response = openai.ChatCompletion.create(
+            model=self.current_model,
+            messages=messages
+        )
+        commentary = response['choices'][0]['message']['content']
+        data = None
+        metadata= None
+        return data, metadata, commentary
+
+
+
+
+           
 
 
 
@@ -202,7 +229,6 @@ class ActionsManager:
         commentary = f"DataQuery: Data source name: {data_source_name}, Query: {response['SQL']}"
         return data, metadata, commentary
     
-
     def function_fetch_meta_data(self, socketio, session_id, convo_history, user_input, data_source_name=None, ai_commentary=None):
         data_source = self.data_service.get_data_source(data_source_name)
         if data_source is None:
@@ -240,8 +266,6 @@ class ActionsManager:
 
         
         return data_source_name, data_source
-
-   
 
     def open_ai_generate_sql(self, socketio, session_id, convo_history, user_input, data_source_meta, prompt):
 

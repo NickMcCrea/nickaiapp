@@ -12,6 +12,21 @@ def get_open_ai_function_defs():
             }
         },
         {
+         "name": "recommend_analysis",
+            "description": f"""Use this when the user asks for a recommendation for analysis to do on the dataset.
+                            """,
+          "parameters": {
+                "type": "object",
+                "properties": 
+                {
+                    "data_source_name": {
+                        "type": "string",
+                        "description": "The name of the data source to analyse."
+                    }
+                }
+            }
+        },
+        {
          "name": "comment_on_data",
             "description": f"""Use this function to comment on specific data.
                             For example, the user may ask for analysis or commentary on a data set that's just been returned.
