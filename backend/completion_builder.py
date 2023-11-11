@@ -140,6 +140,7 @@ def scatter_graph_sql_prompt(convo_history, user_input, data_source_meta):
             E.g.
             {{"SQL": "select * from data_source_name where ..."}}
             Generated SQL queries should be scatter chart-friendly. X and Y axis should be numbers.
+            You can use "ORDER BY RANDOM() LIMIT 300" to sample the data randomly and keep the volume down for the front end.
             Whatever column is selected as the x-axis name as "X".
             Whatever column is seleted as the y-axis name as "Y".
             Whatever column is selected as the item we're plotting on X and Y should be named as Z.

@@ -138,6 +138,7 @@ class ActionsManager:
         convo_history.set_last_executed_query(response["SQL"])
         print(response)
         data = self.data_service.query(response["SQL"], data_source_name)
+ 
 
         #let's put the chart axis and title in a JSON object in metadata
         metadata = {"x_axis_title": x_axis_title, "y_axis_title": y_axis_title, "chart_title": chart_title}
