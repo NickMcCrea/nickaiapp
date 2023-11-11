@@ -1,0 +1,152 @@
+{
+    "name": "basketball_player_stats",
+    "description": "Statistical data of basketball players including personal and game performance metrics",
+    "category": "Sports",
+    "fields": [
+        {
+            "fieldName": "Player",
+            "fieldDescription": "Name of the basketball player",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "Pos",
+            "fieldDescription": "Position of the player on the team",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "Age",
+            "fieldDescription": "Age of the player",
+            "fieldType": "INTEGER"
+        },
+        {
+            "fieldName": "Tm",
+            "fieldDescription": "Team the player belongs to",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "G",
+            "fieldDescription": "Number of games played",
+            "fieldType": "INTEGER"
+        },
+        {
+            "fieldName": "GS",
+            "fieldDescription": "Number of games started",
+            "fieldType": "INTEGER"
+        },
+        {
+            "fieldName": "MP",
+            "fieldDescription": "Minutes played per game",
+            "fieldType": "FLOAT"
+        },
+        {
+            "fieldName": "FG",
+            "fieldDescription": "Field goals made per game",
+            "fieldType": "FLOAT"
+        },
+        {
+            "fieldName": "FGA",
+            "fieldDescription": "Field goals attempted per game",
+            "fieldType": "FLOAT"
+        },
+        {
+            "fieldName": "FG%",
+            "fieldDescription": "Field goal percentage",
+            "fieldType": "FLOAT"
+        },
+        {
+            "fieldName": "3P",
+            "fieldDescription": "Three-point field goals made per game",
+            "fieldType": "FLOAT"
+        },
+        {
+            "fieldName": "3PA",
+            "fieldDescription": "Three-point field goals attempted per game",
+            "fieldType": "FLOAT"
+        },
+        {
+            "fieldName": "3P%",
+            "fieldDescription": "Three-point field goal percentage",
+            "fieldType": "FLOAT"
+        },
+        {
+            "fieldName": "2P",
+            "fieldDescription": "Two-point field goals made per game",
+            "fieldType": "FLOAT"
+        },
+        {
+            "fieldName": "2PA",
+            "fieldDescription": "Two-point field goals attempted per game",
+            "fieldType": "FLOAT"
+        },
+        {
+            "fieldName": "2P%",
+            "fieldDescription": "Two-point field goal percentage",
+            "fieldType": "FLOAT"
+        },
+        {
+            "fieldName": "eFG%",
+            "fieldDescription": "Effective field goal percentage",
+            "fieldType": "FLOAT"
+        },
+        {
+            "fieldName": "FT",
+            "fieldDescription": "Free throws made per game",
+            "fieldType": "FLOAT"
+        },
+        {
+            "fieldName": "FTA",
+            "fieldDescription": "Free throws attempted per game",
+            "fieldType": "FLOAT"
+        },
+        {
+            "fieldName": "FT%",
+            "fieldDescription": "Free throw percentage",
+            "fieldType": "FLOAT"
+        },
+        {
+            "fieldName": "ORB",
+            "fieldDescription": "Offensive rebounds per game",
+            "fieldType": "FLOAT"
+        },
+        {
+            "fieldName": "DRB",
+            "fieldDescription": "Defensive rebounds per game",
+            "fieldType": "FLOAT"
+        },
+        {
+            "fieldName": "TRB",
+            "fieldDescription": "Total rebounds per game",
+            "fieldType": "FLOAT"
+        },
+        {
+            "fieldName": "AST",
+            "fieldDescription": "Assists per game",
+            "fieldType": "FLOAT"
+        },
+        {
+            "fieldName": "STL",
+            "fieldDescription": "Steals per game",
+            "fieldType": "FLOAT"
+        },
+        {
+            "fieldName": "BLK",
+            "fieldDescription": "Blocks per game",
+            "fieldType": "FLOAT"
+        },
+        {
+            "fieldName": "TOV",
+            "fieldDescription": "Turnovers per game",
+            "fieldType": "FLOAT"
+        },
+        {
+            "fieldName": "PF",
+            "fieldDescription": "Personal fouls per game",
+            "fieldType": "FLOAT"
+        },
+        {
+            "fieldName": "PTS",
+            "fieldDescription": "Points per game",
+            "fieldType": "FLOAT"
+        }
+    ]
+}
