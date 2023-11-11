@@ -1,0 +1,133 @@
+{
+    "name": "fifa_match_results",
+    "description": "A dataset containing results of international football matches including details like teams, scores, and FIFA rankings.",
+    "category": "Sports/Football",
+    "fields": [
+      {
+        "fieldName": "date",
+        "fieldDescription": "The date on which the match was played",
+        "fieldType": "DATE"
+      },
+      {
+        "fieldName": "home_team",
+        "fieldDescription": "The name of the home team",
+        "fieldType": "STRING"
+      },
+      {
+        "fieldName": "away_team",
+        "fieldDescription": "The name of the away team",
+        "fieldType": "STRING"
+      },
+      {
+        "fieldName": "home_team_continent",
+        "fieldDescription": "The continent of the home team",
+        "fieldType": "STRING"
+      },
+      {
+        "fieldName": "away_team_continent",
+        "fieldDescription": "The continent of the away team",
+        "fieldType": "STRING"
+      },
+      {
+        "fieldName": "home_team_fifa_rank",
+        "fieldDescription": "FIFA ranking of the home team",
+        "fieldType": "INTEGER"
+      },
+      {
+        "fieldName": "away_team_fifa_rank",
+        "fieldDescription": "FIFA ranking of the away team",
+        "fieldType": "INTEGER"
+      },
+      {
+        "fieldName": "home_team_total_fifa_points",
+        "fieldDescription": "Total FIFA points of the home team",
+        "fieldType": "INTEGER"
+      },
+      {
+        "fieldName": "away_team_total_fifa_points",
+        "fieldDescription": "Total FIFA points of the away team",
+        "fieldType": "INTEGER"
+      },
+      {
+        "fieldName": "home_team_score",
+        "fieldDescription": "Score of the home team",
+        "fieldType": "INTEGER"
+      },
+      {
+        "fieldName": "away_team_score",
+        "fieldDescription": "Score of the away team",
+        "fieldType": "INTEGER"
+      },
+      {
+        "fieldName": "tournament",
+        "fieldDescription": "The name of the tournament in which the match was played",
+        "fieldType": "STRING"
+      },
+      {
+        "fieldName": "city",
+        "fieldDescription": "The city where the match was played",
+        "fieldType": "STRING"
+      },
+      {
+        "fieldName": "country",
+        "fieldDescription": "The country where the match was played",
+        "fieldType": "STRING"
+      },
+      {
+        "fieldName": "neutral_location",
+        "fieldDescription": "Indicates if the match was played at a neutral location",
+        "fieldType": "BOOLEAN"
+      },
+      {
+        "fieldName": "shoot_out",
+        "fieldDescription": "Indicates if the match involved a penalty shoot-out",
+        "fieldType": "BOOLEAN"
+      },
+      {
+        "fieldName": "home_team_result",
+        "fieldDescription": "The result of the match for the home team (Win/Lose/Draw)",
+        "fieldType": "STRING"
+      },
+      {
+        "fieldName": "home_team_goalkeeper_score",
+        "fieldDescription": "Goalkeeper score of the home team",
+        "fieldType": "FLOAT"
+      },
+      {
+        "fieldName": "away_team_goalkeeper_score",
+        "fieldDescription": "Goalkeeper score of the away team",
+        "fieldType": "FLOAT"
+      },
+      {
+        "fieldName": "home_team_mean_defense_score",
+        "fieldDescription": "Mean defense score of the home team",
+        "fieldType": "FLOAT"
+      },
+      {
+        "fieldName": "home_team_mean_offense_score",
+        "fieldDescription": "Mean offense score of the home team",
+        "fieldType": "FLOAT"
+      },
+      {
+        "fieldName": "home_team_mean_midfield_score",
+        "fieldDescription": "Mean midfield score of the home team",
+        "fieldType": "FLOAT"
+      },
+      {
+        "fieldName": "away_team_mean_defense_score",
+        "fieldDescription": "Mean defense score of the away team",
+        "fieldType": "FLOAT"
+      },
+      {
+        "fieldName": "away_team_mean_offense_score",
+        "fieldDescription": "Mean offense score of the away team",
+        "fieldType": "FLOAT"
+      },
+      {
+        "fieldName": "away_team_mean_midfield_score",
+        "fieldDescription": "Mean midfield score of the away team",
+        "fieldType": "FLOAT"
+      }
+    ]
+  }
+  

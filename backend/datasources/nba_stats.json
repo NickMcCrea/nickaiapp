@@ -54,32 +54,32 @@
             "fieldType": "FLOAT"
         },
         {
-            "fieldName": "3P",
+            "fieldName": "THREEP",
             "fieldDescription": "Three-point field goals made per game",
             "fieldType": "FLOAT"
         },
         {
-            "fieldName": "3PA",
+            "fieldName": "THREEPA",
             "fieldDescription": "Three-point field goals attempted per game",
             "fieldType": "FLOAT"
         },
         {
-            "fieldName": "3Ppc",
+            "fieldName": "THREEPpc",
             "fieldDescription": "Three-point field goal percentage",
             "fieldType": "FLOAT"
         },
         {
-            "fieldName": "2P",
+            "fieldName": "TWOP",
             "fieldDescription": "Two-point field goals made per game",
             "fieldType": "FLOAT"
         },
         {
-            "fieldName": "2PA",
+            "fieldName": "TWOPA",
             "fieldDescription": "Two-point field goals attempted per game",
             "fieldType": "FLOAT"
         },
         {
-            "fieldName": "2Ppc",
+            "fieldName": "TWOPpc",
             "fieldDescription": "Two-point field goal percentage",
             "fieldType": "FLOAT"
         },

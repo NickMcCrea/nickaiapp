@@ -1,3 +1,24 @@
+bar_chart_advice = """
+            Generated SQL queries should be bar chart-friendly.
+            Whatever column is selected as the x-axis name as "X-Axis".
+            Whatever column is selected as the y-axis should be a number - rename it as "Total". """
+
+scatter_chart_advice = """ Generated SQL queries should be scatter chart-friendly. X and Y axis should be numbers.
+            You can use "ORDER BY RANDOM() LIMIT 300" to sample the data randomly and keep the volume down for the front end.
+            Whatever column is selected as the x-axis name as "X".
+            Whatever column is seleted as the y-axis name as "Y".
+            Whatever column is selected as the item we're plotting on X and Y should be named as Z.
+            """
+
+pie_chart_advice = """ Generated SQL queries should be pie chart-friendly.
+            We're looking for two columns, one for the name, and one for the total. Make sure to rename them as "Name" and "Total".
+            """
+
+line_chart_advice = """ Generated SQL queries should be line chart-friendly.
+            Whatever column is selected as the x-axis should be a date or timestamp. Rename it as "time".
+            Whatever column is selected as the y-axis should be a number - rename it as "total1".
+            If there are multple series, the query should return them as total1, total2, total3, etc."""
+
 def build_basic_message_list(prompt):
     messages = [{"role": "system", "content": "You are a helpful assistant."}]
     messages.append({"role": "system", "content": "You are helping the user explore data sets, and answer questions about them."}) 
@@ -36,6 +57,19 @@ def build_analysis_recommendation_prompt(convo_history, user_input, data_source_
                 The SQL should be SQlite compatible. Avoid using SQL functions that are not supported by SQLite.
                 Only suggest 2 or 3 ideas that are really high quality or will give insightful information. Keep it brief.
                 Only suggest analysis based on the data we have in the meta data. Don't suggest analysis based on data we don't have.
+                When suggsting visualisations, stick to basic visualisations like pie, bar, scatter, line. Don't suggest stacked bar charts, or other complex visualisations.
+                Here's the rules for generating SQL for charts:
+                For bar charts:
+                {bar_chart_advice}
+
+                For scatter charts:
+                {scatter_chart_advice}
+
+                For pie charts:
+                {pie_chart_advice}
+
+                For line charts:
+                {line_chart_advice}
                 """
                 
         return prompt
@@ -136,9 +170,7 @@ def bar_graph_sql_prompt(convo_history, user_input, data_source_meta):
             Return the answer in the following JSON format. Return only JSON. No other commentary outside of the JSON. Don't prefix the JSON object with "json" or any other text.
             E.g.
             {{"SQL": "select * from data_source_name where ..."}}
-            Generated SQL queries should be bar chart-friendly.
-            Whatever column is selected as the x-axis name as "X-Axis".
-            Whatever column is selected as the y-axis should be a number - rename it as "Total". 
+           {bar_chart_advice}
             """
             
     return prompt 
@@ -156,11 +188,7 @@ def scatter_graph_sql_prompt(convo_history, user_input, data_source_meta):
             Return the answer in the following JSON format. Return only JSON. No other commentary outside of the JSON. Don't prefix the JSON object with "json" or any other text.
             E.g.
             {{"SQL": "select * from data_source_name where ..."}}
-            Generated SQL queries should be scatter chart-friendly. X and Y axis should be numbers.
-            You can use "ORDER BY RANDOM() LIMIT 300" to sample the data randomly and keep the volume down for the front end.
-            Whatever column is selected as the x-axis name as "X".
-            Whatever column is seleted as the y-axis name as "Y".
-            Whatever column is selected as the item we're plotting on X and Y should be named as Z.
+            {scatter_chart_advice}
             """
             
     return prompt 
@@ -178,8 +206,7 @@ def pie_graph_sql_prompt(convo_history, user_input, data_source_meta):
             Return the answer in the following JSON format. Return only JSON. No other commentary outside of the JSON. Don't prefix the JSON object with "json" or any other text.
             E.g.
             {{"SQL": "select * from data_source_name where ..."}}
-            Generated SQL queries should be pie chart-friendly.
-            We're looking for two columns, one for the name, and one for the total. Make sure to rename them as "Name" and "Total".
+            {pie_chart_advice}
             """
             
     return prompt 
@@ -197,10 +224,7 @@ def line_graph_sql_prompt(convo_history, user_input, data_source_meta):
             Return the answer in the following JSON format. Return only JSON. No other commentary outside of the JSON. Don't prefix the JSON object with "json" or any other text.
             E.g.
             {{"SQL": "select * from data_source_name where ..."}}
-            Generated queries should be line chart-friendly.
-            Whatever column is selected as the x-axis should be a date or timestamp. Rename it as "time".
-            Whatever column is selected as the y-axis should be a number - rename it as "total1".
-            If there are multple series, the query should return them as total1, total2, total3, etc.
+            {line_chart_advice}
             """
             
     return prompt 
