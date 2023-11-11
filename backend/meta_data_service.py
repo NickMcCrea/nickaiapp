@@ -9,61 +9,29 @@ class MetaDataService:
 
     def initialize_data_sources(self):
         # Load the metadata from JSON files
-        top_songs_meta = self.load_json("datasources/top_songs.json")
-        restaurants_meta = self.load_json("datasources/restaurants.json")
-        trial_balance_meta = self.load_json("datasources/nicktrialbalance.json")
-        counterparties_meta = self.load_json("datasources/counterparties.json")
-        products_meta = self.load_json("datasources/products.json")
-        financial_results_meta = self.load_json("datasources/financialresults.json")
+        self.add_data_source('datasources/restaurants.json', 'datasources/restaurants.csv')
+        self.add_data_source('datasources/counterparties.json', 'datasources/counterparties.csv')
+        self.add_data_source('datasources/products.json', 'datasources/products.csv')
+        self.add_data_source('datasources/nicktrialbalance.json', 'datasources/nicktrialbalance.csv')
+        self.add_data_source('datasources/top_songs.json', 'datasources/top_songs.csv')
+        self.add_data_source('datasources/financialresults.json', 'datasources/financialresults.csv')
+
+
+
+
+    def add_data_source(self, data_source_json_path, datasource_csv_path):
+
+        # Load the metadata from JSON files
+        data_source_meta = self.load_json(data_source_json_path)
         
         # Create in-memory databases
-        top_song_data_db = InMemoryDB()
-        top_song_data_db.load_csv_to_db('datasources/top_songs.csv', 'spotify_track_data')
-
-        restaurants_data_db = InMemoryDB()
-        restaurants_data_db.load_csv_to_db('datasources/restaurants.csv', 'restaurant_info')
-
-        trial_balance_data_db = InMemoryDB()
-        trial_balance_data_db.load_csv_to_db('datasources/nicktrialbalance.csv', 'trial_balance_data')
-
-        counterparties_data_db = InMemoryDB()
-        counterparties_data_db.load_csv_to_db('datasources/counterparties.csv', 'counterparty_data')
-
-        products_data_db = InMemoryDB()
-        products_data_db.load_csv_to_db('datasources/products.csv', 'product_data')
-
-        financial_results_data_db = InMemoryDB()
-        financial_results_data_db.load_csv_to_db('datasources/financialresults.csv', 'financial_results')
+        data_source_db = InMemoryDB()
+        data_source_db.load_csv_to_db(datasource_csv_path, data_source_meta['name'])
 
         # Add the metadata and databases to the data_sources dictionary
-        self.data_sources[top_songs_meta['name']] = {
-            'meta': top_songs_meta,
-            'db': top_song_data_db,
-        }
-
-        self.data_sources[restaurants_meta['name']] = {
-            'meta': restaurants_meta,
-            'db': restaurants_data_db
-        }
-
-        self.data_sources[trial_balance_meta['name']] = {
-            'meta': trial_balance_meta,
-            'db': trial_balance_data_db
-        }
-
-        self.data_sources[counterparties_meta['name']] = {
-            'meta': counterparties_meta,
-            'db': counterparties_data_db
-        }
-
-        self.data_sources[products_meta['name']] = {
-            'meta': products_meta,
-            'db': products_data_db
-        }
-
-        self.data_sources[financial_results_meta['name']] = {
-            'meta': financial_results_meta,
-            'db': financial_results_data_db
+        self.data_sources[data_source_meta['name']] = {
+            'meta': data_source_meta,
+            'db': data_source_db,
         }
 
     def load_json(self, file_path):
