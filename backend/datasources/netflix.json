@@ -1,0 +1,68 @@
+{
+    "name": "netflix_shows",
+    "description": "This dataset lists various shows available on Netflix, including movies and TV shows. It provides details about each show's type, title, director, cast, country of origin, date added to Netflix, release year, rating, duration, genre, and a brief description.",
+    "category": "Entertainment/Media",
+    "fields": [
+      {
+        "fieldName": "show_id",
+        "fieldDescription": "Unique identifier for each show",
+        "fieldType": "STRING"
+      },
+      {
+        "fieldName": "type",
+        "fieldDescription": "Type of the show (e.g., Movie, TV Show)",
+        "fieldType": "STRING"
+      },
+      {
+        "fieldName": "title",
+        "fieldDescription": "Title of the show",
+        "fieldType": "STRING"
+      },
+      {
+        "fieldName": "director",
+        "fieldDescription": "Director of the show",
+        "fieldType": "STRING"
+      },
+      {
+        "fieldName": "cast",
+        "fieldDescription": "List of cast members in the show",
+        "fieldType": "STRING"
+      },
+      {
+        "fieldName": "country",
+        "fieldDescription": "Country where the show was produced",
+        "fieldType": "STRING"
+      },
+      {
+        "fieldName": "date_added",
+        "fieldDescription": "Date when the show was added to Netflix",
+        "fieldType": "DATE"
+      },
+      {
+        "fieldName": "release_year",
+        "fieldDescription": "Year when the show was released",
+        "fieldType": "INTEGER"
+      },
+      {
+        "fieldName": "rating",
+        "fieldDescription": "Rating of the show",
+        "fieldType": "STRING"
+      },
+      {
+        "fieldName": "duration",
+        "fieldDescription": "Duration of the show (e.g., 90 min, 2 Seasons)",
+        "fieldType": "STRING"
+      },
+      {
+        "fieldName": "listed_in",
+        "fieldDescription": "Genres or categories the show is listed under",
+        "fieldType": "STRING"
+      },
+      {
+        "fieldName": "description",
+        "fieldDescription": "Brief description of the show",
+        "fieldType": "STRING"
+      }
+    ]
+  }
+  

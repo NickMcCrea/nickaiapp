@@ -16,6 +16,8 @@ class MetaDataService:
         self.add_data_source('datasources/top_songs.json', 'datasources/top_songs.csv')
         self.add_data_source('datasources/financialresults.json', 'datasources/financialresults.csv')
         self.add_data_source('datasources/nba_stats.json', 'datasources/nba_stats.csv')
+        self.add_data_source('datasources/netflix.json', 'datasources/netflix.csv')
+        self.add_data_source('datasources/football.json', 'datasources/football.csv')
 
 
 

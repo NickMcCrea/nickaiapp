@@ -33,6 +33,9 @@ def build_analysis_recommendation_prompt(convo_history, user_input, data_source_
                 if needed, here's the most recent convo messages so far, if it helps to give context:
                 {convo_history.messages}
                 Recommend some SQL that could be used to generate data for the analysis, or what could be gleaned from charts of the data (pie, bar, scatter, line).
+                The SQL should be SQlite compatible. Avoid using SQL functions that are not supported by SQLite.
+                Only suggest 2 or 3 ideas that are really high quality or will give insightful information. Keep it brief.
+                Only suggest analysis based on the data we have in the meta data. Don't suggest analysis based on data we don't have.
                 """
                 
         return prompt

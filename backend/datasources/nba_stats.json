@@ -49,7 +49,7 @@
             "fieldType": "FLOAT"
         },
         {
-            "fieldName": "FG%",
+            "fieldName": "FGpc",
             "fieldDescription": "Field goal percentage",
             "fieldType": "FLOAT"
         },
@@ -64,7 +64,7 @@
             "fieldType": "FLOAT"
         },
         {
-            "fieldName": "3P%",
+            "fieldName": "3Ppc",
             "fieldDescription": "Three-point field goal percentage",
             "fieldType": "FLOAT"
         },
@@ -79,12 +79,12 @@
             "fieldType": "FLOAT"
         },
         {
-            "fieldName": "2P%",
+            "fieldName": "2Ppc",
             "fieldDescription": "Two-point field goal percentage",
             "fieldType": "FLOAT"
         },
         {
-            "fieldName": "eFG%",
+            "fieldName": "eFGpc",
             "fieldDescription": "Effective field goal percentage",
             "fieldType": "FLOAT"
         },
@@ -99,7 +99,7 @@
             "fieldType": "FLOAT"
         },
         {
-            "fieldName": "FT%",
+            "fieldName": "FTpc",
             "fieldDescription": "Free throw percentage",
             "fieldType": "FLOAT"
         },

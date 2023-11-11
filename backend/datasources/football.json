@@ -1,0 +1,53 @@
+{
+    "name": "football_match_historical_results",
+    "description": "This dataset captures historical data of international soccer matches including match dates, teams, scores, tournament type, location, and neutrality of the venue.",
+    "category": "Sports",
+    "fields": [
+      {
+        "fieldName": "date",
+        "fieldDescription": "Date on which the match was played",
+        "fieldType": "DATE"
+      },
+      {
+        "fieldName": "home_team",
+        "fieldDescription": "Name of the home team",
+        "fieldType": "STRING"
+      },
+      {
+        "fieldName": "away_team",
+        "fieldDescription": "Name of the away team",
+        "fieldType": "STRING"
+      },
+      {
+        "fieldName": "home_score",
+        "fieldDescription": "Number of goals scored by the home team",
+        "fieldType": "INTEGER"
+      },
+      {
+        "fieldName": "away_score",
+        "fieldDescription": "Number of goals scored by the away team",
+        "fieldType": "INTEGER"
+      },
+      {
+        "fieldName": "tournament",
+        "fieldDescription": "Name of the tournament in which the match was played",
+        "fieldType": "STRING"
+      },
+      {
+        "fieldName": "city",
+        "fieldDescription": "City where the match was held",
+        "fieldType": "STRING"
+      },
+      {
+        "fieldName": "country",
+        "fieldDescription": "Country where the match was held",
+        "fieldType": "STRING"
+      },
+      {
+        "fieldName": "neutral",
+        "fieldDescription": "Boolean indicating if the venue was neutral (not home ground for either team)",
+        "fieldType": "BOOLEAN"
+      }
+    ]
+  }
+  
