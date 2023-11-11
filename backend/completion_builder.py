@@ -125,6 +125,25 @@ def bar_graph_sql_prompt(convo_history, user_input, data_source_meta):
             """
             
     return prompt 
+
+def pie_graph_sql_prompt(convo_history, user_input, data_source_meta):
+    prompt = f"""
+            Given the following data source schema:
+            {data_source_meta}
+            And the previous conversation history:
+            {convo_history.messages}
+            please generate JSON to help generate data, to the following questions succinctly:
+            {user_input}
+                if needed, here's the most recent SQL query generated, if it helps to give context:
+            {convo_history.get_last_executed_query()}
+            Return the answer in the following JSON format. Return only JSON. No other commentary outside of the JSON. Don't prefix the JSON object with "json" or any other text.
+            E.g.
+            {{"SQL": "select * from data_source_name where ..."}}
+            Generated SQL queries should be pie chart-friendly.
+            We're looking for two columns, one for the name, and one for the total. Make sure to rename them as "Name" and "Total".
+            """
+            
+    return prompt 
     
 def line_graph_sql_prompt(convo_history, user_input, data_source_meta):
     prompt = f"""

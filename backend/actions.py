@@ -27,10 +27,13 @@ class ActionsManager:
             "fetch_meta_data": self.function_fetch_meta_data,
             "fetch_bar_chart_data": self.function_fetch_bar_chart_data,
             "fetch_line_chart_data": self.function_fetch_line_chart_data,
+            "fetch_pie_chart_data": self.function_fetch_pie_chart_data, #same as line chart for now
             "comment_on_data": self.function_comment_on_data,
             "clear": self.function_clear  
             # Add more function mappings here...
         }
+
+
 
    
 
@@ -120,6 +123,25 @@ class ActionsManager:
         data = self.data_service.query(response["SQL"], data_source_name)
         convo_history.set_last_executed_query(response["SQL"])
         metadata = None
+        commentary = f"DataQuery: Data source name: {data_source_name}, Query: {response['SQL']}"
+        return data, metadata, commentary
+    
+    def function_fetch_pie_chart_data(self, socketio, session_id, convo_history, user_input, data_source_name,chart_title):
+        #if data source is not none
+        commentary = ""
+        data_source = self.data_service.get_data_source(data_source_name)
+        if data_source is None:
+            data_source_name, data_source = self.open_ai_infer_data_source(socketio, session_id, convo_history, user_input)
+           
+           
+        response = self.open_ai_generate_sql(socketio, session_id, convo_history, user_input,data_source["meta"], completion_builder.pie_graph_sql_prompt(convo_history, user_input, data_source["meta"]))
+        convo_history.set_last_executed_query(response["SQL"])
+        print(response)
+        data = self.data_service.query(response["SQL"], data_source_name)
+
+        #let's put the chart axis and title in a JSON object in metadata
+        metadata = {"chart_title": chart_title}
+       
         commentary = f"DataQuery: Data source name: {data_source_name}, Query: {response['SQL']}"
         return data, metadata, commentary
     
