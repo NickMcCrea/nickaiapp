@@ -46,6 +46,7 @@ class ActionsManager:
         data_source_meta = data_source["meta"]
 
         prompt = completion_builder.build_analysis_recommendation_prompt(convo_history, user_input, data_source_meta)
+        prompt = completion_builder.add_custom_prompt_elements(prompt, data_source_name)
         messages = completion_builder.build_basic_message_list(prompt)
         response = openai.ChatCompletion.create(
             model=self.current_model,

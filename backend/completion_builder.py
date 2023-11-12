@@ -157,6 +157,8 @@ def add_custom_prompt_elements(prompt, data_source_name):
 
     return prompt
 
+
+
 def bar_graph_sql_prompt(convo_history, user_input, data_source_meta):
     prompt = f"""
             Given the following data source schema:
