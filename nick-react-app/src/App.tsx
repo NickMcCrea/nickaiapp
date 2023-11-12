@@ -178,6 +178,18 @@ function App() {
 
         // If the reply is from a query_meta_data function call
         if (reply.function_call && reply.function_call.name === "query_data_catalogue") {
+
+
+        if(reply.metaData){
+          for (const item of reply.metaData) {
+            if ('name' in item && 'description' in item) {
+              console.log(item.name);
+              console.log(item.description);
+            }
+          }
+        }
+
+
           // Parse the JSON output
           const outputObject = JSON.parse(reply.output);
           setDataSourceNames(outputObject.data_source_names);

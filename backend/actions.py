@@ -132,8 +132,9 @@ class ActionsManager:
         commentary = self.check_for_json_tag(commentary)
         data = None
 
-        #return the meta data as JSON
-        metadata = all_meta_data
+        #return the meta data as JSON string
+        metadata = self.data_service.get_all_meta_data_as_json()
+       
        
         return data, metadata, commentary
 
