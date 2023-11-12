@@ -284,7 +284,7 @@ function App() {
   return (
     <div className="App">
       <Header estimatedCost={estimatedCost} selectedModel={selectedModel} onModelChange={handleModelChange} />
-      <div style={{ display: 'flex', height: '900px' }}> {/* Flex container */}
+      <div style={{ display: 'flex', height: '1200px' }}> {/* Flex container */}
         <ResizableBox width={width} height={300} onResize={onResize} minConstraints={[100, 300]} maxConstraints={[800, 300]} handle={<span className="react-resizable-handle react-resizable-handle-e"></span>}>
           {/*    <p>Give me a bar chart of revenues from the financial data set.</p>
           <p>Give me a time series of balances from the trial balance.</p>
