@@ -47,12 +47,13 @@ class MetaDataService:
     def get_data_source(self, name):
         return self.data_sources.get(name, None)
     
-    #get all meta data concatenated together in a single string
+    #get all meta data in a list
     def get_all_meta_data(self):
-        meta_data = ""
+        meta_data = []
         for data_source in self.data_sources:
-            meta_data += str(self.data_sources[data_source]['meta'])
+            meta_data.append(self.data_sources[data_source]['meta'])
         return meta_data
+       
     
 
     #we should return a list of JSON metadata objects
