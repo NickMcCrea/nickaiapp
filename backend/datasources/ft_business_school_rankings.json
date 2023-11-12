@@ -1,0 +1,148 @@
+{
+    "name": "Business_School_Rankings",
+    "description": "This dataset provides rankings and various metrics for top business schools. Metrics include faculty demographics, international mobility, salary data, student diversity, environmental and sustainability measures, and more.",
+    "category": "Education",
+    "fields": [
+      {
+        "fieldName": "Rank",
+        "fieldDescription": "The ranking position of the business school.",
+        "fieldType": "INTEGER"
+      },
+      {
+        "fieldName": "School_Name",
+        "fieldDescription": "Name of the business school.",
+        "fieldType": "STRING"
+      },
+      {
+        "fieldName": "Female_Faculty_Percentage",
+        "fieldDescription": "Percentage of female faculty members.",
+        "fieldType": "INTEGER"
+      },
+      {
+        "fieldName": "International_Mobility_Rank",
+        "fieldDescription": "Ranking based on international mobility.",
+        "fieldType": "INTEGER"
+      },
+      {
+        "fieldName": "Salary_Today_USD",
+        "fieldDescription": "Current average salary of graduates, in US dollars.",
+        "fieldType": "INTEGER"
+      },
+      {
+        "fieldName": "International_Students_Percentage",
+        "fieldDescription": "Percentage of international students.",
+        "fieldType": "INTEGER"
+      },
+      {
+        "fieldName": "Weighted_Salary_USD",
+        "fieldDescription": "Weighted average salary of graduates, in US dollars.",
+        "fieldType": "INTEGER"
+      },
+      {
+        "fieldName": "International_Board_Percentage",
+        "fieldDescription": "Percentage of the board members who are international.",
+        "fieldType": "INTEGER"
+      },
+      {
+        "fieldName": "Value_For_Money_Rank",
+        "fieldDescription": "Ranking based on value for money.",
+        "fieldType": "INTEGER"
+      },
+      {
+        "fieldName": "Audit_Year",
+        "fieldDescription": "The year in which the data was audited.",
+        "fieldType": "DATE"
+      },
+      {
+        "fieldName": "Career_Progress_Rank",
+        "fieldDescription": "Ranking based on career progress post-graduation.",
+        "fieldType": "INTEGER"
+      },
+      {
+        "fieldName": "FT_Research_Rank",
+        "fieldDescription": "Financial Times research rank.",
+        "fieldType": "INTEGER"
+      },
+      {
+        "fieldName": "Aims_Achieved_Percentage",
+        "fieldDescription": "Percentage of alumni reporting achievement of their aims.",
+        "fieldType": "INTEGER"
+      },
+      {
+        "fieldName": "Sector_Diversity_Rank",
+        "fieldDescription": "Ranking based on sector diversity.",
+        "fieldType": "INTEGER"
+      },
+      {
+        "fieldName": "Location",
+        "fieldDescription": "Location of the primary campus.",
+        "fieldType": "STRING"
+      },
+      {
+        "fieldName": "Alumni_Network_Rank",
+        "fieldDescription": "Ranking of the school's alumni network.",
+        "fieldType": "INTEGER"
+      },
+      {
+        "fieldName": "International_Faculty_Percentage",
+        "fieldDescription": "Percentage of faculty members who are international.",
+        "fieldType": "INTEGER"
+      },
+      {
+        "fieldName": "ESG_Net_Zero_Teaching_Rank",
+        "fieldDescription": "Ranking based on environmental, social, and governance teaching.",
+        "fieldType": "INTEGER"
+      },
+      {
+        "fieldName": "Careers_Service_Rank",
+        "fieldDescription": "Ranking of the school's career services.",
+        "fieldType": "INTEGER"
+      },
+      {
+        "fieldName": "Overall_Satisfaction",
+        "fieldDescription": "Overall satisfaction score.",
+        "fieldType": "FLOAT"
+      },
+      {
+        "fieldName": "Carbon_Footprint_Rank",
+        "fieldDescription": "Ranking based on carbon footprint.",
+        "fieldType": "INTEGER"
+      },
+      {
+        "fieldName": "Rank_In_2022",
+        "fieldDescription": "The school's ranking in the year 2022.",
+        "fieldType": "INTEGER"
+      },
+      {
+        "fieldName": "Faculty_With_Doctorates_Percentage",
+        "fieldDescription": "Percentage of faculty members with doctorates.",
+        "fieldType": "INTEGER"
+      },
+      {
+        "fieldName": "Female_Students_Percentage",
+        "fieldDescription": "Percentage of female students.",
+        "fieldType": "INTEGER"
+      },
+      {
+        "fieldName": "International_Course_Experience_Rank",
+        "fieldDescription": "Ranking based on international course experience.",
+        "fieldType": "INTEGER"
+      },
+      {
+        "fieldName": "Women_On_Board_Percentage",
+        "fieldDescription": "Percentage of women on the board.",
+        "fieldType": "INTEGER"
+      },
+      {
+        "fieldName": "Rank_In_2021",
+        "fieldDescription": "The school's ranking in the year 2021.",
+        "fieldType": "INTEGER"
+      },
+      {
+        "fieldName": "Three_Year_Average_Rank",
+        "fieldDescription": "The average ranking of the school over the past three years.",
+        "fieldType": "INTEGER"
+      }
+    ]
+  }
+  
