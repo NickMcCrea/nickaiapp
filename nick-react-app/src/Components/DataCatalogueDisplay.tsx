@@ -6,16 +6,16 @@ import StorageIcon from '@mui/icons-material/Storage';
 
 // Define a type for the DataSourceCard props
 type DataSourceCardProps = {
-  dataSourceName: string;
+  dataSource: DataSourceMetaDeta;
 };
 
 // Define the DataSourceCard component
-const DataSourceCard: React.FC<DataSourceCardProps> = ({ dataSourceName }) => {
+const DataSourceCard: React.FC<DataSourceCardProps> = ({ dataSource }) => {
   // Function to determine which icon to use
-  const getIcon = (dataSourceName: string) => {
-    if (dataSourceName.toLowerCase().includes('restaurant')) {
+  const getIcon = (name: string) => {
+    if (name.toLowerCase().includes('restaurant')) {
       return <RestaurantIcon className="icon" />;
-    } else if (dataSourceName.toLowerCase().includes('spotify') || dataSourceName.toLowerCase().includes('track')) {
+    } else if (name.toLowerCase().includes('spotify') || name.toLowerCase().includes('track')) {
       return <MusicNoteIcon className="icon" />;
     } else {
       return <StorageIcon className="icon" />;
@@ -24,15 +24,22 @@ const DataSourceCard: React.FC<DataSourceCardProps> = ({ dataSourceName }) => {
 
   return (
     <div className="data-source-card">
-      <div className="icon-container">{getIcon(dataSourceName)}</div>
-      <h3>{dataSourceName}</h3>
+      <div className="icon-container">{getIcon(dataSource.name)}</div>
+      <h3>{dataSource.name}</h3>
+      <p>{dataSource.description}</p> {/* Optional: Display description */}
     </div>
   );
 };
 
+export interface DataSourceMetaDeta{
+  name: string;
+  description: string;
+  category: string;
+}
+
 // Define a type for the DataSourceCatalogueDisplay props
 type DataSourceCatalogueDisplayProps = {
-  dataSources: string[];
+  dataSources: DataSourceMetaDeta[];
   commentary: string;
 };
 
@@ -45,7 +52,7 @@ const DataSourceCatalogueDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({
         {dataSources.map((dataSource, index) => (
           <DataSourceCard
             key={index}
-            dataSourceName={dataSource}
+            dataSource={dataSource}
           />
         ))}
       </div>

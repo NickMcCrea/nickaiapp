@@ -13,6 +13,7 @@ import DataSourceCatalogueDisplay from './Components/DataCatalogueDisplay';
 import GenericChart from './Components/Charts/GenericChart';
 import { PieChartData } from './Components/Charts/SimplePieChart';
 import { ScatterChartData } from './Components/Charts/SimpleScatterChart';
+import {DataSourceMetaDeta} from './Components/DataCatalogueDisplay';
 
 
 
@@ -36,6 +37,7 @@ function App() {
   const [width, setWidth] = useState(600); // Default width for the resizable panel
   const [rightPanelWidth, setRightPanelWidth] = useState(window.innerWidth - width); // Width for the right panel
   const [chatService, setChatService] = useState<ChatService | null>(null);
+  const [dataCatalogueMeta, setDataCatalogueMeta] = useState<DataSourceMetaDeta[]>([]);
 
 
 
@@ -163,24 +165,21 @@ function App() {
           setCurrentFunctionCall(reply.function_call.name);
 
 
-        if (reply.metaData) {
+        if(reply.function_call && reply.function_call.name === "fetch_meta_data"){
           dataSets.length = 0; // Clear dataSets
           dataSets.push(reply.metaData); // Add reply.metaData to dataSets
-
-          // Parse the metadata if it's a string, or use it directly if it's already an object
-          const metaDataObject = typeof reply.metaData === 'string' ? JSON.parse(reply.metaData) : reply.metaData;
-          setMetaData(metaDataObject);
-
         }
-        else {
-          console.log("No meta data")
-        }
+
 
         // If the reply is from a query_meta_data function call
         if (reply.function_call && reply.function_call.name === "query_data_catalogue") {
 
 
           if (reply.metaData) {
+
+            if(Array.isArray(reply.metaData)){
+              setDataCatalogueMeta(reply.metaData as DataSourceMetaDeta[]);
+            }
 
 
             const newDataSourceNames = [];
@@ -192,8 +191,6 @@ function App() {
                 newDataSetDescriptions.push(item.description);
               }
             }
-
-
 
             // Parse the JSON output
             const outputObject = JSON.parse(reply.output);
@@ -311,7 +308,7 @@ function App() {
 
           {currentFunctionCall === "query_data_catalogue" && dataSourceNames.length > 0 && (
             <div style={{ width: '90%', height: '90%', overflow: 'auto' }}>
-              <DataSourceCatalogueDisplay dataSources={dataSourceNames} commentary={catalogueCommentary} />
+              <DataSourceCatalogueDisplay dataSources={dataCatalogueMeta} commentary={catalogueCommentary} />
             </div>
           )}
 
