@@ -4,6 +4,11 @@ import RestaurantIcon from '@mui/icons-material/Restaurant';
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
 import StorageIcon from '@mui/icons-material/Storage';
 
+// Define the shape of the accumulator object
+interface CategoryAccumulator {
+  [key: string]: DataSourceMetaDeta[];
+}
+
 // Define a type for the DataSourceCard props
 type DataSourceCardProps = {
   dataSource: DataSourceMetaDeta;
@@ -31,7 +36,24 @@ const DataSourceCard: React.FC<DataSourceCardProps> = ({ dataSource }) => {
   );
 };
 
-export interface DataSourceMetaDeta{
+// New component to represent a category of data sources
+const DataSourceCategory: React.FC<{ category: string; dataSources: DataSourceMetaDeta[] }> = ({ category, dataSources }) => {
+  return (
+    <div className="data-source-category">
+      <h3 className="category-title">{category}</h3>
+      <div className="data-source-cards-container">
+        {dataSources.map((dataSource, index) => (
+          <DataSourceCard
+            key={index}
+            dataSource={dataSource}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export interface DataSourceMetaDeta {
   name: string;
   description: string;
   category: string;
@@ -43,19 +65,29 @@ type DataSourceCatalogueDisplayProps = {
   commentary: string;
 };
 
-// Define the DataSourceCatalogueDisplay component
+// Modified DataSourceCatalogueDisplay component
 const DataSourceCatalogueDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSources, commentary }) => {
+  // Organize data sources by category
+  // Inside DataSourceCatalogueDisplay component
+  const sourcesByCategory = dataSources.reduce((acc: CategoryAccumulator, source) => {
+    const { category } = source;
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(source);
+    return acc;
+  }, {} as CategoryAccumulator);
+
   return (
     <div className="data-source-catalogue-display">
       <h2>{commentary}</h2>
-      <div className="data-source-cards-container">
-        {dataSources.map((dataSource, index) => (
-          <DataSourceCard
-            key={index}
-            dataSource={dataSource}
-          />
-        ))}
-      </div>
+      {Object.entries(sourcesByCategory).map(([category, sources], index) => (
+        <DataSourceCategory
+          key={index}
+          category={category}
+          dataSources={sources}
+        />
+      ))}
     </div>
   );
 };
