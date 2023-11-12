@@ -298,7 +298,7 @@ function App() {
         <div style={{ flex: 1, display: 'flex', overflow: 'auto', alignItems: 'center', justifyContent: 'center' }}>
 
           {currentFunctionCall === "fetch_meta_data" && dataSets && dataSets.length > 0 && (
-            <div style={{ width: '80%', height: '70%' }}>
+            <div style={{ width: '80%', height: '90%' }}>
               <MetaDataCollectionDisplay dataSets={dataSets} />
             </div>
           )}

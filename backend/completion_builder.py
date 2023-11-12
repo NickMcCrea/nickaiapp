@@ -1,20 +1,20 @@
 bar_chart_advice = """
-            Generated SQL queries should be bar chart-friendly.
+            Generated SQL queries should be bar chart-friendly. SQL generated should be SQLite compatible. 
             Whatever column is selected as the x-axis name as "X-Axis".
             Whatever column is selected as the y-axis should be a number - rename it as "Total". """
 
-scatter_chart_advice = """ Generated SQL queries should be scatter chart-friendly. X and Y axis should be numbers.
+scatter_chart_advice = """ Generated SQL queries should be scatter chart-friendly. X and Y axis should be numbers. SQL generated should be SQLite compatible. 
             You can use "ORDER BY RANDOM() LIMIT 300" to sample the data randomly and keep the volume down for the front end.
             Whatever column is selected as the x-axis name as "X".
             Whatever column is seleted as the y-axis name as "Y".
             Whatever column is selected as the item we're plotting on X and Y should be named as Z.
             """
 
-pie_chart_advice = """ Generated SQL queries should be pie chart-friendly.
+pie_chart_advice = """ Generated SQL queries should be pie chart-friendly. SQL generated should be SQLite compatible. 
             We're looking for two columns, one for the name, and one for the total. Make sure to rename them as "Name" and "Total".
             """
 
-line_chart_advice = """ Generated SQL queries should be line chart-friendly.
+line_chart_advice = """ Generated SQL queries should be line chart-friendly. SQL generated should be SQLite compatible. 
             Whatever column is selected as the x-axis should be a date or timestamp. Rename it as "time".
             Whatever column is selected as the y-axis should be a number - rename it as "total1".
             If there are multple series, the query should return them as total1, total2, total3, etc."""
@@ -53,23 +53,11 @@ def build_analysis_recommendation_prompt(convo_history, user_input, data_source_
                 {user_input}
                 if needed, here's the most recent convo messages so far, if it helps to give context:
                 {convo_history.messages}
-                Recommend some SQL that could be used to generate data for the analysis, or what could be gleaned from charts of the data (pie, bar, scatter, line).
-                The SQL should be SQlite compatible. Avoid using SQL functions that are not supported by SQLite.
+                Recommend some interesting analysis that is possible using the data we have. 
+                Don't directly suggest SQL, but the analysis should be possible using SQL, and particularly SQLite.
                 Only suggest 2 or 3 ideas that are really high quality or will give insightful information. Keep it brief.
                 Only suggest analysis based on the data we have in the meta data. Don't suggest analysis based on data we don't have.
                 When suggsting visualisations, stick to basic visualisations like pie, bar, scatter, line. Don't suggest stacked bar charts, or other complex visualisations.
-                Here's the rules for generating SQL for charts:
-                For bar charts:
-                {bar_chart_advice}
-
-                For scatter charts:
-                {scatter_chart_advice}
-
-                For pie charts:
-                {pie_chart_advice}
-
-                For line charts:
-                {line_chart_advice}
                 """
                 
         return prompt
@@ -114,6 +102,7 @@ def table_sql_prompt(convo_history, user_input, data_source_meta):
                 Return the answer in the following JSON format. Return only JSON. No other commentary outside of the JSON. Don't prefix the JSON object with "json" or any other text.
                 E.g.
                 {{"SQL": "select * from data_source_name where ..."}}
+                SQL generated should be SQLite compatible. 
                 Return only JSON. No other commentary outside of the JSON. Don't prefix the JSON object with "json" or any other text.
                 """
                 
