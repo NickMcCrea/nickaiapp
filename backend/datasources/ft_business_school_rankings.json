@@ -1,5 +1,5 @@
 {
-    "name": "Business_School_Rankings",
+    "name": "business_school_rankings",
     "description": "This dataset provides rankings and various metrics for top business schools. Metrics include faculty demographics, international mobility, salary data, student diversity, environmental and sustainability measures, and more.",
     "category": "Education",
     "fields": [
