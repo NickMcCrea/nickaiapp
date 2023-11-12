@@ -133,7 +133,10 @@ class ActionsManager:
         data = None
 
         #return the meta data as JSON string
-        metadata = self.data_service.get_all_meta_data_as_json()
+        #get the list of data source names from the JSON
+        data_source_names = json.loads(commentary)["data_source_names"]
+
+        metadata = self.data_service.get_meta_data_for_multiple_data_sources(data_source_names)
        
        
         return data, metadata, commentary

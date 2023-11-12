@@ -54,7 +54,6 @@ class MetaDataService:
             meta_data.append(self.data_sources[data_source]['meta'])
         return meta_data
        
-    
 
     #we should return a list of JSON metadata objects
     def get_all_meta_data_as_json(self):
@@ -63,6 +62,11 @@ class MetaDataService:
             meta_data.append(self.data_sources[data_source]['meta'])
         return meta_data
         
+    def get_meta_data_for_multiple_data_sources(self, data_source_names):
+        meta_data = []
+        for data_source_name in data_source_names:
+            meta_data.append(self.data_sources[data_source_name]['meta'])
+        return meta_data
 
     def query(self, sql_query: str, data_source_name: str) -> List[Dict[str, Any]]:
         # Retrieve the data source by name

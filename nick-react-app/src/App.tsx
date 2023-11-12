@@ -29,7 +29,7 @@ function App() {
   const [barChartData, setBarChartData] = useState<BarChartData[]>([]);
   const [lineChartData, setLineChartData] = useState<LineChartData[]>([]);
   const [pieChartData, setPieChartData] = useState<PieChartData[]>([]);
-  const[scatterChartData, setScatterChartData] = useState<ScatterChartData[]>([]);
+  const [scatterChartData, setScatterChartData] = useState<ScatterChartData[]>([]);
   const [dataSourceNames, setDataSourceNames] = useState<string[]>([]);
   const [catalogueCommentary, setCatalogueCommentary] = useState<string>("");
   const [fadeIn, setFadeIn] = useState(false);
@@ -98,9 +98,9 @@ function App() {
     //if current funnction call is bar chart, set to bar.
     //declare chartdata, it can be bar or line or plain data
     let chartData: BarChartData[] | LineChartData[] | PieChartData[] | ScatterChartData[] = [];
-    if (currentFunctionCall === "fetch_bar_chart_data") 
+    if (currentFunctionCall === "fetch_bar_chart_data")
       chartData = barChartData;
-    if (currentFunctionCall === "fetch_line_chart_data") 
+    if (currentFunctionCall === "fetch_line_chart_data")
       chartData = lineChartData;
     if (currentFunctionCall === "fetch_data")
       chartData = tableData;
@@ -109,29 +109,29 @@ function App() {
     if (currentFunctionCall === "fetch_scatter_chart_data")
       chartData = scatterChartData;
 
-      
+
     // Set the chart type based on the current function call
-    let chartType: 'bar' | 'line' | 'table' | 'pie' | 'scatter'= 'bar';
-    if (currentFunctionCall === "fetch_line_chart_data") 
-      chartType = 'line';    
-    if (currentFunctionCall === "fetch_data") 
+    let chartType: 'bar' | 'line' | 'table' | 'pie' | 'scatter' = 'bar';
+    if (currentFunctionCall === "fetch_line_chart_data")
+      chartType = 'line';
+    if (currentFunctionCall === "fetch_data")
       chartType = 'table';
     if (currentFunctionCall === "fetch_pie_chart_data")
       chartType = 'pie';
     if (currentFunctionCall === "fetch_scatter_chart_data")
       chartType = 'scatter';
-    
+
 
     //set an overflow variable to be off for charts, auto for table
     let overflowValue = "auto";
-    if (currentFunctionCall === "fetch_data") 
+    if (currentFunctionCall === "fetch_data")
       overflowValue = "auto";
-    else 
-      overflowValue = "hidden";  
+    else
+      overflowValue = "hidden";
 
     if (chartData.length > 0) {
       return (
-        <div style={{ width: '80%', height: '80%', overflow: overflowValue } }>
+        <div style={{ width: '80%', height: '80%', overflow: overflowValue }}>
           <GenericChart
             type={chartType}
             data={chartData}
@@ -159,7 +159,7 @@ function App() {
         setEstimatedCost(reply.estimated_cost.toString());
 
 
-        if(reply.function_call)
+        if (reply.function_call)
           setCurrentFunctionCall(reply.function_call.name);
 
 
@@ -180,32 +180,38 @@ function App() {
         if (reply.function_call && reply.function_call.name === "query_data_catalogue") {
 
 
-        if(reply.metaData){
-          for (const item of reply.metaData) {
-            if ('name' in item && 'description' in item) {
-              console.log(item.name);
-              console.log(item.description);
+          if (reply.metaData) {
+
+
+            const newDataSourceNames = [];
+            const newDataSetDescriptions = [];
+            for (const item of reply.metaData) {
+              if ('name' in item && 'description' in item) {
+                newDataSourceNames.push(item.name);
+                console.log(item.name);
+                newDataSetDescriptions.push(item.description);
+              }
             }
+
+
+
+            // Parse the JSON output
+            const outputObject = JSON.parse(reply.output);
+
+            setDataSourceNames(outputObject.data_source_names);
+
+            const { data_source_names, commentary } = outputObject;
+
+            // Construct a formatted JSX message
+            const metaDataMessage = (
+              <span>
+                Data Source(s): <strong>{newDataSourceNames.join(', ')}</strong>. {commentary}
+              </span>
+            );
+
+            // Add the JSX formatted message to the chat history
+            setMessages(prevMessages => [...prevMessages, { type: 'jsx', content: metaDataMessage, timestamp: new Date(), sender: 'Assistant' }]);
           }
-        }
-
-
-          // Parse the JSON output
-          const outputObject = JSON.parse(reply.output);
-          setDataSourceNames(outputObject.data_source_names);
-          
-          // Extract data source names and commentary
-          const { data_source_names, commentary } = outputObject;
-
-          // Construct a formatted JSX message
-          const metaDataMessage = (
-            <span>
-              Data Source(s): <strong>{data_source_names.join(', ')}</strong>. {commentary}
-            </span>
-          );
-
-          // Add the JSX formatted message to the chat history
-          setMessages(prevMessages => [...prevMessages, { type: 'jsx', content: metaDataMessage, timestamp: new Date(), sender: 'Assistant' }]);
         } else {
           // Handle other messages as before
           if (reply.data) {
@@ -214,7 +220,7 @@ function App() {
 
           //check function call name and set current function call
           if (reply.function_call) {
-           
+
             //if the function call is clear data, clear the data
             if (reply.function_call.name === "clear") {
               setTableData([]);
@@ -235,7 +241,7 @@ function App() {
                 //set  bar chart data
                 setBarChartData(formattedData)
 
-               
+
               } else {
                 // Handle the case where reply.data is undefined or not an array
                 console.error('Received data is not an array', reply.data);
@@ -262,7 +268,7 @@ function App() {
               }
             }
 
-         
+
 
           }
 
@@ -283,7 +289,7 @@ function App() {
       <Header estimatedCost={estimatedCost} selectedModel={selectedModel} onModelChange={handleModelChange} />
       <div style={{ display: 'flex', height: '900px' }}> {/* Flex container */}
         <ResizableBox width={width} height={300} onResize={onResize} minConstraints={[100, 300]} maxConstraints={[800, 300]} handle={<span className="react-resizable-handle react-resizable-handle-e"></span>}>
-       {/*    <p>Give me a bar chart of revenues from the financial data set.</p>
+          {/*    <p>Give me a bar chart of revenues from the financial data set.</p>
           <p>Give me a time series of balances from the trial balance.</p>
           <p>Give me 10 sample rows from the spotify data.</p> 
           <p>Show me the data catalogue</p> 
@@ -291,7 +297,7 @@ function App() {
           <AIChatBox messages={messages} handleSendMessage={handleSendMessage} />
         </ResizableBox>
 
-        <div style={{ flex: 1, display: 'flex', overflow: 'auto', alignItems: 'center', justifyContent: 'center' }}>      
+        <div style={{ flex: 1, display: 'flex', overflow: 'auto', alignItems: 'center', justifyContent: 'center' }}>
 
           {currentFunctionCall === "fetch_meta_data" && dataSets && dataSets.length > 0 && (
             <div style={{ width: '80%', height: '70%' }}>
@@ -300,7 +306,7 @@ function App() {
           )}
 
           {
-            ["fetch_bar_chart_data", "fetch_line_chart_data","fetch_pie_chart_data", "fetch_scatter_chart_data", "fetch_data"].includes(currentFunctionCall) && renderChart()
+            ["fetch_bar_chart_data", "fetch_line_chart_data", "fetch_pie_chart_data", "fetch_scatter_chart_data", "fetch_data"].includes(currentFunctionCall) && renderChart()
           }
 
           {currentFunctionCall === "query_data_catalogue" && dataSourceNames.length > 0 && (

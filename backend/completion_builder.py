@@ -95,7 +95,7 @@ def build_query_catalogue_prompt(convo_history, user_input, all_meta_data):
                 {{"data_source_names": ["datasource1", "commentary": "This is the only datasource available"}}
                 where the user is clearly looking for data, and we can identify a data source, we should write a SQL query to extract the data.
                 e.g.
-                {{"data_source_names": ["datasource1"], "commentary": "Here's the data you're looking for.", "sql_query": "SELECT * FROM datasource1 WHERE ..."}}
+                {{"data_source_names": ["datasource1"], "commentary": "Here's the data you're looking for."}}
                 Return only JSON. No other commentary outside of the JSON. Don't prefix the JSON object with "json" or any other text.
                 """
                 
