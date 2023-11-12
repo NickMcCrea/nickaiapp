@@ -131,7 +131,10 @@ class ActionsManager:
         commentary = response['choices'][0]['message']['content']
         commentary = self.check_for_json_tag(commentary)
         data = None
-        metadata= None
+
+        #return the meta data as JSON
+        metadata = all_meta_data
+       
         return data, metadata, commentary
 
    
