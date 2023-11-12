@@ -4,6 +4,8 @@
   margin-left: 200px;
 }
 
+
+
 .data-source-category {
   margin-bottom: 32px; /* Spacing between categories */
 
@@ -33,6 +35,12 @@
   margin: 0; /* Remove margin-bottom as grid-gap takes care of spacing */
   box-sizing: border-box;
   background-color: #f9f9f9; /* Light grey background */
+  animation-name: fadeIn;
+  animation-duration: 0.5s;
+}
+
+.data-source-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Larger shadow on hover for interactivity */
 }
 
 .icon-container {
@@ -44,6 +52,8 @@
   justify-content: center;
   align-items: center;
   border: 2px solid #bbdefb; /* Border color */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+  transition: box-shadow 0.3s ease; /* Smooth transition for hover effect */
 }
 
 .icon {
@@ -56,4 +66,10 @@
   .data-source-cards-container {
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); /* Adjust grid columns for smaller screens */
   }
+}
+
+/* Add this to your CSS file */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
 }

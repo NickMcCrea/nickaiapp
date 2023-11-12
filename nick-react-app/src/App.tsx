@@ -165,9 +165,10 @@ function App() {
           setCurrentFunctionCall(reply.function_call.name);
 
 
-        if(reply.function_call && reply.function_call.name === "fetch_meta_data"){
+        if(reply.metaData){
           dataSets.length = 0; // Clear dataSets
           dataSets.push(reply.metaData); // Add reply.metaData to dataSets
+          setMetaData(reply.metaData);
         }
 
 

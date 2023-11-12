@@ -5,13 +5,16 @@ import './FieldCard.css'; // Path to your CSS file
 type FieldCardProps = {
   fieldName: string;
   fieldDescription: string;
-  fieldType: 'STRING' | 'FLOAT'; // Extend this union type as needed for other field types
+  fieldType: 'STRING' | 'FLOAT' | 'INTEGER' | 'DATE' | 'BOOLEAN'; // Extend this union type as needed for other field types
 };
 
 // Define a mapping from field types to colors
 const fieldTypeColors: { [key: string]: string } = {
-  STRING: '#007bff',
-  FLOAT: '#28a745',
+  STRING: '#1D73B2',
+  FLOAT: '#7FABC7',
+  INTEGER: '#3E828C',
+  DATE: '#145A8D',
+  BOOLEAN: '#2E6E8E',
   // Add more types and corresponding colors as needed
 };
 

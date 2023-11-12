@@ -80,7 +80,7 @@ def get_open_ai_function_defs():
             "description": f"""Use this function when a user asks for a question that requires a data query.
                             If they want to see actual data, use this function. 
                             If we can infer the data source from the context, we should input that information. 
-                            Users may ask for refined data from a previous query, e.g. "Can you filter that on restaurants with delivery times < 30 mins?"
+                            We will calculate the precise query later. Return only the data source if you can.
                             """,
           "parameters": {
                 "type": "object",

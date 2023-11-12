@@ -3,6 +3,9 @@ import './DataSourceCatalogueDisplay.css'; // Path to your CSS file for styling 
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
 import StorageIcon from '@mui/icons-material/Storage';
+import SportsBasketballIcon from '@mui/icons-material/SportsBasketball';
+import TvIcon from '@mui/icons-material/Tv';
+
 
 // Define the shape of the accumulator object
 interface CategoryAccumulator {
@@ -12,16 +15,26 @@ interface CategoryAccumulator {
 // Define a type for the DataSourceCard props
 type DataSourceCardProps = {
   dataSource: DataSourceMetaDeta;
+
 };
 
 // Define the DataSourceCard component
 const DataSourceCard: React.FC<DataSourceCardProps> = ({ dataSource }) => {
+
+ 
   // Function to determine which icon to use
   const getIcon = (name: string) => {
     if (name.toLowerCase().includes('restaurant')) {
       return <RestaurantIcon className="icon" />;
     } else if (name.toLowerCase().includes('spotify') || name.toLowerCase().includes('track')) {
       return <MusicNoteIcon className="icon" />;
+    //add icon for nba data
+    }else if (name.toLowerCase().includes('nba') || name.toLowerCase().includes('basketball')) {
+      return <SportsBasketballIcon className="icon" />;
+    //add icon for netflix
+    }else if (name.toLowerCase().includes('netflix') || name.toLowerCase().includes('tv')) {
+      return <TvIcon className="icon" />;
+
     } else {
       return <StorageIcon className="icon" />;
     }
@@ -29,6 +42,7 @@ const DataSourceCard: React.FC<DataSourceCardProps> = ({ dataSource }) => {
 
   return (
     <div className="data-source-card">
+      
       <div className="icon-container">{getIcon(dataSource.name)}</div>
       <h3>{dataSource.name}</h3>
       <p>{dataSource.description}</p> {/* Optional: Display description */}
