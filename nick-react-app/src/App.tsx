@@ -38,6 +38,9 @@ function App() {
   const [rightPanelWidth, setRightPanelWidth] = useState(window.innerWidth - width); // Width for the right panel
   const [chatService, setChatService] = useState<ChatService | null>(null);
   const [dataCatalogueMeta, setDataCatalogueMeta] = useState<DataSourceMetaDeta[]>([]);
+ 
+  const [activeContent, setActiveContent] = useState<string | null>(null); // New state for active content
+  
 
 
 
@@ -149,6 +152,28 @@ function App() {
     return null;
   };
 
+   // Function to render the active content
+   const renderActiveContent = () => {
+    switch (activeContent) {
+      case "chart":
+        return renderChart();
+      case "catalogue":
+        return (
+          <div style={{ width: '90%', height: '90%', overflow: 'auto' }}>
+            <DataSourceCatalogueDisplay dataSources={dataCatalogueMeta} commentary={catalogueCommentary} />
+          </div>
+        );
+      case "metaData":
+        return (
+          <div style={{ width: '80%', height: '90%' }}>
+            <MetaDataCollectionDisplay dataSets={dataSets} />
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
   const handleSendMessage = async (content: string) => {
 
 
@@ -171,6 +196,29 @@ function App() {
           setMetaData(reply.metaData);
         }
 
+        if (reply.function_call) {
+          switch (reply.function_call.name) {
+            case "fetch_bar_chart_data":
+            case "fetch_line_chart_data":
+            case "fetch_pie_chart_data":
+            case "fetch_scatter_chart_data":
+            case "fetch_data":
+              setActiveContent("chart");
+              break;
+            case "query_data_catalogue":
+              setActiveContent("catalogue");
+              break;
+            case "fetch_meta_data":
+              setActiveContent("metaData");
+              break;
+            default:
+
+            //set active content to whatever it was last time
+            setActiveContent(activeContent);
+             
+              break;
+          }
+        }
 
         // If the reply is from a query_meta_data function call
         if (reply.function_call && reply.function_call.name === "query_data_catalogue") {
@@ -285,41 +333,20 @@ function App() {
   return (
     <div className="App">
       <Header estimatedCost={estimatedCost} selectedModel={selectedModel} onModelChange={handleModelChange} />
-      <div style={{ display: 'flex', height: '1200px' }}> {/* Flex container */}
+      <div style={{ display: 'flex', height: '900px' }}> {/* Flex container */}
         <ResizableBox width={width} height={300} onResize={onResize} minConstraints={[100, 300]} maxConstraints={[800, 300]} handle={<span className="react-resizable-handle react-resizable-handle-e"></span>}>
-          {/*    <p>Give me a bar chart of revenues from the financial data set.</p>
-          <p>Give me a time series of balances from the trial balance.</p>
-          <p>Give me 10 sample rows from the spotify data.</p> 
-          <p>Show me the data catalogue</p> 
-          <p>Show me the restaurant data structure</p>  */}
           <AIChatBox messages={messages} handleSendMessage={handleSendMessage} />
         </ResizableBox>
 
         <div style={{ flex: 1, display: 'flex', overflow: 'auto', alignItems: 'center', justifyContent: 'center' }}>
-
-          {currentFunctionCall === "fetch_meta_data" && dataSets && dataSets.length > 0 && (
-            <div style={{ width: '80%', height: '90%' }}>
-              <MetaDataCollectionDisplay dataSets={dataSets} />
-            </div>
-          )}
-
-          {
-            ["fetch_bar_chart_data", "fetch_line_chart_data", "fetch_pie_chart_data", "fetch_scatter_chart_data", "fetch_data"].includes(currentFunctionCall) && renderChart()
-          }
-
-          {currentFunctionCall === "query_data_catalogue" && dataSourceNames.length > 0 && (
-            <div style={{ width: '90%', height: '90%', overflow: 'auto' }}>
-              <DataSourceCatalogueDisplay dataSources={dataCatalogueMeta} commentary={catalogueCommentary} />
-            </div>
-          )}
-
-
+          {renderActiveContent()}
         </div>
       </div>
     </div>
   );
-
-
 }
+
+
+
 
 export default App;
