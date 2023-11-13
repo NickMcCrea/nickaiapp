@@ -301,6 +301,7 @@ function App() {
               setBarChartData([]);
               setLineChartData([]);
               setMessages([]);
+              setActiveContent(null)
             }
 
             if (reply.function_call && reply.function_call.name === "fetch_bar_chart_data") {
