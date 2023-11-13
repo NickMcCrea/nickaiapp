@@ -71,6 +71,11 @@ class ActionsManager:
         #if we have both the data source name and the query, fetch the data
         if data_source_name is not None and query is not None:
 
+            data_source = self.data_service.get_data_source(data_source_name)
+            if data_source is None:
+                data_source_name, data_source = self.open_ai_infer_data_source(socketio, session_id, convo_history, user_input)
+           
+
             #add a limit to the query if it doesn't already have one. Stops wallet annihilation.
             if "LIMIT" not in query.upper():
                 query += " LIMIT 100"

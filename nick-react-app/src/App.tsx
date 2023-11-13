@@ -13,7 +13,7 @@ import DataSourceCatalogueDisplay from './Components/DataCatalogueDisplay';
 import GenericChart from './Components/Charts/GenericChart';
 import { PieChartData } from './Components/Charts/SimplePieChart';
 import { ScatterChartData } from './Components/Charts/SimpleScatterChart';
-import {DataSourceMetaDeta} from './Components/DataCatalogueDisplay';
+import { DataSourceMetaDeta } from './Components/DataCatalogueDisplay';
 
 
 
@@ -38,9 +38,9 @@ function App() {
   const [rightPanelWidth, setRightPanelWidth] = useState(window.innerWidth - width); // Width for the right panel
   const [chatService, setChatService] = useState<ChatService | null>(null);
   const [dataCatalogueMeta, setDataCatalogueMeta] = useState<DataSourceMetaDeta[]>([]);
- 
+
   const [activeContent, setActiveContent] = useState<string | null>(null); // New state for active content
-  
+
 
 
 
@@ -100,36 +100,41 @@ function App() {
 
   const renderChart = () => {
 
+    console.log("renderChart: calling renderChart");  
     //if current funnction call is bar chart, set to bar.
     //declare chartdata, it can be bar or line or plain data
     let chartData: BarChartData[] | LineChartData[] | PieChartData[] | ScatterChartData[] = [];
-    if (currentFunctionCall === "fetch_bar_chart_data")
+    if (activeContent === "bar_chart")
       chartData = barChartData;
-    if (currentFunctionCall === "fetch_line_chart_data")
+    if (activeContent === "line_chart")
       chartData = lineChartData;
-    if (currentFunctionCall === "fetch_data")
+    if (activeContent === "table")
       chartData = tableData;
-    if (currentFunctionCall === "fetch_pie_chart_data")
+    if (activeContent === "pie_chart")
       chartData = pieChartData;
-    if (currentFunctionCall === "fetch_scatter_chart_data")
+    if (activeContent === "scatter_chart")
       chartData = scatterChartData;
 
 
     // Set the chart type based on the current function call
     let chartType: 'bar' | 'line' | 'table' | 'pie' | 'scatter' = 'bar';
-    if (currentFunctionCall === "fetch_line_chart_data")
+    if (activeContent === "line_chart")
       chartType = 'line';
-    if (currentFunctionCall === "fetch_data")
+    if (activeContent === "table")
       chartType = 'table';
-    if (currentFunctionCall === "fetch_pie_chart_data")
+    if (activeContent === "pie_chart")
       chartType = 'pie';
-    if (currentFunctionCall === "fetch_scatter_chart_data")
+    if (activeContent === "scatter_chart")
       chartType = 'scatter';
+    if(activeContent === "bar_chart")
+      chartType = 'bar';
+
+    console.log("renderChart: Active content is: " + activeContent);
 
 
     //set an overflow variable to be off for charts, auto for table
     let overflowValue = "auto";
-    if (currentFunctionCall === "fetch_data")
+    if (activeContent === "table")
       overflowValue = "auto";
     else
       overflowValue = "hidden";
@@ -152,10 +157,21 @@ function App() {
     return null;
   };
 
-   // Function to render the active content
-   const renderActiveContent = () => {
+  // Function to render the active content
+  const renderActiveContent = () => {
+
+    console.log("renderActiveContent: Active content is: " + activeContent);
     switch (activeContent) {
-      case "chart":
+
+      case "bar_chart":
+        return renderChart();
+      case "line_chart":
+        return renderChart();
+      case "pie_chart":
+        return renderChart();
+      case "scatter_chart":
+        return renderChart();
+      case "table":
         return renderChart();
       case "catalogue":
         return (
@@ -190,7 +206,7 @@ function App() {
           setCurrentFunctionCall(reply.function_call.name);
 
 
-        if(reply.metaData){
+        if (reply.metaData) {
           dataSets.length = 0; // Clear dataSets
           dataSets.push(reply.metaData); // Add reply.metaData to dataSets
           setMetaData(reply.metaData);
@@ -199,11 +215,19 @@ function App() {
         if (reply.function_call) {
           switch (reply.function_call.name) {
             case "fetch_bar_chart_data":
+              setActiveContent("bar_chart");
+              break;
             case "fetch_line_chart_data":
+              setActiveContent("line_chart");
+              break;
             case "fetch_pie_chart_data":
+              setActiveContent("pie_chart");
+              break;
             case "fetch_scatter_chart_data":
+              setActiveContent("scatter_chart");
+              break;
             case "fetch_data":
-              setActiveContent("chart");
+              setActiveContent("table");
               break;
             case "query_data_catalogue":
               setActiveContent("catalogue");
@@ -213,12 +237,15 @@ function App() {
               break;
             default:
 
-            //set active content to whatever it was last time
-            setActiveContent(activeContent);
-             
+              console.log("Default active content is: " + activeContent);
+              //set active content to whatever it was last time
+              setActiveContent(activeContent);
+
               break;
           }
         }
+        else
+          setActiveContent(activeContent);
 
         // If the reply is from a query_meta_data function call
         if (reply.function_call && reply.function_call.name === "query_data_catalogue") {
@@ -226,7 +253,7 @@ function App() {
 
           if (reply.metaData) {
 
-            if(Array.isArray(reply.metaData)){
+            if (Array.isArray(reply.metaData)) {
               setDataCatalogueMeta(reply.metaData as DataSourceMetaDeta[]);
             }
 
