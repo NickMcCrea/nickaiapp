@@ -4,13 +4,9 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
-import DataThresholdingIcon from '@mui/icons-material/DataThresholding';
-import SlideshowIcon from '@mui/icons-material/Slideshow';
-import AddBoxIcon from '@mui/icons-material/AddBox'; // Import the new icon
 import { styled } from '@mui/system';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import Box from '@mui/material/Box';
 import logo from '../MS_Standard_Logo_2022_White.png'; // Import the logo
 
 interface HeaderProps {
