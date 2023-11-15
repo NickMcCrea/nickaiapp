@@ -5,7 +5,7 @@
   .field-cards-container {
     display: flex;
     flex-wrap: wrap;
-    justify-content: left;
+    justify-content: center;
     gap: 10px;
     padding: 20px;
   }
