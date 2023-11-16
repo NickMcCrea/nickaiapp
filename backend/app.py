@@ -78,17 +78,7 @@ def ask():
 
     #get session ID from the session object
     conversation_history = get_convo_history()
-
-    
-    #I WANT TO EMIT SOMETHING HERE SHOW ME HOW
     session_id = session.get('session_id')
-
-    # Emit an event to the client using the session_id as room
-    #progress_data = {'status': 'thinking', 'message': 'Thinking...'}
-    #socketio.emit('progress', progress_data, room=session_id)
-
-
-
     user_input = request.json.get('input', '')
 
     #log the model property from the request
@@ -153,20 +143,12 @@ def ask():
         if data is None and metadata is None and commentary == '':
             commentary = "Sorry, I didn't understand - can you rephrase that?"
 
-        input_tokens, output_tokens = calculate_tokens(response)
-
-        # Calculate estimated cost
-        estimated_cost = calculate_costs(input_tokens, output_tokens)     
-        cost_so_far = conversation_history.get_total_estimated_cost()
-        conversation_history.set_total_estimated_cost(cost_so_far + estimated_cost)
-
-        print("Total estimated cost: {:.10f}".format(conversation_history.get_total_estimated_cost()))
-
+      
         #print the time up til now
         print("Time elapsed 3: ", time.time() - start_time)
 
 
-        final_response = jsonify({'function_response': function_response, 'function_call':  was_function_call, 'output': commentary, 'data': data, 'metadata': metadata, 'estimated_cost': "{:.10f}".format(conversation_history.get_total_estimated_cost())})
+        final_response = jsonify({'function_response': function_response, 'function_call':  was_function_call, 'output': commentary, 'data': data, 'metadata': metadata})
         print("final_response: ", final_response)
         return final_response, 200
 
@@ -201,17 +183,6 @@ def get_function_response(socket_io: SocketIO, session_id: str,conversation_hist
     data,metadata,commentary = actions_manager.execute_function(socketio, session_id, conversation_history, response_message, user_input, function_name, function_args)
     return data,metadata, commentary
 
-def calculate_costs(input_tokens, output_tokens):
-    input_cost = COSTS[current_model]['input'] * input_tokens
-    output_cost = COSTS[current_model]['output'] * output_tokens
-    estimated_cost = input_cost + output_cost
-    return estimated_cost
-
-def calculate_tokens(response):
-    tokens_used = response['usage']['total_tokens']
-    input_tokens = response['usage']['prompt_tokens']
-    output_tokens = tokens_used - input_tokens
-    return input_tokens,output_tokens
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)

@@ -199,8 +199,7 @@ function App() {
 
       try {
         const reply = await chatService.sendMessage(content, selectedModel);
-        setEstimatedCost(reply.estimated_cost.toString());
-
+      
 
         if (reply.function_call)
           setCurrentFunctionCall(reply.function_call.name);

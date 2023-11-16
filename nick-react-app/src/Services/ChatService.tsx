@@ -10,7 +10,6 @@ type FunctionCallResponse = {
 // Extend the response type to include all possible properties
 type ChatServiceResponse = {
   output: string;
-  estimated_cost: number;
   data?: any[];
   metaData?: any[];
   function_call?: FunctionCallResponse; // This is the new property to handle function call responses
@@ -79,7 +78,6 @@ class ChatService  extends EventEmitter{
 
       const chatResponse: ChatServiceResponse = {
         output: data.output,
-        estimated_cost: data.estimated_cost,
         data: data.data,
         metaData: data.metadata,
         function_call: data.function_call,
