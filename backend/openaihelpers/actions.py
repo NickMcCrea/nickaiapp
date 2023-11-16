@@ -1,11 +1,11 @@
 import json
 from flask_socketio import SocketIO
 import openai
-from in_memory_db import InMemoryDB
-from meta_data_service import MetaDataService
+from dataaccess.in_memory_db import InMemoryDB
+from dataaccess.meta_data_service import MetaDataService
 from typing import List, Dict, Any
-import function_defs as function_defs
-import completion_builder as completion_builder
+import openaihelpers.function_defs as function_defs
+import openaihelpers.completion_builder as completion_builder
 from conversation_history import ConversationHistory
 
 #constructor for a functions class

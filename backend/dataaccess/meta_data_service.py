@@ -1,5 +1,5 @@
 import json
-from in_memory_db import InMemoryDB
+from dataaccess.in_memory_db import InMemoryDB
 from typing import List, Dict, Any
 
 class MetaDataService:

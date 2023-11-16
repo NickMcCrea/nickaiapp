@@ -1,2 +1,4 @@
 backendenv
 backend/__pycache__/
+backend/openaihelpers/__pycache__/
+backend/dataaccess/__pycache__/
