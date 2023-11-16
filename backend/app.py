@@ -118,7 +118,7 @@ def ask():
         function_response = None
         was_function_call = response_message.get("function_call")
 
-        chat_output = None
+        commentary = None
         data = None
         metadata = None
 
@@ -131,8 +131,7 @@ def ask():
         #print the time up til now
         print("Time elapsed 2: ", time.time() - start_time)
        
-        if chat_output is None:
-           chat_output = ""
+        
 
         conversation_history.add_assistant_message(commentary)  # Add assistant output to history
 
