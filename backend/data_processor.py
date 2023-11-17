@@ -1,9 +1,12 @@
 import pandas as pd
 import json
+from meta_data_service import MetaDataService
 
 class DataProcessor:
     def __init__(self):
         self.data = {}
+
+        
 
     @staticmethod
     def load(filepath, spec_path):
@@ -13,6 +16,27 @@ class DataProcessor:
             dtype_mapping, parse_dates = DataProcessor._parse_dtype_spec(spec['fields'])
 
         return pd.read_csv(filepath, dtype=dtype_mapping, parse_dates=parse_dates)
+    
+
+    @staticmethod
+    def load_from_data(meta_data, data):
+        """Load data from metadata and data source result."""
+        dtype_mapping, parse_dates = DataProcessor._parse_dtype_spec(meta_data['fields'])
+
+        # Create the DataFrame without enforcing dtypes
+        df = pd.DataFrame(data)
+
+        # Apply dtypes for non-date columns
+        for column, dtype in dtype_mapping.items():
+            if column not in parse_dates:  # Exclude date columns from astype
+                df[column] = df[column].astype(dtype, errors='ignore')
+
+        # Parse dates explicitly for date columns
+        for date_column in parse_dates:
+            df[date_column] = pd.to_datetime(df[date_column], errors='coerce', format='%Y-%m-%d')
+
+        return df
+
 
 
     @staticmethod
@@ -44,7 +68,7 @@ class DataProcessor:
         dtype_map = {
             'STRING': 'object',
             'INTEGER': 'Int64',  # Allows for missing values
-            'FLOAT': 'float64'
+            'FLOAT': 'float64',
         }
         dtype_mapping = {}
         parse_dates = []
@@ -84,15 +108,23 @@ class DataProcessor:
         return df.sort_values(by=by, ascending=ascending)
 
 
-processor = DataProcessor()
-trial_balance_df = processor.load('backend/datasources/nicktrialbalance.csv', 'backend/datasources/nicktrialbalance.json')
-trial_balance_df = processor.filter(trial_balance_df, {'company_code': {'equals': '0302'}})
-counterparties_df = processor.load('backend/datasources/counterparties.csv', 'backend/datasources/counterparties.json')
-trial_balance_df = processor.join(trial_balance_df, counterparties_df, on='counterparty_id')
 
-#just select the columns we need
-trial_balance_df = processor.select_columns(trial_balance_df, ['company_code', 'counterparty_name', 'balance'])
+meta_data_service = MetaDataService()
+tb_data_source_name = 'trial_balance_data'
+tb_data_source = meta_data_service.get_data_source(tb_data_source_name)
+tb_meta_data = tb_data_source['meta']
+tb_data = tb_data_source['db'].query(f"SELECT * FROM {tb_data_source_name}")  
+#print(tb_data)
 
-# Now you can print or use the processed data as needed
+
+
+
+# Load data into DataFrame
+trial_balance_df = DataProcessor.load_from_data(tb_meta_data, tb_data)
 print(trial_balance_df)
+
+trial_balance_from_csv = DataProcessor.load('backend/datasources/nicktrialbalance.csv', 'backend/datasources/nicktrialbalance.json')
+print(trial_balance_from_csv)
+
+
 

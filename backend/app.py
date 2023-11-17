@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from flask_cors import CORS
 from uuid import uuid4
 import json
-from openaihelpers.actions import ActionsManager
+from actions import ActionsManager
 import time
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from typing import Dict, List, Any
