@@ -45,8 +45,8 @@
       },
       {
         "fieldName": "neutral",
-        "fieldDescription": "Boolean indicating if the venue was neutral (not home ground for either team)",
-        "fieldType": "BOOLEAN"
+        "fieldDescription": "Indicator if the venue was neutral (not home ground for either team)",
+        "fieldType": "STRING"
       }
     ]
   }

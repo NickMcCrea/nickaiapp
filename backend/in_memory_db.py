@@ -23,7 +23,8 @@ class InMemoryDB:
             'STRING': 'str',
             'INTEGER': 'Int64',  # Using Pandas nullable integer type
             'FLOAT': 'float',
-            'DATE': 'str'  # Reading dates as strings initially to preserve formatting
+            'DATE': 'str',  # Reading dates as strings initially to preserve formatting
+            'BOOLEAN': 'boolean'
         }
 
         dtype_mapping = {column: pandas_dtypes[field_type] for column, field_type in field_types.items()}

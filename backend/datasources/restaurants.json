@@ -11,7 +11,7 @@
         {
             "fieldName": "rating",
             "fieldDescription": "Average rating of the restaurant",
-            "fieldType": "FLOAT"
+            "fieldType": "STRING"
         },
         {
             "fieldName": "cuisine",

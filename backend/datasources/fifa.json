@@ -76,12 +76,12 @@
       {
         "fieldName": "neutral_location",
         "fieldDescription": "Indicates if the match was played at a neutral location",
-        "fieldType": "BOOLEAN"
+        "fieldType": "STRING"
       },
       {
         "fieldName": "shoot_out",
         "fieldDescription": "Indicates if the match involved a penalty shoot-out",
-        "fieldType": "BOOLEAN"
+        "fieldType": "STRING"
       },
       {
         "fieldName": "home_team_result",

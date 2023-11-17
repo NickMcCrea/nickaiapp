@@ -9,19 +9,17 @@ class MetaDataService:
 
     def initialize_data_sources(self):
         # Load the metadata from JSON files
-        #self.add_data_source('datasources/restaurants.json', 'datasources/restaurants.csv')
+        self.add_data_source('datasources/restaurants.json', 'datasources/restaurants.csv')
         self.add_data_source('datasources/counterparties.json', 'datasources/counterparties.csv')
         self.add_data_source('datasources/products.json', 'datasources/products.csv')
         self.add_data_source('datasources/nicktrialbalance.json', 'datasources/nicktrialbalance.csv')
-        #self.add_data_source('datasources/top_songs.json', 'datasources/top_songs.csv')
-        #self.add_data_source('datasources/financialresults.json', 'datasources/financialresults.csv')
-        #self.add_data_source('datasources/nba_stats.json', 'datasources/nba_stats.csv')
-        #self.add_data_source('datasources/netflix.json', 'datasources/netflix.csv')
-        #self.add_data_source('datasources/football.json', 'datasources/football.csv')
-        #self.add_data_source('datasources/fifa.json', 'datasources/fifa.csv')
-        #self.add_data_source('datasources/ft_business_school_rankings.json', 'datasources/ft_business_school_rankings.csv')
-    
-
+        self.add_data_source('datasources/top_songs.json', 'datasources/top_songs.csv')
+        self.add_data_source('datasources/financialresults.json', 'datasources/financialresults.csv')
+        self.add_data_source('datasources/nba_stats.json', 'datasources/nba_stats.csv')
+        self.add_data_source('datasources/netflix.json', 'datasources/netflix.csv')
+        self.add_data_source('datasources/football.json', 'datasources/football.csv')
+        self.add_data_source('datasources/fifa.json', 'datasources/fifa.csv')
+     
 
 
     def add_data_source(self, data_source_json_path, datasource_csv_path):
