@@ -1,6 +1,7 @@
 import pandas as pd
 import json
 from meta_data_service import MetaDataService
+import os
 
 class DataProcessor:
     def __init__(self):
@@ -31,9 +32,10 @@ class DataProcessor:
             if column not in parse_dates:  # Exclude date columns from astype
                 df[column] = df[column].astype(dtype, errors='ignore')
 
-        # Parse dates explicitly for date columns
+         # Parse dates explicitly for date columns
         for date_column in parse_dates:
-            df[date_column] = pd.to_datetime(df[date_column], errors='coerce', format='%Y-%m-%d')
+            df[date_column] = pd.to_datetime(df[date_column], errors='coerce', infer_datetime_format=True)
+
 
         return df
 
@@ -108,23 +110,31 @@ class DataProcessor:
         return df.sort_values(by=by, ascending=ascending)
 
 
+desired_cwd = os.path.abspath(os.path.join(os.path.dirname(__file__)))
+os.chdir(desired_cwd)
 
 meta_data_service = MetaDataService()
 tb_data_source_name = 'trial_balance_data'
 tb_data_source = meta_data_service.get_data_source(tb_data_source_name)
 tb_meta_data = tb_data_source['meta']
 tb_data = tb_data_source['db'].query(f"SELECT * FROM {tb_data_source_name}")  
-#print(tb_data)
 
+#filter tb on company code 0302
+tb_data = DataProcessor.load_from_data(tb_meta_data, tb_data)
+tb_data = DataProcessor.filter(tb_data, {'company_code': {'equals': '0302'}})
 
+#let's load counterparty data now
+cp_data_source_name = 'counterparty_data'
+cp_data_source = meta_data_service.get_data_source(cp_data_source_name)
+cp_meta_data = cp_data_source['meta']
+cp_data = cp_data_source['db'].query(f"SELECT * FROM {cp_data_source_name}")
+cp_data = DataProcessor.load_from_data(cp_meta_data, cp_data)
 
+#let's join the two data sources
+joined_data = DataProcessor.join(tb_data, cp_data, on='counterparty_id', how='left')
 
-# Load data into DataFrame
-trial_balance_df = DataProcessor.load_from_data(tb_meta_data, tb_data)
-print(trial_balance_df)
-
-trial_balance_from_csv = DataProcessor.load('backend/datasources/nicktrialbalance.csv', 'backend/datasources/nicktrialbalance.json')
-print(trial_balance_from_csv)
-
+#let's select the columns we want
+joined_data = DataProcessor.select_columns(joined_data, ['company_code',  'counterparty_name',  'balance'])
+print(joined_data)
 
 
