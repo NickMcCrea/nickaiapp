@@ -1,8 +1,10 @@
+import os
 from data_processor import DataProcessor
+from meta_data_service import MetaDataService
 
 
 class DataPipelineExecutor:
-    def __init__(self, processor : DataProcessor, pipeline_def):
+    def __init__(self, processor : DataProcessor, pipeline_def, meta_data_service : MetaDataService):
         """
         Initialize the executor with a data processor and a pipeline definition.
         :param processor: An instance of DataProcessor or similar class with static methods for data operations.
@@ -10,6 +12,7 @@ class DataPipelineExecutor:
         """
         self.processor = processor
         self.pipeline_def = pipeline_def
+        self.meta_data_service = meta_data_service
 
     def run(self):
         """
@@ -23,6 +26,15 @@ class DataPipelineExecutor:
 
             if action == 'load':
                 data_frames[params['name']] = self.processor.load(params['filepath'], params['spec_path'])
+
+            if action == 'load_from_service':
+                # Fetch data and metadata from the service
+                data_source_name = params['data_source_name']
+                data_source = self.meta_data_service.get_data_source(data_source_name)
+                meta_data = data_source['meta']
+                data = data_source['db'].query(f"SELECT * FROM {data_source_name}")
+                data_frames[data_source_name] = self.processor.load_from_data(meta_data, data)
+            
             
             elif action == 'filter':
                 df_name = params['name']
@@ -60,19 +72,21 @@ class DataPipelineExecutor:
             # Add more operations as needed
 
         return data_frames
-    
+
+
+desired_cwd = os.path.abspath(os.path.join(os.path.dirname(__file__)))
+os.chdir(desired_cwd)   
 
 pipeline_definition = [
-    {'action': 'load', 'params': {'name': 'trial_balance', 'filepath': 'backend/datasources/nicktrialbalance.csv', 'spec_path': 'backend/datasources/nicktrialbalance.json'}},
-    {'action': 'filter', 'params': {'name': 'trial_balance', 'conditions': {'company_code': {'equals': '0302'}}}},
-    {'action': 'load', 'params': {'name': 'counterparties', 'filepath': 'backend/datasources/counterparties.csv', 'spec_path': 'backend/datasources/counterparties.json'}},
-    {'action': 'join', 'params': {'name': 'trial_balance', 'other_name': 'counterparties', 'on': 'counterparty_id'}},
-    {'action': 'select_columns', 'params': {'name': 'trial_balance', 'columns': ['company_code', 'counterparty_name', 'balance']}}
-   
+    {'action': 'load_from_service', 'params': {'data_source_name': 'trial_balance_data'}},
+    {'action': 'filter', 'params': {'name': 'trial_balance_data', 'conditions': {'company_code': {'equals': '0302'}}}},
+    {'action': 'load_from_service', 'params': {'data_source_name': 'counterparty_data'}},
+    {'action': 'join', 'params': {'name': 'trial_balance_data', 'other_name': 'counterparty_data', 'on': 'counterparty_id'}},
+    {'action': 'select_columns', 'params': {'name': 'trial_balance_data', 'columns': ['company_code', 'counterparty_name', 'balance']}}
 ]
 
-executor = DataPipelineExecutor(DataProcessor, pipeline_definition)
+meta_data_service = MetaDataService()  # Instantiate the MetaDataService
+executor = DataPipelineExecutor(DataProcessor, pipeline_definition, meta_data_service)
 result_data_frames = executor.run()
 
-# Now you can print or use the processed data as needed
-print(result_data_frames['trial_balance'])
+print(result_data_frames['trial_balance_data'])

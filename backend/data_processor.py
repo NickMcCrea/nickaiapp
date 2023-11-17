@@ -34,7 +34,7 @@ class DataProcessor:
 
          # Parse dates explicitly for date columns
         for date_column in parse_dates:
-            df[date_column] = pd.to_datetime(df[date_column], errors='coerce', infer_datetime_format=True)
+            df[date_column] = pd.to_datetime(df[date_column], errors='coerce')
 
 
         return df
@@ -134,7 +134,7 @@ cp_data = DataProcessor.load_from_data(cp_meta_data, cp_data)
 joined_data = DataProcessor.join(tb_data, cp_data, on='counterparty_id', how='left')
 
 #let's select the columns we want
-joined_data = DataProcessor.select_columns(joined_data, ['company_code',  'counterparty_name',  'balance'])
+joined_data = DataProcessor.select_columns(joined_data, ['company_code',  'counterparty_name',  'balance', 'pnl_date'])
 print(joined_data)
 
 
