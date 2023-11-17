@@ -110,31 +110,31 @@ class DataProcessor:
         return df.sort_values(by=by, ascending=ascending)
 
 
-desired_cwd = os.path.abspath(os.path.join(os.path.dirname(__file__)))
-os.chdir(desired_cwd)
+# desired_cwd = os.path.abspath(os.path.join(os.path.dirname(__file__)))
+# os.chdir(desired_cwd)
 
-meta_data_service = MetaDataService()
-tb_data_source_name = 'trial_balance_data'
-tb_data_source = meta_data_service.get_data_source(tb_data_source_name)
-tb_meta_data = tb_data_source['meta']
-tb_data = tb_data_source['db'].query(f"SELECT * FROM {tb_data_source_name}")  
+# meta_data_service = MetaDataService()
+# tb_data_source_name = 'trial_balance_data'
+# tb_data_source = meta_data_service.get_data_source(tb_data_source_name)
+# tb_meta_data = tb_data_source['meta']
+# tb_data = tb_data_source['db'].query(f"SELECT * FROM {tb_data_source_name}")  
 
-#filter tb on company code 0302
-tb_data = DataProcessor.load_from_data(tb_meta_data, tb_data)
-tb_data = DataProcessor.filter(tb_data, {'company_code': {'equals': '0302'}})
+# #filter tb on company code 0302
+# tb_data = DataProcessor.load_from_data(tb_meta_data, tb_data)
+# tb_data = DataProcessor.filter(tb_data, {'company_code': {'equals': '0302'}})
 
-#let's load counterparty data now
-cp_data_source_name = 'counterparty_data'
-cp_data_source = meta_data_service.get_data_source(cp_data_source_name)
-cp_meta_data = cp_data_source['meta']
-cp_data = cp_data_source['db'].query(f"SELECT * FROM {cp_data_source_name}")
-cp_data = DataProcessor.load_from_data(cp_meta_data, cp_data)
+# #let's load counterparty data now
+# cp_data_source_name = 'counterparty_data'
+# cp_data_source = meta_data_service.get_data_source(cp_data_source_name)
+# cp_meta_data = cp_data_source['meta']
+# cp_data = cp_data_source['db'].query(f"SELECT * FROM {cp_data_source_name}")
+# cp_data = DataProcessor.load_from_data(cp_meta_data, cp_data)
 
-#let's join the two data sources
-joined_data = DataProcessor.join(tb_data, cp_data, on='counterparty_id', how='left')
+# #let's join the two data sources
+# joined_data = DataProcessor.join(tb_data, cp_data, on='counterparty_id', how='left')
 
-#let's select the columns we want
-joined_data = DataProcessor.select_columns(joined_data, ['company_code',  'counterparty_name',  'balance', 'pnl_date'])
-print(joined_data)
+# #let's select the columns we want
+# joined_data = DataProcessor.select_columns(joined_data, ['company_code',  'counterparty_name',  'balance', 'pnl_date'])
+# print(joined_data)
 
 

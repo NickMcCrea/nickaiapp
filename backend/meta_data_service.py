@@ -1,6 +1,7 @@
 import json
 from in_memory_db import InMemoryDB
 from typing import List, Dict, Any
+import pandas as pd
 
 class MetaDataService:
     def __init__(self):
@@ -76,6 +77,64 @@ class MetaDataService:
             return db.query(sql_query)
         else:
             raise ValueError(f"Data source '{data_source_name}' not found.")
+        
+
+    def persist_data_source(self, name, df: pd.DataFrame, description="", category="Miscellaneous"):
+        """
+        Persist a DataFrame as a new data source in the MetaDataService.
+
+        :param name: Name of the new data source.
+        :param df: DataFrame to be persisted.
+        :param description: Description of the new data source.
+        :param category: Category of the new data source.
+        """
+        # Generate metadata based on DataFrame's columns
+        fields = []
+        for column in df.columns:
+            field_type = self._infer_field_type(df[column].dtype)
+            fields.append({
+                "fieldName": column,
+                "fieldDescription": "",  # Leaving individual field descriptions blank for now
+                "fieldType": field_type
+            })
+
+        meta_data = {
+            "name": name,
+            "description": description,
+            "category": category,
+            "fields": fields
+        }
+
+        # Create an in-memory database and load the DataFrame
+        data_source_db = InMemoryDB()
+        data_source_db.load_df_to_db(df, meta_data)
+
+        # Add the metadata and database to the data sources dictionary
+        self.data_sources[name] = {
+            'meta': meta_data,
+            'db': data_source_db,
+        }
+
+    @staticmethod
+    def _infer_field_type(dtype):
+        """
+        Infer the field type from pandas dtype.
+
+        :param dtype: Pandas data type of a DataFrame column.
+        :return: String representing the field type.
+        """
+        if pd.api.types.is_string_dtype(dtype):
+            return 'STRING'
+        elif pd.api.types.is_integer_dtype(dtype):
+            return 'INTEGER'
+        elif pd.api.types.is_float_dtype(dtype):
+            return 'FLOAT'
+        elif pd.api.types.is_bool_dtype(dtype):
+            return 'BOOLEAN'
+        elif pd.api.types.is_datetime64_any_dtype(dtype):
+            return 'DATE'
+        else:
+            return 'STRING'  # Default to STRING for unsupported types
     
     # Example usage
 #repository = DataRepository()

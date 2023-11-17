@@ -40,6 +40,16 @@ class InMemoryDB:
         # Write the data into SQLite
         df.to_sql(ds_name, self.conn, if_exists='replace', index=False)
 
+    def load_df_to_db(self, df, meta_data):
+        """
+        Load a DataFrame into the in-memory database.
+
+        :param df: DataFrame to be loaded.
+        :param meta_data: Metadata information including table name.
+        """
+        ds_name = meta_data['name']
+        df.to_sql(ds_name, self.conn, if_exists='replace', index=False)
+
     def query(self, sql_query: str) -> List[Dict[str, Any]]:
         """
         Execute a SQL query on the in-memory database.

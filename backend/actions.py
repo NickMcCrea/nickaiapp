@@ -6,6 +6,8 @@ from typing import List, Dict, Any
 import function_defs as function_defs
 import completion_builder as completion_builder
 from conversation_history import ConversationHistory
+from data_pipeline_executor import DataPipelineExecutor
+from data_processor import DataProcessor
 
 #constructor for a functions class
 class ActionsManager:
@@ -33,6 +35,20 @@ class ActionsManager:
             "recommend_analysis": self.function_recommend_analysis,  
             # Add more function mappings here...
         }
+
+
+        # pipeline_definition = [
+        #         {'action': 'load_from_service', 'params': {'data_source_name': 'trial_balance_data'}},
+        #         {'action': 'filter', 'params': {'name': 'trial_balance_data', 'conditions': {'company_code': {'equals': '0302'}}}},
+        #         {'action': 'load_from_service', 'params': {'data_source_name': 'counterparty_data'}},
+        #         {'action': 'join', 'params': {'name': 'trial_balance_data', 'other_name': 'counterparty_data', 'on': 'counterparty_id'}},
+        #         {'action': 'select_columns', 'params': {'name': 'trial_balance_data', 'columns': ['company_code', 'counterparty_name', 'balance']}}
+        # ]
+
+        
+        # executor = DataPipelineExecutor(DataProcessor, self.data_service)
+        # result_data_frames = executor.run(pipeline_definition)
+        # self.data_service.persist_data_source("counterparty_balances", result_data_frames['trial_balance_data'], "Description of the data set", "Category of the data set")
 
 
     def function_recommend_analysis(self, socketio, session_id, convo_history, user_input: str, data_source_name: str):
