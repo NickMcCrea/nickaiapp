@@ -14,11 +14,11 @@ class ActionsManager:
 
 
     #constructor
-    def __init__(self, current_model):
+    def __init__(self, current_model, data_service: MetaDataService):
         self.current_model = current_model
 
 
-        self.data_service = MetaDataService()
+        self.data_service = data_service
 
         self.functions = function_defs.get_open_ai_function_defs()
 
@@ -72,7 +72,6 @@ class ActionsManager:
         metadata= None
         return data, metadata, commentary
 
-
     def function_comment_on_data(self, socketio, session_id, convo_history, user_input: str, data_source_name: str, query: str):
 
         #if we have both the data source name and the query, fetch the data
@@ -117,15 +116,11 @@ class ActionsManager:
             metadata= None
 
             return data, metadata, commentary
-
-  
+ 
     def function_clear(self, socketio, session_id, convo_history, user_input):
         convo_history = UserSessionState()
         return None, None, "Conversation history cleared."
 
-
-    #in a real system, this would be probably combine some embeddings search with a metadata service. 
-    #we'll fake it for now. 
     def function_query_data_catalogue(self, socketio, session_id, convo_history, user_input : str):
 
         all_meta_data = self.data_service.get_all_meta_data()
@@ -152,8 +147,6 @@ class ActionsManager:
        
         return data, metadata, commentary
 
-   
-    #fetch actual data. fires off an open ai call to infer data source if we didn't infer in the function call
     def function_fetch_data(self, socketio, session_id, convo_history: UserSessionState, user_input, data_source_name):
         #if data source is not none
         commentary = ""
@@ -312,14 +305,12 @@ class ActionsManager:
 
         return json.loads(output) 
     
-
     def check_for_json_tag(self, output):
         if output.startswith("```json"):
             output = output.replace("```json", "")
             output = output.replace("```", "")
         return output
 
-  
     def execute_function(self,socket_io: SocketIO, session_id: str,conversation_history: UserSessionState, response_message: Dict[str,Any], user_input: str, name: str, args) -> tuple[List[Dict[str, Any]], Dict[str, Any], str ]:
  
         #print the function name and arguments

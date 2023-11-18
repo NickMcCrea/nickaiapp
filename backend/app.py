@@ -10,6 +10,7 @@ import time
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from typing import Dict, List, Any
 from app_state import DefaultAppState
+from meta_data_service import MetaDataService
 from user_session_state import UserSessionState
 
 
@@ -25,11 +26,7 @@ app_state_default = DefaultAppState()
 
 # After your Flask app initialization
 socketio = SocketIO(app, cors_allowed_origins="*")
-
-gpt_3 = "gpt-3.5-turbo-0613"
-# gpt_4 = "gpt-4-0613"
-gpt_4 = "gpt-4-1106-preview"
-current_model = gpt_4
+current_model = "gpt-4-1106-preview"
 user_sessions = {}
 
 
@@ -43,7 +40,6 @@ def on_connect():
     join_room(session_id)
     emit("connected", {"message": "Connected to WebSocket", "session_id": session_id})
 
-
 @socketio.on("disconnect")
 def on_disconnect():
     session_id = session.get("session_id")
@@ -54,7 +50,7 @@ def on_disconnect():
         print(f"Session {session_id} has disconnected.")
 
 
-actions_manager = ActionsManager(current_model)
+actions_manager = ActionsManager(current_model, MetaDataService())
 
 
 # Costs for different models
@@ -64,9 +60,6 @@ COSTS = {
     "gpt-4-1106-preview": {"input": 0.01 / 1000, "output": 0.003 / 1000},
 }
 
-
-def dummy_function():
-    return "dummy function"
 
 
 @app.route("/ask", methods=["POST"])

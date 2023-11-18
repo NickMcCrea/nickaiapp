@@ -201,5 +201,16 @@ def get_open_ai_function_defs():
                     }
                 }
             }
-         }, 
+         },
+
+         {
+         "name": "enter_workspace_state",
+            "description": f"""Use this function when a user asks to create a workspace, or make a new data set.
+                            """,
+            "parameters": {
+                "type": "object",
+                "properties": {}
+            }
+         },
+                     
         ]
