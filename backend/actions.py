@@ -5,7 +5,7 @@ from meta_data_service import MetaDataService
 from typing import List, Dict, Any
 import function_defs as function_defs
 import completion_builder as completion_builder
-from conversation_history import ConversationHistory
+from user_session_state import UserSessionState
 from data_pipeline_executor import DataPipelineExecutor
 from data_processor import DataProcessor
 
@@ -129,7 +129,7 @@ class ActionsManager:
    
 
     def function_clear(self, socketio, session_id, convo_history, user_input):
-        convo_history = ConversationHistory()
+        convo_history = UserSessionState()
         return None, None, "Conversation history cleared."
 
 
@@ -164,7 +164,7 @@ class ActionsManager:
    
 
     #fetch actual data. fires off an open ai call to infer data source if we didn't infer in the function call
-    def function_fetch_data(self, socketio, session_id, convo_history: ConversationHistory, user_input, data_source_name):
+    def function_fetch_data(self, socketio, session_id, convo_history: UserSessionState, user_input, data_source_name):
         #if data source is not none
         commentary = ""
         data_source = self.data_service.get_data_source(data_source_name)
@@ -239,7 +239,7 @@ class ActionsManager:
         commentary = f"DataQuery: Data source name: {data_source_name}, Query: {response['SQL']}"
         return data, metadata, commentary
     
-    def function_fetch_line_chart_data(self, socketio, session_id, convo_history: ConversationHistory, user_input, data_source_name,x_axis_title,y_axis_title,chart_title):
+    def function_fetch_line_chart_data(self, socketio, session_id, convo_history: UserSessionState, user_input, data_source_name,x_axis_title,y_axis_title,chart_title):
         #if data source is not none
         commentary = ""
         data_source = self.data_service.get_data_source(data_source_name)
@@ -330,7 +330,7 @@ class ActionsManager:
         return output
 
   
-    def execute_function(self,socket_io: SocketIO, session_id: str,conversation_history: ConversationHistory, response_message: Dict[str,Any], user_input: str, name: str, args) -> tuple[List[Dict[str, Any]], Dict[str, Any], str ]:
+    def execute_function(self,socket_io: SocketIO, session_id: str,conversation_history: UserSessionState, response_message: Dict[str,Any], user_input: str, name: str, args) -> tuple[List[Dict[str, Any]], Dict[str, Any], str ]:
  
         #print the function name and arguments
         print(f"Executing function '{name}' with arguments {args}")

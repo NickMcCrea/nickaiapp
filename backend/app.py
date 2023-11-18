@@ -9,7 +9,7 @@ from actions import ActionsManager
 import time
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from typing import Dict, List, Any
-from conversation_history import ConversationHistory
+from user_session_state import UserSessionState
 
 
 
@@ -155,14 +155,14 @@ def ask():
         print("Exception: ", e)
         return jsonify({'error': str(e)}), 500
 
-def get_convo_history() -> ConversationHistory:
+def get_convo_history() -> UserSessionState:
     session_id = session.get('session_id')
 
     #check if the user_sessions dictionary has a key for the current session ID
     if session_id not in user_sessions:
         #print that we're creating a new session ID
         print("Creating new convo history...")
-        user_sessions[session_id] = ConversationHistory()
+        user_sessions[session_id] = UserSessionState()
 
     #get the conversation history for the current session ID
     conversation_history = user_sessions.get(session_id)
@@ -171,7 +171,7 @@ def get_convo_history() -> ConversationHistory:
     print("session_id: ", session_id)
     return conversation_history
 
-def get_function_response(socket_io: SocketIO, session_id: str,conversation_history: ConversationHistory, response_message: Dict[str,Any], user_input: str):
+def get_function_response(socket_io: SocketIO, session_id: str,conversation_history: UserSessionState, response_message: Dict[str,Any], user_input: str):
     function_name = response_message["function_call"]["name"]
     function_args = json.loads(response_message["function_call"]["arguments"])
 
