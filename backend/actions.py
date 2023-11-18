@@ -73,14 +73,6 @@ class ActionsManager:
         return data, metadata, commentary
 
 
-
-
-           
-
-
-
-   
-
     def function_comment_on_data(self, socketio, session_id, convo_history, user_input: str, data_source_name: str, query: str):
 
         #if we have both the data source name and the query, fetch the data
@@ -126,8 +118,7 @@ class ActionsManager:
 
             return data, metadata, commentary
 
-   
-
+  
     def function_clear(self, socketio, session_id, convo_history, user_input):
         convo_history = UserSessionState()
         return None, None, "Conversation history cleared."
@@ -162,7 +153,6 @@ class ActionsManager:
         return data, metadata, commentary
 
    
-
     #fetch actual data. fires off an open ai call to infer data source if we didn't infer in the function call
     def function_fetch_data(self, socketio, session_id, convo_history: UserSessionState, user_input, data_source_name):
         #if data source is not none

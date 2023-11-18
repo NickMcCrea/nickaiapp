@@ -1,5 +1,8 @@
+
+
 class UserSessionState:
 
+    app_state = "Default"
    
 
     def __init__(self):
@@ -33,4 +36,7 @@ class UserSessionState:
 
     def get_last_executed_query(self):
         return self.last_executed_query
+    
+    def get_app_state(self):
+        return self.app_state
     
