@@ -71,26 +71,11 @@ def dummy_function():
 
 @app.route("/ask", methods=["POST"])
 def ask():
-    # start the timer
-    start_time = time.time()
-
+ 
     # get session ID from the session object
     user_session_state = get_user_session_state()
     session_id = session.get("session_id")
     user_input = request.json.get("input", "")
-
-    # log the model property from the request
-    model = request.json.get("model", "")
-    print("model: ", model)
-
-    # set current_model based on what we got from the client
-    global current_model
-    if model == "GPT3.5":
-        current_model = gpt_3
-        print("current_model: ", current_model)
-    elif model == "GPT4":
-        current_model = gpt_4
-        print("current_model: ", current_model)
 
     try:
         state = get_server_state(user_session_state)
