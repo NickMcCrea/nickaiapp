@@ -13,11 +13,10 @@ class DefaultAppState:
         user_session_state.add_user_message(user_input)
 
         
-
         response = openai.ChatCompletion.create(
             model="gpt-4-1106-preview",
             messages=user_session_state.get_messages(),
-            functions=actions_manager.get_functions(),
+            functions=actions_manager.get_functions(user_session_state.get_app_state()),
             function_call="auto"
         )
 
@@ -34,7 +33,7 @@ class DefaultAppState:
         metadata = None
 
         if was_function_call:
-            data, metadata, commentary = self.get_function_response(socketio, session_id, actions_manager, user_session_state, response_message, user_input)
+            data, metadata, commentary = get_function_response(socketio, session_id, actions_manager, user_session_state, response_message, user_input)
   
         else:
             commentary = response['choices'][0]['message']['content']
@@ -58,7 +57,7 @@ class DefaultAppState:
 
 
 
-    def get_function_response(self, socket_io: SocketIO, session_id: str, actions_manager: ActionsManager, conversation_history: UserSessionState, response_message: Dict[str,Any], user_input: str):
+def get_function_response(socket_io: SocketIO, session_id: str, actions_manager: ActionsManager, conversation_history: UserSessionState, response_message: Dict[str,Any], user_input: str):
         function_name = response_message["function_call"]["name"]
         function_args = json.loads(response_message["function_call"]["arguments"])
 

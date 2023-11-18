@@ -40,3 +40,6 @@ class UserSessionState:
     def get_app_state(self):
         return self.app_state
     
+    def set_app_state(self, state):
+        self.app_state = state
+    

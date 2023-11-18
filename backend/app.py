@@ -80,8 +80,10 @@ def ask():
         return jsonify({"error": str(e)}), 500
 
 def get_server_state(user_session_state: UserSessionState):
-    if user_session_state.get_app_state() == "Default":
+    if user_session_state.get_app_state() == "Default" or user_session_state.get_app_state() == "Workspace":
         return app_state_default
+    
+   
 
 def get_user_session_state() -> UserSessionState:
     session_id = session.get("session_id")

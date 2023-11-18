@@ -8,6 +8,7 @@ import completion_builder as completion_builder
 from user_session_state import UserSessionState
 from data_pipeline_executor import DataPipelineExecutor
 from data_processor import DataProcessor
+from user_session_state import UserSessionState
 
 #constructor for a functions class
 class ActionsManager:
@@ -20,7 +21,7 @@ class ActionsManager:
 
         self.data_service = data_service
 
-        self.functions = function_defs.get_open_ai_function_defs()
+        self.functions = function_defs.default_functions()
 
         self.function_mapping = {
             "query_data_catalogue": self.function_query_data_catalogue,
@@ -32,9 +33,13 @@ class ActionsManager:
             "fetch_scatter_chart_data": self.function_fetch_scatter_chart_data, 
             "comment_on_data": self.function_comment_on_data,
             "clear": self.function_clear,
-            "recommend_analysis": self.function_recommend_analysis,  
+            "recommend_analysis": self.function_recommend_analysis, 
+            "create_workspace": self.function_enter_workspace_state, 
+            "exit_workspace": self.function_exit_workspace_state,
             # Add more function mappings here...
         }
+
+    
 
 
         # pipeline_definition = [
@@ -49,6 +54,23 @@ class ActionsManager:
         # executor = DataPipelineExecutor(DataProcessor, self.data_service)
         # result_data_frames = executor.run(pipeline_definition)
         # self.data_service.persist_data_source("counterparty_balances", result_data_frames['trial_balance_data'], "Description of the data set", "Category of the data set")
+
+    def function_enter_workspace_state(self, socketio, session_id, convo_history: UserSessionState, user_input, prompt_user_for_data):
+
+        convo_history.set_app_state("Workspace")
+        commentary = prompt_user_for_data
+        data = None
+        metadata = None
+        return data, metadata, commentary
+    
+    def function_exit_workspace_state(self, socketio, session_id, convo_history: UserSessionState, user_input, user_exit_message):
+        convo_history.set_app_state("Default")
+        commentary = user_exit_message
+        data = None
+        metadata = None
+        return data, metadata, commentary
+
+
 
 
     def function_recommend_analysis(self, socketio, session_id, convo_history, user_input: str, data_source_name: str):
@@ -322,5 +344,11 @@ class ActionsManager:
         else:
             raise ValueError(f"Function '{name}' not found.")
         
-    def get_functions(self):
-        return self.functions
+    def get_functions(self, state: str):
+
+        if state == "Default":
+            return self.functions
+        
+        elif state == "Workspace": 
+            return self.functions
+       
