@@ -21,8 +21,7 @@ class ActionsManager:
 
         self.data_service = data_service
 
-        self.functions = function_defs.default_functions()
-
+      
         self.function_mapping = {
             "query_data_catalogue": self.function_query_data_catalogue,
             "fetch_data": self.function_fetch_data,
@@ -347,8 +346,8 @@ class ActionsManager:
     def get_functions(self, state: str):
 
         if state == "Default":
-            return self.functions
+            return function_defs.default_functions()
         
         elif state == "Workspace": 
-            return self.functions
+            return function_defs.workspace_functions()
        

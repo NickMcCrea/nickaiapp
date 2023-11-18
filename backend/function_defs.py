@@ -222,4 +222,10 @@ def default_functions():
         create_workspace
     ]
 
+def workspace_functions():
+    return [
+        query_data_catalogue, 
+        exit_workspace
+    ]
+
 # Now, you can call get_open_ai_function_defs() to get all the functions except 'exit_workspace'
