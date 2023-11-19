@@ -1,10 +1,10 @@
-import openai
 from flask import jsonify
 import json
 from typing import Dict, List, Any
 from flask_socketio import SocketIO
 from user_session_state import UserSessionState
 from actions import ActionsManager
+import llm_wrapper
 
 class DefaultAppState:
 
@@ -13,12 +13,7 @@ class DefaultAppState:
         user_session_state.add_user_message(user_input)
 
         
-        response = openai.ChatCompletion.create(
-            model="gpt-4-1106-preview",
-            messages=user_session_state.get_messages(),
-            functions=actions_manager.get_functions(user_session_state.get_app_state()),
-            function_call="auto"
-        )
+        response = llm_wrapper.llm_call_with_functions(user_session_state.get_messages(), actions_manager.get_functions(user_session_state.get_app_state()))
 
         #print the time up til now
        
@@ -53,6 +48,8 @@ class DefaultAppState:
         final_response = jsonify({'function_response': function_response, 'function_call':  was_function_call, 'output': commentary, 'data': data, 'metadata': metadata})
         print("final_response: ", final_response)
         return final_response, 200
+
+    
 
 
 

@@ -1,3 +1,6 @@
+import json
+
+
 bar_chart_advice = """
             Generated SQL queries should be bar chart-friendly. SQL generated should be SQLite compatible. 
             Whatever column is selected as the x-axis name as "X-Axis".
@@ -71,6 +74,11 @@ def build_analysis_recommendation_prompt(convo_history, user_input, data_source_
 
 def build_pipeline_prompt(convo_history, user_input, data_source_schemas, data_pipeline_code):
     
+    current_data_pipeline = convo_history.get_current_data_pipeline()
+    current_data_pipeline_str = ""
+    if convo_history.get_current_data_pipeline() is not None:
+        current_data_pipeline_str = current_data_pipeline
+
     prompt = f"""
     Given the following data source schemas:
     {data_source_schemas}
@@ -83,6 +91,9 @@ def build_pipeline_prompt(convo_history, user_input, data_source_schemas, data_p
    
     please generate a valid pipeline JSON to help generate data, to the user's specification:
     {user_input}
+
+    if needed, here's the most recent pipeline generated, if it helps to give context (it may be blank if no pipeline has been generated yet):
+    {current_data_pipeline_str}
 
     Respond with only JSON pipeline. No other commentary outside of the JSON. Don't prefix the JSON object with "json" or any other text.
     Use the load_from_service method to load data rather than load.

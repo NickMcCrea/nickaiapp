@@ -9,6 +9,7 @@ from user_session_state import UserSessionState
 from data_pipeline_executor import DataPipelineExecutor
 from data_processor import DataProcessor
 from user_session_state import UserSessionState
+import llm_wrapper
 
 #constructor for a functions class
 class ActionsManager:
@@ -60,10 +61,7 @@ class ActionsManager:
         prompt = completion_builder.build_pipeline_prompt(convo_history, user_input, self.data_service.get_all_meta_data(), self.data_pipline_executor.code_string)
 
         messages = completion_builder.build_basic_message_list(prompt)
-        response = openai.ChatCompletion.create(
-            model=self.current_model,
-            messages=messages
-        )
+        response = llm_wrapper.llm_call(messages)
 
         commentary = "Pipeline Generated"
         data = None
@@ -104,14 +102,13 @@ class ActionsManager:
         prompt = completion_builder.build_analysis_recommendation_prompt(convo_history, user_input, data_source_meta)
         prompt = completion_builder.add_custom_prompt_elements(prompt, data_source_name)
         messages = completion_builder.build_basic_message_list(prompt)
-        response = openai.ChatCompletion.create(
-            model=self.current_model,
-            messages=messages
-        )
+        response =  llm_wrapper.llm_call(messages)
         commentary = response['choices'][0]['message']['content']
         data = None
         metadata= None
         return data, metadata, commentary
+
+   
 
     def function_comment_on_data(self, socketio, session_id, convo_history, user_input: str, data_source_name: str, query: str):
 
@@ -148,10 +145,7 @@ class ActionsManager:
             data_str = str(data)
             prompt = completion_builder.build_data_analysis_prompt(convo_history, user_input, data_str)
             messages = completion_builder.build_basic_message_list(prompt)
-            response = openai.ChatCompletion.create(
-                model=self.current_model,
-                messages=messages
-            )
+            response =  llm_wrapper.llm_call(messages)
             commentary = response['choices'][0]['message']['content']
             data = None
             metadata= None
@@ -171,10 +165,7 @@ class ActionsManager:
         #print the user input we're using to generate a response
         print(f"User input: {user_input}")
         messages = completion_builder.build_basic_message_list(prompt)
-        response = openai.ChatCompletion.create(
-            model=self.current_model,
-            messages=messages
-        )
+        response =  llm_wrapper.llm_call(messages)
         commentary = response['choices'][0]['message']['content']
         commentary = self.check_for_json_tag(commentary)
         data = None
@@ -304,10 +295,7 @@ class ActionsManager:
         #print the user input we're using to generate a response
         print(f"User input: {user_input}")
         messages = completion_builder.build_basic_message_list(prompt)
-        response = openai.ChatCompletion.create(
-            model=self.current_model,
-            messages=messages
-        )
+        response =  llm_wrapper.llm_call(messages)
         output = response['choices'][0]['message']['content']
         data_source_json = json.loads(output)
 
@@ -334,10 +322,7 @@ class ActionsManager:
 
         messages = completion_builder.build_message_list_for_sql_generation(prompt)
 
-        response = openai.ChatCompletion.create(
-            model=self.current_model,
-            messages=messages
-        )
+        response = llm_wrapper.llm_call(messages)
         output = response['choices'][0]['message']['content']
 
         #GPT-4-Turbo generally tags JSON output with "json" at the start of the string.

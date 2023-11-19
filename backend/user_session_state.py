@@ -3,6 +3,8 @@
 class UserSessionState:
 
     app_state = "Default"
+
+    current_data_pipeline = None
    
 
     def __init__(self):
@@ -42,4 +44,10 @@ class UserSessionState:
     
     def set_app_state(self, state):
         self.app_state = state
+
+    def get_current_data_pipeline(self):
+        return self.current_data_pipeline
+    
+    def set_current_data_pipeline(self, pipeline):
+        self.current_data_pipeline = pipeline
     
