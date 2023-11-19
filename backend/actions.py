@@ -36,7 +36,8 @@ class ActionsManager:
             "recommend_analysis": self.function_recommend_analysis, 
             "create_workspace": self.function_enter_workspace_state, 
             "exit_workspace": self.function_exit_workspace_state,
-            "generate_pipeline_definition": self.function_generate_pipeline_definition
+            "define_new_data_set": self.function_generate_pipeline_definition,
+            "create_new_data_set": self.execute_pipeline_definition
             # Add more function mappings here...
         }
 
@@ -55,6 +56,28 @@ class ActionsManager:
         # executor = DataPipelineExecutor(DataProcessor, self.data_service)
         # result_data_frames = executor.run(pipeline_definition)
         # self.data_service.persist_data_source("counterparty_balances", result_data_frames['trial_balance_data'], "Description of the data set", "Category of the data set")
+
+    def execute_pipeline_definition(self, socketio, session_id, convo_history: UserSessionState, user_input, data_source_name, data_source_description):
+
+        #get the pipeline definition from the conversation history
+        pipeline_definition = convo_history.get_current_data_pipeline()
+
+        #execute the pipeline definition
+        result_data_frames = self.data_pipline_executor.run(pipeline_definition)
+
+       
+        #given the pipeline definition, take the last frame name
+        last_data_frame_name = pipeline_definition[-1]["params"]["name"]
+
+        #persist the last data frame
+        self.data_service.persist_data_source(data_source_name, result_data_frames[last_data_frame_name], data_source_description, "User Generated Data Sets")
+
+
+        #return the data set
+        data = None
+        metadata = None
+        commentary = "Data set created"
+        return data, metadata, commentary
 
     def function_generate_pipeline_definition(self, socketio, session_id, convo_history: UserSessionState, user_input):
 

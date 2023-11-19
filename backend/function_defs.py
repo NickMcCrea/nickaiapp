@@ -207,15 +207,37 @@ exit_workspace = {
 }
 
 
-generate_pipeline_definition = {
+define_new_data_set = {
 
-    "name": "generate_pipeline_definition",
-    "description": "Use this function to generate a pipeline definition, when the user wants to create a new data set in a workspace.",
-    "parameters": {
+    "name": "define_new_data_set",
+    "description": """Use this function to generate a pipeline definition, when the user wants to define a new data set. 
+                    Use this when the user specifies a step in the pipeline, e.g load, sort, filter, join, persist etc.
+                    Don't go beyond what the user has specified - let the user define the pipeline definition incrementally.
+                    """,
+     "parameters": {
         "type": "object",
         "properties": {}
     }
 
+}
+
+create_new_data_set = {
+    "name": "create_new_data_set",
+    "description": "Use this function to execute a pipeline definition, and actually create and persist a new data set for real. Use this when the user finalizes the pipeline definition, and wants to create a new data set.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "data_source_name": {
+                "type": "string",
+                "description": "New name for the data source. Don't use the same name as an existing data source."
+            },
+             "data_source_description": {
+                "type": "string",
+                "description": "Description of the new data source."
+            }
+        }
+    }
+    
 }
 
 # Method to return all functions except 'exit_workspace'
@@ -239,7 +261,8 @@ def workspace_functions():
         query_data_catalogue, 
         exit_workspace,
         fetch_meta_data,
-        generate_pipeline_definition
+        define_new_data_set,
+        create_new_data_set
     ]
 
 # Now, you can call get_open_ai_function_defs() to get all the functions except 'exit_workspace'

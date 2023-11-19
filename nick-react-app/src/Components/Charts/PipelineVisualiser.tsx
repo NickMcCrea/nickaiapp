@@ -5,7 +5,8 @@ import ReactFlow, {
   useEdgesState,
   Node,
   Edge,
-  Position
+  Position,
+  Controls
 } from 'react-flow-renderer';
 
 export interface PipelineStep {
@@ -36,7 +37,7 @@ const PipelineVisualiser: React.FC<PipelineVisualiserProps> = ({ pipelineDefinit
       'aggregate': '#6A5ACD',          // Slate Blue
       'sort': '#FF4500',               // Orange Red
       'transform': '#2F4F4F',          // Dark Slate Gray
-      'export': '#8B4513',             // Saddle Brown
+      'persist': '#8B4513',             // Saddle Brown
       // Add more actions and their corresponding colors here
     };
     return colorMapping[action] || '#95A3AB'; // Default color if action not found
@@ -96,7 +97,7 @@ const PipelineVisualiser: React.FC<PipelineVisualiserProps> = ({ pipelineDefinit
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
       >
-      
+    
       </ReactFlow>
     </div>
   );

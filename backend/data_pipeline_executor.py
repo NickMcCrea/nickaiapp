@@ -69,6 +69,12 @@ class DataPipelineExecutor:
                 aggregations = params['aggregations']
                 data_frames[df_name] = self.processor.aggregate(data_frames[df_name], group_by, aggregations)
 
+            elif action == 'persist':
+                df_name = params['name']
+                description = params.get('description', '')
+                category = params.get('category', 'Your Data')
+                self.meta_data_service.persist_data_source(df_name, data_frames[df_name], description, category)
+
             # Add more operations as needed
 
         return data_frames
@@ -143,6 +149,7 @@ class DataPipelineExecutor:
                             group_by = params['group_by']
                             aggregations = params['aggregations']
                             data_frames[df_name] = self.processor.aggregate(data_frames[df_name], group_by, aggregations)
+
 
                         # Add more operations as needed
 

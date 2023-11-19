@@ -305,7 +305,7 @@ function App() {
             case "fetch_meta_data":
               setActiveContent("metaData");
               break;
-            case "generate_pipeline_definition":
+            case "define_new_data_set":
               setActiveContent("pipeline");
               break;
 
@@ -416,7 +416,7 @@ function App() {
               }
             }
 
-            if (reply.function_call && reply.function_call.name === "generate_pipeline_definition") {
+            if (reply.function_call && reply.function_call.name === "define_new_data_set") {
 
 
               //transform metaData to pipeline data
