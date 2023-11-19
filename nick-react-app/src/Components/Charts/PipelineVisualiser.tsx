@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import ReactFlow, {
-  MiniMap,
-  Controls,
   Background,
   useNodesState,
   useEdgesState,
   Node,
-  Edge
+  Edge,
+  Position
 } from 'react-flow-renderer';
 
 export interface PipelineStep {
@@ -19,25 +18,39 @@ interface PipelineVisualiserProps {
   pipelineDefinition: PipelineStep[];
 }
 
+
+interface ColorMapping {
+  [action: string]: string;
+}
+
 const PipelineVisualiser: React.FC<PipelineVisualiserProps> = ({ pipelineDefinition }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
+  const getColorForAction = (action: string): string => {
+    const colorMapping: ColorMapping = {
+      'load_from_service': '#0D9CD9',  // Deep Sky Blue
+      'filter': '#DAA520',             // Goldenrod
+      'join': '#228B22',               // Forest Green
+      'select_columns': '#A52A2A',     // Brown
+      'aggregate': '#6A5ACD',          // Slate Blue
+      'sort': '#FF4500',               // Orange Red
+      'transform': '#2F4F4F',          // Dark Slate Gray
+      'export': '#8B4513',             // Saddle Brown
+      // Add more actions and their corresponding colors here
+    };
+    return colorMapping[action] || '#95A3AB'; // Default color if action not found
+  };
+  
   
 
   useEffect(() => {
-
-    
-
-    console.log('pipelineDefinition', pipelineDefinition);
-
     const convertToFlowElements = (pipeline: PipelineStep[]): void => {
-
-      console.log('convertToFlowElements input:', pipeline);
+      const horizontalSpacing = 250; // Adjust spacing between nodes
 
       const newNodes: Node[] = pipeline.map((step, index) => ({
         id: step.id,
-        type: 'default', // You can define custom node types if needed
+        type: 'default',
         data: { 
           label: (
             <>
@@ -47,7 +60,15 @@ const PipelineVisualiser: React.FC<PipelineVisualiserProps> = ({ pipelineDefinit
             </>
           )
         },
-        position: { x: 100, y: index * 100 }
+        sourcePosition: Position.Right,
+        targetPosition: Position.Left,
+        position: { x: index * horizontalSpacing, y: 100 }, // Adjust for horizontal layout
+        style: { 
+          backgroundColor: getColorForAction(step.action),
+          color: '#fff',
+          border: '1px solid #333',
+          boxShadow: '0 2px 10px rgba(0,0,0,0.15)'
+        }
       }));
 
       const newEdges: Edge[] = newNodes.slice(1).map((node, i) => ({
@@ -55,8 +76,9 @@ const PipelineVisualiser: React.FC<PipelineVisualiserProps> = ({ pipelineDefinit
         source: newNodes[i].id,
         target: node.id,
         animated: true,
-        style: { stroke: '#ddd' },
-        arrowHeadType: 'arrow' as const // Using string literal for arrow head type
+        style: { stroke: '#333', strokeWidth: 2 },
+        arrowHeadType: 'arrowclosed',
+        // ... existing edge properties ...
       }));
 
       setNodes(newNodes);
@@ -74,8 +96,7 @@ const PipelineVisualiser: React.FC<PipelineVisualiserProps> = ({ pipelineDefinit
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
       >
-       
-        <Background color="#aaa" gap={16} />
+      
       </ReactFlow>
     </div>
   );
