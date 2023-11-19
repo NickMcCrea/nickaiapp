@@ -68,6 +68,7 @@ class ActionsManager:
         metadata = response['choices'][0]['message']['content']
         metadata = self.check_for_json_tag(metadata)
         metadata = json.loads(metadata)
+        convo_history.set_current_data_pipeline(metadata)
         return data, metadata, commentary
 
 
