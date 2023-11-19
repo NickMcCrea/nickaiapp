@@ -206,6 +206,18 @@ exit_workspace = {
     }
 }
 
+
+generate_pipeline_definition = {
+
+    "name": "generate_pipeline_definition",
+    "description": "Use this function to generate a pipeline definition, when the user wants to create a new data set in a workspace.",
+    "parameters": {
+        "type": "object",
+        "properties": {}
+    }
+
+}
+
 # Method to return all functions except 'exit_workspace'
 def default_functions():
     return [
@@ -225,7 +237,9 @@ def default_functions():
 def workspace_functions():
     return [
         query_data_catalogue, 
-        exit_workspace
+        exit_workspace,
+        fetch_meta_data,
+        generate_pipeline_definition
     ]
 
 # Now, you can call get_open_ai_function_defs() to get all the functions except 'exit_workspace'

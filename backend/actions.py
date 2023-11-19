@@ -18,7 +18,7 @@ class ActionsManager:
     def __init__(self, current_model, data_service: MetaDataService):
         self.current_model = current_model
 
-
+        self.data_pipline_executor = DataPipelineExecutor(DataProcessor(), data_service)
         self.data_service = data_service
 
       
@@ -35,6 +35,7 @@ class ActionsManager:
             "recommend_analysis": self.function_recommend_analysis, 
             "create_workspace": self.function_enter_workspace_state, 
             "exit_workspace": self.function_exit_workspace_state,
+            "generate_pipeline_definition": self.function_generate_pipeline_definition
             # Add more function mappings here...
         }
 
@@ -53,6 +54,25 @@ class ActionsManager:
         # executor = DataPipelineExecutor(DataProcessor, self.data_service)
         # result_data_frames = executor.run(pipeline_definition)
         # self.data_service.persist_data_source("counterparty_balances", result_data_frames['trial_balance_data'], "Description of the data set", "Category of the data set")
+
+    def function_generate_pipeline_definition(self, socketio, session_id, convo_history: UserSessionState, user_input):
+
+        prompt = completion_builder.build_pipeline_prompt(convo_history, user_input, self.data_service.get_all_meta_data(), self.data_pipline_executor.code_string)
+
+        messages = completion_builder.build_basic_message_list(prompt)
+        response = openai.ChatCompletion.create(
+            model=self.current_model,
+            messages=messages
+        )
+
+        commentary = "Pipeline Generated"
+        data = None
+        metadata = response['choices'][0]['message']['content']
+        metadata = self.check_for_json_tag(metadata)
+        metadata = json.loads(metadata)
+        return data, metadata, commentary
+
+
 
     def function_enter_workspace_state(self, socketio, session_id, convo_history: UserSessionState, user_input, prompt_user_for_data):
 

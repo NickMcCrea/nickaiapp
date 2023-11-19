@@ -69,6 +69,30 @@ def build_analysis_recommendation_prompt(convo_history, user_input, data_source_
                 
         return prompt
 
+def build_pipeline_prompt(convo_history, user_input, data_source_schemas, data_pipeline_code):
+    
+    prompt = f"""
+    Given the following data source schemas:
+    {data_source_schemas}
+
+    and the previous conversation history:
+    {convo_history.messages}
+
+    and the code for the pipeline executor:
+    {data_pipeline_code}
+   
+    please generate a valid pipeline JSON to help generate data, to the user's specification:
+    {user_input}
+
+    Respond with only JSON pipeline. No other commentary outside of the JSON. Don't prefix the JSON object with "json" or any other text.
+    Use the load_from_service method to load data rather than load.
+    Give each step of the pipeline an id attribute, e.g. "id":"1" for the first step, "id":"2" for the second step, etc.
+    """
+
+    return prompt
+
+
+
 def build_query_catalogue_prompt(convo_history, user_input, all_meta_data):
         prompt = f"""
                 Given the following data source schemas:

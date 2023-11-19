@@ -14,6 +14,7 @@ import GenericChart from './Components/Charts/GenericChart';
 import { PieChartData } from './Components/Charts/SimplePieChart';
 import { ScatterChartData } from './Components/Charts/SimpleScatterChart';
 import { DataSourceMetaDeta } from './Components/DataCatalogueDisplay';
+import PipelineVisualiser, { PipelineStep } from './Components/Charts/PipelineVisualiser';
 
 
 
@@ -40,6 +41,70 @@ function App() {
   const [dataCatalogueMeta, setDataCatalogueMeta] = useState<DataSourceMetaDeta[]>([]);
 
   const [activeContent, setActiveContent] = useState<string | null>(null); // New state for active content
+
+  const [pipelineData, setPipelineData] = useState<PipelineStep[]>([]);
+
+
+  const testPipelineData =
+    [
+      {
+        "id": "1",
+        "action": "load_from_service",
+        "params": {
+          "data_source_name": "trial_balance_data"
+        }
+      },
+      {
+        "id": "2",
+        "action": "filter",
+        "params": {
+          "name": "trial_balance_data",
+          "conditions": {
+            "company_code": "0302"
+          }
+        }
+      },
+      {
+        "id": "3",
+        "action": "load_from_service",
+        "params": {
+          "data_source_name": "counterparty_data"
+        }
+      },
+      {
+        "id": "4",
+        "action": "load_from_service",
+        "params": {
+          "data_source_name": "product_data"
+        }
+      },
+      {
+        "id": "5",
+        "action": "join",
+        "params": {
+          "name": "trial_balance_data",
+          "other_name": "counterparty_data",
+          "on": "counterparty_id"
+        }
+      },
+      {
+        "id": "6",
+        "action": "join",
+        "params": {
+          "name": "trial_balance_data",
+          "other_name": "product_data",
+          "on": "product_id"
+        }
+      },
+      {
+        "id": "7",
+        "action": "select_columns",
+        "params": {
+          "name": "trial_balance_data",
+          "columns": ["company_code", "balance", "counterparty_name", "product_type"]
+        }
+      }
+    ];
 
 
 
@@ -100,7 +165,7 @@ function App() {
 
   const renderChart = () => {
 
-    console.log("renderChart: calling renderChart");  
+    console.log("renderChart: calling renderChart");
     //if current funnction call is bar chart, set to bar.
     //declare chartdata, it can be bar or line or plain data
     let chartData: BarChartData[] | LineChartData[] | PieChartData[] | ScatterChartData[] = [];
@@ -126,7 +191,7 @@ function App() {
       chartType = 'pie';
     if (activeContent === "scatter_chart")
       chartType = 'scatter';
-    if(activeContent === "bar_chart")
+    if (activeContent === "bar_chart")
       chartType = 'bar';
 
     console.log("renderChart: Active content is: " + activeContent);
@@ -185,6 +250,12 @@ function App() {
             <MetaDataCollectionDisplay dataSets={dataSets} />
           </div>
         );
+      case "pipeline":
+        return (
+          <div style={{ width: '90%', height: '90%' }}> {/* Ensure this container has width and height */}
+            <PipelineVisualiser pipelineDefinition={pipelineData} />
+          </div>
+        );
       default:
         return null;
     }
@@ -199,7 +270,7 @@ function App() {
 
       try {
         const reply = await chatService.sendMessage(content, selectedModel);
-      
+
 
         if (reply.function_call)
           setCurrentFunctionCall(reply.function_call.name);
@@ -234,8 +305,11 @@ function App() {
             case "fetch_meta_data":
               setActiveContent("metaData");
               break;
-            default:
+            case "generate_pipeline_definition":
+              setActiveContent("pipeline");
+              break;
 
+            default:
               console.log("Default active content is: " + activeContent);
               //set active content to whatever it was last time
               setActiveContent(activeContent);
@@ -301,6 +375,7 @@ function App() {
               setLineChartData([]);
               setMessages([]);
               setActiveContent(null)
+              setPipelineData([]);
             }
 
             if (reply.function_call && reply.function_call.name === "fetch_bar_chart_data") {
@@ -339,6 +414,17 @@ function App() {
 
                 setScatterChartData(reply.data as ScatterChartData[]);
               }
+            }
+
+            if (reply.function_call && reply.function_call.name === "generate_pipeline_definition") {
+
+
+              //transform metaData to pipeline data
+              console.log('reply.metaData', reply.metaData);
+              var pipelineDataTest = reply.metaData as PipelineStep[];
+              console.log('pipelineDataTest', pipelineDataTest);
+              setPipelineData(pipelineDataTest);
+
             }
 
 
