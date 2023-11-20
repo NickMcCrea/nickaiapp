@@ -95,9 +95,12 @@ def build_pipeline_prompt(convo_history, user_input, data_source_schemas, data_p
     if needed, here's the most recent pipeline generated, if it helps to give context (it may be blank if no pipeline has been generated yet):
     {current_data_pipeline_str}
 
+    Make sure you respond with only the changes asked for by the user. Don't change anything else in the pipeline.
+
     Respond with only JSON pipeline. No other commentary outside of the JSON. Don't prefix the JSON object with "json" or any other text.
     Use the load_from_service method to load data rather than load.
     Give each step of the pipeline an id attribute, e.g. "id":"1" for the first step, "id":"2" for the second step, etc.
+    
     """
 
     return prompt

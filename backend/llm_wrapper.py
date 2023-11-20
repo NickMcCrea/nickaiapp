@@ -6,7 +6,7 @@ running_completion_tokens = 0
 
 model4="gpt-4-1106-preview"
 model3="gpt-3.5-turbo-1106"
-current_model = model3
+current_model = model4
 COSTS = {
     "gpt-3.5-turbo-1106": {"input": 0.001 / 1000, "output": 0.002 / 1000},
     "gpt-4-1106-preview": {"input": 0.01 / 1000, "output": 0.03 / 1000},
