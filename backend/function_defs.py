@@ -210,9 +210,10 @@ exit_workspace = {
 define_new_data_set = {
 
     "name": "define_new_data_set",
-    "description": """Use this function to generate a pipeline definition, when the user wants to define a new data set. 
+    "description": """Use this function to generate or edit a pipeline definition, when the user wants to define a new data set. 
                     Use this when the user specifies a step in the pipeline, e.g load, sort, filter, join, persist etc.
                     Don't go beyond what the user has specified - let the user define the pipeline definition incrementally.
+                    Use this when the user is incrementally altering a pipeline also - regenerate it.
                     """,
      "parameters": {
         "type": "object",

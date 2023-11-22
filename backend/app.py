@@ -54,11 +54,7 @@ actions_manager = ActionsManager(current_model, MetaDataService())
 
 
 # Costs for different models
-COSTS = {
-    "gpt-3.5-turbo-0613": {"input": 0.0015 / 1000, "output": 0.002 / 1000},
-    "gpt-4-0613": {"input": 0.03 / 1000, "output": 0.006 / 1000},
-    "gpt-4-1106-preview": {"input": 0.01 / 1000, "output": 0.003 / 1000},
-}
+
 
 
 

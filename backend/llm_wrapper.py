@@ -4,33 +4,41 @@ running_cost = 0
 running_prompt_tokens = 0
 running_completion_tokens = 0
 
+model4="gpt-4-1106-preview"
+model3="gpt-3.5-turbo-1106"
+current_model = model4
+COSTS = {
+    "gpt-3.5-turbo-1106": {"input": 0.001 / 1000, "output": 0.002 / 1000},
+    "gpt-4-1106-preview": {"input": 0.01 / 1000, "output": 0.03 / 1000},
+}
+
 def llm_call(messages):
     global running_cost
 
     response = openai.ChatCompletion.create(
-        model="gpt-4-1106-preview",
+        model=current_model,
         messages=messages
     )
 
-    calc_cost(response)
+    calc_cost(response,current_model)
     
     return response
 
 def llm_call_with_functions(message_array, function_list):
         response = openai.ChatCompletion.create(
-            model="gpt-4-1106-preview",
+            model=current_model,
             messages=message_array,
             functions=function_list,
             function_call="auto"
         )
 
-        calc_cost(response)
+        calc_cost(response, current_model)
 
       
         
         return response
 
-def calc_cost(response):
+def calc_cost(response, current_model):
     prompt_tokens = response['usage']['prompt_tokens']
     completion_tokens = response['usage']['completion_tokens']
 
@@ -42,9 +50,12 @@ def calc_cost(response):
         #calculate the cost
         #prompt tokens cost 0.01 per 1000
         #completion tokens cost 0.003 per 1000
-    prompt_cost = prompt_tokens * 0.01 / 1000
-    completion_cost = completion_tokens * 0.003 / 1000
+    
+    prompt_cost = prompt_tokens * COSTS[current_model]["input"]
+    completion_cost = completion_tokens * COSTS[current_model]["output"]
     total_cost = prompt_cost + completion_cost
+
+
     #print the total cost in dollars
     print("Query cost: $", total_cost)
     print("Prompt tokens: ", prompt_tokens)
