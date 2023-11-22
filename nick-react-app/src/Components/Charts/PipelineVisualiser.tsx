@@ -48,46 +48,76 @@ const PipelineVisualiser: React.FC<PipelineVisualiserProps> = ({ pipelineDefinit
   useEffect(() => {
     const convertToFlowElements = (pipeline: PipelineStep[]): void => {
       const horizontalSpacing = 250; // Adjust spacing between nodes
-
-      const newNodes: Node[] = pipeline.map((step, index) => ({
-        id: step.id,
-        type: 'default',
-        data: { 
-          label: (
-            <>
-              <strong>Action:</strong> {step.action}
-              <br />
-              <strong>Params:</strong> {JSON.stringify(step.params, null, 2)}
-            </>
-          )
-        },
-        sourcePosition: Position.Right,
-        targetPosition: Position.Left,
-        position: { x: index * horizontalSpacing, y: 100 }, // Adjust for horizontal layout
-        style: { 
-          backgroundColor: getColorForAction(step.action),
-          color: '#fff',
-          border: '1px solid #333',
-          boxShadow: '0 2px 10px rgba(0,0,0,0.15)'
+      let yOffset = 100;
+      let xOffset = 0;
+  
+      const newNodes: Node[] = [];
+      const loadNodes: Node[] = [];
+      const otherNodes: Node[] = [];
+      const newEdges: Edge[] = [];
+  
+      // Separate load events and other events into different arrays
+      pipeline.forEach((step, index) => {
+        const node = {
+          id: step.id,
+          type: 'default',
+          data: { 
+            label: (
+              <>
+                <strong>Action:</strong> {step.action}
+                <br />
+                <strong>Params:</strong> {JSON.stringify(step.params, null, 2)}
+              </>
+            )
+          },
+          sourcePosition: Position.Right,
+          targetPosition: Position.Left,
+          position: { x: xOffset, y: yOffset }, // This will be adjusted later
+          style: { 
+            backgroundColor: getColorForAction(step.action),
+            color: '#fff',
+            border: '1px solid #333',
+            boxShadow: '0 2px 10px rgba(0,0,0,0.15)'
+          }
+        };
+  
+        if (step.action === 'load_from_service') {
+          loadNodes.push(node);
+          xOffset += horizontalSpacing; // Increment x position for next load node
+        } else {
+          otherNodes.push(node);
         }
-      }));
-
-      const newEdges: Edge[] = newNodes.slice(1).map((node, i) => ({
-        id: `e${newNodes[i].id}-${node.id}`,
-        source: newNodes[i].id,
-        target: node.id,
-        animated: true,
-        style: { stroke: '#333', strokeWidth: 2 },
-        arrowHeadType: 'arrowclosed',
-        // ... existing edge properties ...
-      }));
-
+      });
+  
+      // Set positions for load nodes at the top
+      loadNodes.forEach((node, index) => {
+        node.position = { x: index * horizontalSpacing, y: 50 };
+        newNodes.push(node);
+      });
+  
+      // Set positions for other nodes and create edges
+      otherNodes.forEach((node, index) => {
+        node.position = { x: index * horizontalSpacing, y: 250 }; // Adjust y position for other nodes
+        newNodes.push(node);
+        if (index > 0) {
+          newEdges.push({
+            id: `e${otherNodes[index - 1].id}-${node.id}`,
+            source: otherNodes[index - 1].id,
+            target: node.id,
+            animated: true,
+            style: { stroke: '#333', strokeWidth: 2 },
+           // arrowHeadType: 'arrowclosed',
+          });
+        }
+      });
+  
       setNodes(newNodes);
       setEdges(newEdges);
     };
-
+  
     convertToFlowElements(pipelineDefinition);
   }, [pipelineDefinition, setNodes, setEdges]);
+  
 
   return (
     <div style={{ height: 900 }}>
