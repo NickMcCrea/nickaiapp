@@ -110,13 +110,53 @@ class DataProcessor:
         """Sort data based on given columns."""
         return df.sort_values(by=by, ascending=ascending)
     
+    @staticmethod
+    def add_columns(df, new_columns):
+        """Add new columns to the DataFrame.
+        
+        Args:
+            df (pd.DataFrame): The original DataFrame.
+            new_columns (dict): A dictionary where keys are new column names 
+                                and values are either constants or functions 
+                                that take the DataFrame as input and return a Series.
+        
+        Returns:
+            pd.DataFrame: The DataFrame with new columns added.
+        """
+        for column_name, value in new_columns.items():
+            if callable(value):
+                df[column_name] = value(df)
+            else:
+                df[column_name] = value
+        return df
+    
+    @staticmethod
+    def apply_conditional_logic(df, condition_str, update_values):
+        """Apply conditional logic to set values in columns based on a string condition.
+        
+        Args:
+            df (pd.DataFrame): The original DataFrame.
+            condition_str (str): A string representing the condition to be evaluated.
+            update_values (dict): A dictionary where keys are column names and values are the values to set.
+        
+        Returns:
+            pd.DataFrame: The DataFrame after applying conditional logic.
+        """
+        mask = df.query(condition_str).index
+        for column, value in update_values.items():
+            df.loc[mask, column] = value
+        return df
+
+
+
+    
 
 
 # desired_cwd = os.path.abspath(os.path.join(os.path.dirname(__file__)))
 # os.chdir(desired_cwd)
 
-meta_data_service = MetaDataService()
-meta_data_service.add_data_source('backend/datasources/counterparties.json', 'backend/datasources/counterparties.csv')
+#meta_data_service = MetaDataService()
+#meta_data_service.add_data_source('backend/datasources/counterparties.json', 'backend/datasources/counterparties.csv')
 # tb_data_source_name = 'trial_balance_data'
 # tb_data_source = meta_data_service.get_data_source(tb_data_source_name)
 # tb_meta_data = tb_data_source['meta']
@@ -127,14 +167,14 @@ meta_data_service.add_data_source('backend/datasources/counterparties.json', 'ba
 # tb_data = DataProcessor.filter(tb_data, {'company_code': {'equals': '0302'}})
 
 #let's load counterparty data now
-cp_data_source_name = 'counterparty_data'
+# cp_data_source_name = 'counterparty_data'
 
-cp_data_source = meta_data_service.get_data_source(cp_data_source_name)
-cp_meta_data = cp_data_source['meta']
-cp_data = cp_data_source['db'].query(f"SELECT * FROM {cp_data_source_name}")
-cp_data = DataProcessor.load_from_data(cp_meta_data, cp_data)
-cp_data = DataProcessor.execute_sql(cp_data, "counterparty_data", "UPDATE counterparty_data SET counterparty_name = 'Yolo'")
-print(cp_data)
+# cp_data_source = meta_data_service.get_data_source(cp_data_source_name)
+# cp_meta_data = cp_data_source['meta']
+# cp_data = cp_data_source['db'].query(f"SELECT * FROM {cp_data_source_name}")
+# cp_data = DataProcessor.load_from_data(cp_meta_data, cp_data)
+# cp_data = DataProcessor.execute_sql(cp_data, "counterparty_data", "UPDATE counterparty_data SET counterparty_name = 'Yolo'")
+# print(cp_data)
 # #let's join the two data sources
 # joined_data = DataProcessor.join(tb_data, cp_data, on='counterparty_id', how='left')
 

@@ -75,7 +75,16 @@ class DataPipelineExecutor:
                 category = params.get('category', 'Your Data')
                 self.meta_data_service.persist_data_source(df_name, data_frames[df_name], description, category)
 
-        
+            elif action == 'add_columns':
+                df_name = params['name']
+                new_columns = params['new_columns']
+                data_frames[df_name] = self.processor.add_columns(data_frames[df_name], new_columns)
+
+            elif action == 'apply_conditional_logic':
+                df_name = params['name']
+                condition_str = params['condition_str']
+                update_values = params['update_values']
+                data_frames[df_name] = self.processor.apply_conditional_logic(data_frames[df_name], condition_str, update_values)
             # Add more operations as needed
 
         return data_frames
@@ -152,6 +161,18 @@ class DataPipelineExecutor:
                             data_frames[df_name] = self.processor.aggregate(data_frames[df_name], group_by, aggregations)
 
                   
+                        elif action == 'add_columns':
+                            df_name = params['name']
+                            new_columns = params['new_columns']
+                            data_frames[df_name] = self.processor.add_columns(data_frames[df_name], new_columns)
+
+                        elif action == 'apply_conditional_logic':
+                            df_name = params['name']
+                            condition_str = params['condition_str']
+                            update_values = params['update_values']
+                            data_frames[df_name] = self.processor.apply_conditional_logic(data_frames[df_name], condition_str, update_values)
+            # Add more operations as needed
+
 
                         # Add more operations as needed
 
