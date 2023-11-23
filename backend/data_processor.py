@@ -2,6 +2,7 @@ import pandas as pd
 import json
 from meta_data_service import MetaDataService
 import os
+import pandasql as psql
 
 class DataProcessor:
     def __init__(self):
@@ -108,6 +109,11 @@ class DataProcessor:
     def sort_data(df, by, ascending=True):
         """Sort data based on given columns."""
         return df.sort_values(by=by, ascending=ascending)
+    
+    @staticmethod
+    def execute_sql(df, query):
+        """Execute an SQL query on a DataFrame."""
+        return psql.sqldf(query, locals())
 
 
 # desired_cwd = os.path.abspath(os.path.join(os.path.dirname(__file__)))
