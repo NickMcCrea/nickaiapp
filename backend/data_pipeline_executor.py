@@ -75,11 +75,7 @@ class DataPipelineExecutor:
                 category = params.get('category', 'Your Data')
                 self.meta_data_service.persist_data_source(df_name, data_frames[df_name], description, category)
 
-            elif action == 'execute_sql':
-                df_name = params['name']
-                query = params['query']
-                data_frames[df_name] = self.processor.execute_sql(data_frames[df_name], query)
-
+        
             # Add more operations as needed
 
         return data_frames
@@ -155,11 +151,7 @@ class DataPipelineExecutor:
                             aggregations = params['aggregations']
                             data_frames[df_name] = self.processor.aggregate(data_frames[df_name], group_by, aggregations)
 
-                        elif action == 'execute_sql':
-                            df_name = params['name']
-                            query = params['query']
-                            data_frames[df_name] = self.processor.execute_sql(data_frames[df_name], query)
-
+                  
 
                         # Add more operations as needed
 

@@ -110,16 +110,13 @@ class DataProcessor:
         """Sort data based on given columns."""
         return df.sort_values(by=by, ascending=ascending)
     
-    @staticmethod
-    def execute_sql(df, query):
-        """Execute an SQL query on a DataFrame."""
-        return psql.sqldf(query, locals())
 
 
 # desired_cwd = os.path.abspath(os.path.join(os.path.dirname(__file__)))
 # os.chdir(desired_cwd)
 
-# meta_data_service = MetaDataService()
+meta_data_service = MetaDataService()
+meta_data_service.add_data_source('backend/datasources/counterparties.json', 'backend/datasources/counterparties.csv')
 # tb_data_source_name = 'trial_balance_data'
 # tb_data_source = meta_data_service.get_data_source(tb_data_source_name)
 # tb_meta_data = tb_data_source['meta']
@@ -129,13 +126,15 @@ class DataProcessor:
 # tb_data = DataProcessor.load_from_data(tb_meta_data, tb_data)
 # tb_data = DataProcessor.filter(tb_data, {'company_code': {'equals': '0302'}})
 
-# #let's load counterparty data now
-# cp_data_source_name = 'counterparty_data'
-# cp_data_source = meta_data_service.get_data_source(cp_data_source_name)
-# cp_meta_data = cp_data_source['meta']
-# cp_data = cp_data_source['db'].query(f"SELECT * FROM {cp_data_source_name}")
-# cp_data = DataProcessor.load_from_data(cp_meta_data, cp_data)
+#let's load counterparty data now
+cp_data_source_name = 'counterparty_data'
 
+cp_data_source = meta_data_service.get_data_source(cp_data_source_name)
+cp_meta_data = cp_data_source['meta']
+cp_data = cp_data_source['db'].query(f"SELECT * FROM {cp_data_source_name}")
+cp_data = DataProcessor.load_from_data(cp_meta_data, cp_data)
+cp_data = DataProcessor.execute_sql(cp_data, "counterparty_data", "UPDATE counterparty_data SET counterparty_name = 'Yolo'")
+print(cp_data)
 # #let's join the two data sources
 # joined_data = DataProcessor.join(tb_data, cp_data, on='counterparty_id', how='left')
 
