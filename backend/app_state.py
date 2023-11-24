@@ -8,7 +8,7 @@ import llm_wrapper
 
 class DefaultAppState:
 
-    def process_request(self, socketio, session_id, actions_manager, user_session_state, user_input):
+    def process_request(self, socketio, session_id, actions_manager : ActionsManager, user_session_state : UserSessionState, user_input):
 
         user_session_state.add_user_message(user_input)
 

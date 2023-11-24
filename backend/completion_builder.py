@@ -185,6 +185,18 @@ def build_data_source_inference_prompt(convo_history, user_input, all_meta_data)
                 
         return prompt
 
+def build_data_source_inference_prompt_for_multiple_data_sources(user_input, data_source_names):
+        prompt = f"""
+                Given the following data source schema names:
+                {data_source_names} 
+                please determine the best data sources, to fetch data to answer the following questions succinctly:
+                {user_input}
+                Return the answer in the following JSON format. Return only JSON. No other commentary outside of the JSON. Don't prefix the JSON object with "json" or any other text.
+                {{"data_source_names": ["data_source_name1", "data_source_name2"]}}
+                """
+                
+        return prompt
+
 def add_custom_prompt_elements(prompt, data_source_name):
     finance_result_prompt_customisations = f"""
     The user may use shorthand for values (e.g. IS for Insitutional Securities), make sure to refer to 

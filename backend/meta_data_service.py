@@ -47,6 +47,13 @@ class MetaDataService:
     def get_data_source(self, name):
         return self.data_sources.get(name, None)
     
+    #get all data source names in a list
+    def get_all_data_source_names(self):
+        data_source_names = []
+        for data_source in self.data_sources:
+            data_source_names.append(data_source)
+        return data_source_names
+    
     #get all meta data in a list
     def get_all_meta_data(self):
         meta_data = []

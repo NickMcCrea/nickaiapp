@@ -36,7 +36,8 @@ class ActionsManager:
             "recommend_analysis": self.function_recommend_analysis, 
             "create_workspace": self.function_enter_workspace_state, 
             "define_new_data_set": self.function_generate_pipeline_definition,
-            "create_new_data_set": self.execute_pipeline_definition
+            "create_new_data_set": self.execute_pipeline_definition,
+            "load_data": self.function_load_data,
             # Add more function mappings here...
         }
 
@@ -55,6 +56,22 @@ class ActionsManager:
         # executor = DataPipelineExecutor(DataProcessor, self.data_service)
         # result_data_frames = executor.run(pipeline_definition)
         # self.data_service.persist_data_source("counterparty_balances", result_data_frames['trial_balance_data'], "Description of the data set", "Category of the data set")
+
+    def function_load_data(self, socketio, session_id, convo_history: UserSessionState, user_input):
+       
+
+        prompt = completion_builder.build_data_source_inference_prompt_for_multiple_data_sources(user_input, self.data_service.get_all_data_source_names())
+        messages = completion_builder.build_basic_message_list(prompt)
+        response =  llm_wrapper.llm_call(messages)
+
+        commentary = response['choices'][0]['message']['content']
+        commentary = self.check_for_json_tag(commentary)
+
+
+        #return the data set
+        data = None
+        metadata = None
+        return data, metadata, commentary
 
     def execute_pipeline_definition(self, socketio, session_id, convo_history: UserSessionState, user_input, data_source_name, data_source_description):
 
@@ -102,20 +119,14 @@ class ActionsManager:
         convo_history.set_current_data_pipeline(metadata)
         return data, metadata, commentary
 
-
-
     def function_enter_workspace_state(self, socketio, session_id, convo_history: UserSessionState, user_input, prompt_user_for_data):
 
-        convo_history.set_app_state("Workspace")
+        convo_history.set_app_state("DatasetLoad")
         commentary = prompt_user_for_data
         data = None
         metadata = None
         return data, metadata, commentary
     
-   
-
-
-
 
     def function_recommend_analysis(self, socketio, session_id, convo_history, user_input: str, data_source_name: str):
         
@@ -134,8 +145,6 @@ class ActionsManager:
         data = None
         metadata= None
         return data, metadata, commentary
-
-   
 
     def function_comment_on_data(self, socketio, session_id, convo_history, user_input: str, data_source_name: str, query: str):
 
@@ -382,4 +391,7 @@ class ActionsManager:
         
         elif state == "Workspace": 
             return function_defs.workspace_functions()
+        
+        elif state == "DatasetLoad":
+            return function_defs.load_data_into_workspace()
        

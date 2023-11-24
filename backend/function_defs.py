@@ -186,7 +186,7 @@ create_workspace = {
         "properties": {
             "prompt_user_for_data": {
                 "type": "string",
-                "description": "Prompt the user to begin defining a new data set."
+                "description": "Prompt the user to suggest data to include in the workspace."
             }
         }
     }
@@ -226,8 +226,24 @@ create_new_data_set = {
             }
         }
     }
+
+
     
 }
+
+
+load_data = {
+    "name": "load_data",
+    "description": "Use this function to load one or more data sources into the workspace.",
+    "parameters": {
+        "type": "object",
+        "properties": { }
+    }
+}
+
+
+
+
 
 # Method to return all functions except 'exit_workspace'
 def default_functions():
@@ -251,6 +267,13 @@ def workspace_functions():
         fetch_meta_data,
         define_new_data_set,
         create_new_data_set
+    ]
+
+def load_data_into_workspace():
+    return [
+        query_data_catalogue, 
+        fetch_meta_data,
+        load_data
     ]
 
 # Now, you can call get_open_ai_function_defs() to get all the functions except 'exit_workspace'
