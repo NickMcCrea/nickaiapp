@@ -20,6 +20,7 @@ class MetaDataService:
         self.add_data_source('datasources/netflix.json', 'datasources/netflix.csv')
         self.add_data_source('datasources/football.json', 'datasources/football.csv')
         self.add_data_source('datasources/fifa.json', 'datasources/fifa.csv')
+        #self.add_data_source('datasources/glbal.json', 'datasources/glbal.csv')
      
 
 

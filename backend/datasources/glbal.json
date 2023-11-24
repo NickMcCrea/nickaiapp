@@ -1,0 +1,182 @@
+{
+    "name": "omni_gl_balances",
+    "description": "Detailed financial data including account balances, currency codes, and profit center levels",
+    "category": "GL Balances",
+    "fields": [
+        {
+            "fieldName": "row_no",
+            "fieldDescription": "Row number",
+            "fieldType": "INTEGER"
+        },
+        {
+            "fieldName": "pl_date",
+            "fieldDescription": "Profit and Loss Date",
+            "fieldType": "DATE"
+        },
+        {
+            "fieldName": "frequency",
+            "fieldDescription": "Frequency of the data",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "gl_company_code",
+            "fieldDescription": "General Ledger Company Code",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "gl_account",
+            "fieldDescription": "General Ledger Account",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "counter_party_gl_code",
+            "fieldDescription": "Counter Party General Ledger Code",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "intercompany_relationship",
+            "fieldDescription": "Intercompany Relationship",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "regulated_ind",
+            "fieldDescription": "Regulated Indicator",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "fsa_eligibility_ind",
+            "fieldDescription": "Financial Services Authority Eligibility Indicator",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "party_id",
+            "fieldDescription": "Party Identifier",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "currency_code",
+            "fieldDescription": "Currency Code",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "legacy_gl_account_number",
+            "fieldDescription": "Legacy General Ledger Account Number",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "base_balance",
+            "fieldDescription": "Base Balance",
+            "fieldType": "FLOAT"
+        },
+        {
+            "fieldName": "usd_balance",
+            "fieldDescription": "USD Balance",
+            "fieldType": "FLOAT"
+        },
+        {
+            "fieldName": "fx_rate",
+            "fieldDescription": "Foreign Exchange Rate",
+            "fieldType": "FLOAT"
+        },
+        {
+            "fieldName": "multiply_divide_ind",
+            "fieldDescription": "Multiply Divide Indicator",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "original_usd_balance",
+            "fieldDescription": "Original USD Balance",
+            "fieldType": "FLOAT"
+        },
+        {
+            "fieldName": "gl_product",
+            "fieldDescription": "General Ledger Product",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "gl_account_description",
+            "fieldDescription": "General Ledger Account Description",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "profit_center",
+            "fieldDescription": "Profit Center",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "profit_center_desc",
+            "fieldDescription": "Profit Center Description",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "legacy_consolidated_10q_level_1",
+            "fieldDescription": "Legacy Consolidated 10q Level 1",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "legacy_consolidated_10q_level_2",
+            "fieldDescription": "Legacy Consolidated 10q Level 2",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "legacy_consolidated_10q_level_3",
+            "fieldDescription": "Legacy Consolidated 10q Level 3",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "legacy_consolidated_10q_level_4",
+            "fieldDescription": "Legacy Consolidated 10q Level 4",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "legacy_consolidated_10q_level_5",
+            "fieldDescription": "Legacy Consolidated 10q Level 5",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "legacy_consolidated_10q_level_6",
+            "fieldDescription": "Legacy Consolidated 10q Level 6",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "legacy_consolidated_10q_level_7",
+            "fieldDescription": "Legacy Consolidated 10q Level 7",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "profit_center_level_1",
+            "fieldDescription": "Profit Center Level 1",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "profit_center_level_2",
+            "fieldDescription": "Profit Center Level 2",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "profit_center_level_3",
+            "fieldDescription": "Profit Center Level 3",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "profit_center_level_4",
+            "fieldDescription": "Profit Center Level 4",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "profit_center_level_5",
+            "fieldDescription": "Profit Center Level 5",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "profit_center_level_6",
+            "fieldDescription": "Profit Center Level 6",
+            "fieldType": "STRING"
+        },
+        {
+            "fieldName": "profit_center_level_7",
+            "fieldDescription": "Profit Center Level 7",
+            "fieldType": "STRING"
+        }
+    ]
+}

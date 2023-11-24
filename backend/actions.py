@@ -35,7 +35,6 @@ class ActionsManager:
             "clear": self.function_clear,
             "recommend_analysis": self.function_recommend_analysis, 
             "create_workspace": self.function_enter_workspace_state, 
-            "exit_workspace": self.function_exit_workspace_state,
             "define_new_data_set": self.function_generate_pipeline_definition,
             "create_new_data_set": self.execute_pipeline_definition
             # Add more function mappings here...
@@ -62,6 +61,9 @@ class ActionsManager:
         #get the pipeline definition from the conversation history
         pipeline_definition = convo_history.get_current_data_pipeline()
 
+        #print the pipeline definition
+        print("Attempting to execute pipeline definition: ", pipeline_definition)
+
         #execute the pipeline definition
         result_data_frames = self.data_pipline_executor.run(pipeline_definition)
 
@@ -73,18 +75,24 @@ class ActionsManager:
         self.data_service.persist_data_source(data_source_name, result_data_frames[last_data_frame_name], data_source_description, "User Generated Data Sets")
 
 
+        convo_history.set_app_state("Default")
+
         #return the data set
         data = None
         metadata = None
-        commentary = "Data set created"
+        commentary = "Data set created - Exiting workspace"
         return data, metadata, commentary
 
     def function_generate_pipeline_definition(self, socketio, session_id, convo_history: UserSessionState, user_input):
 
-        prompt = completion_builder.build_pipeline_prompt(convo_history, user_input, self.data_service.get_all_meta_data(), self.data_pipline_executor.code_string)
+        prompt = completion_builder.build_pipeline_prompt(convo_history, user_input, self.data_service.get_all_meta_data(), self.data_pipline_executor.example_data_pipeline)
 
         messages = completion_builder.build_basic_message_list(prompt)
+
         response = llm_wrapper.llm_call(messages)
+
+        #print the pipeline
+        print("Pipeline Definition: ", response['choices'][0]['message']['content'])
 
         commentary = "Pipeline Generated"
         data = None
@@ -104,12 +112,7 @@ class ActionsManager:
         metadata = None
         return data, metadata, commentary
     
-    def function_exit_workspace_state(self, socketio, session_id, convo_history: UserSessionState, user_input, user_exit_message):
-        convo_history.set_app_state("Default")
-        commentary = user_exit_message
-        data = None
-        metadata = None
-        return data, metadata, commentary
+   
 
 
 

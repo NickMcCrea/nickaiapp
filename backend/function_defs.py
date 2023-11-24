@@ -186,25 +186,13 @@ create_workspace = {
         "properties": {
             "prompt_user_for_data": {
                 "type": "string",
-                "description": "Prompt the user for the data sets they want to use."
+                "description": "Prompt the user to begin defining a new data set."
             }
         }
     }
 }
 
-exit_workspace = {
-    "name": "exit_workspace",
-    "description": "Use this function when a user asks to exit a workspace, or stop using a data set.",
-    "parameters": {
-        "type": "object",
-        "properties": {
-            "user_exit_message": {
-                "type": "string",
-                "description": "Inform the user that they are exiting the workspace."
-            }
-        }
-    }
-}
+
 
 
 define_new_data_set = {
@@ -260,7 +248,6 @@ def default_functions():
 def workspace_functions():
     return [
         query_data_catalogue, 
-        exit_workspace,
         fetch_meta_data,
         define_new_data_set,
         create_new_data_set

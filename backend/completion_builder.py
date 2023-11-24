@@ -72,7 +72,9 @@ def build_analysis_recommendation_prompt(convo_history, user_input, data_source_
                 
         return prompt
 
-def build_pipeline_prompt(convo_history, user_input, data_source_schemas, data_pipeline_code):
+
+
+def build_pipeline_prompt(convo_history, user_input, data_source_schemas, example_data_pipeline):
     
     current_data_pipeline = convo_history.get_current_data_pipeline()
     current_data_pipeline_str = ""
@@ -86,13 +88,30 @@ def build_pipeline_prompt(convo_history, user_input, data_source_schemas, data_p
     and the previous conversation history:
     {convo_history.messages}
 
-    and the code for the pipeline executor:
-    {data_pipeline_code}
+    Here is an example of a pipeline definition:
+    {example_data_pipeline}
+
+    Remember to replace the values in the example with the actual values you want to use, including the correct data source names.
+
+    Here's some valid condition expressions. These will be executed by pandas query method, so they should be valid pandas query expressions.
+    'age > 30',  # Rows where age is greater than 30
+    'salary <= 50000',  # Rows where salary is less than or equal to 50,000
+    'status == "Active"',  # Rows where status is 'Active'
+    'department != "HR"',  # Rows where department is not 'HR'
+    'age >= 25 and age <= 40',  # Rows where age is between 25 and 40 (inclusive)
+    'salary > 20000 or age < 30',  # Rows where salary is more than 20,000 or age is less than 30
+    'not (status == "Inactive")',  # Rows where status is not 'Inactive'
+    'name.str.startswith("J")',  # Rows where name starts with 'J'
+    'email.str.contains("@gmail.com")',  # Rows where email contains '@gmail.com'
+    'date > "2023-01-01"',  # Rows where date is after January 1, 2023
+    'index > 10',  # Rows where index is greater than 10
+    'quantity <= 5 and product == "Widget"'  # Rows where quantity is less than or equal to 5 and product is 'Widget'
+   
    
     please generate a valid pipeline JSON to help generate data, to the user's specification:
     {user_input}
 
-    if needed, here's the most recent pipeline generated, if it helps to give context (it may be blank if no pipeline has been generated yet):
+    Consider iterating on the most recent pipeline generated.
     {current_data_pipeline_str}
 
     Make sure you respond with only the changes asked for by the user. Don't change anything else in the pipeline.
@@ -100,7 +119,6 @@ def build_pipeline_prompt(convo_history, user_input, data_source_schemas, data_p
     Respond with only JSON pipeline. No other commentary outside of the JSON. Don't prefix the JSON object with "json" or any other text.
     Use the load_from_service method to load data rather than load.
     Give each step of the pipeline an id attribute, e.g. "id":"1" for the first step, "id":"2" for the second step, etc.
-    
     """
 
     return prompt

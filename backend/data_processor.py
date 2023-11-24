@@ -2,7 +2,6 @@ import pandas as pd
 import json
 from meta_data_service import MetaDataService
 import os
-import pandasql as psql
 
 class DataProcessor:
     def __init__(self):
