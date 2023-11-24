@@ -85,7 +85,7 @@ const PipelineVisualiser: React.FC<PipelineVisualiserProps> = ({ pipelineDefinit
           //is this the first step that is not a data source?
           if (firstNonDataSourceNode) {
 
-            createDataSourceNode(newNodes, step.id + '-left', step.params.name, step, xPos, yPos, getColorForAction);
+            createDataSourceNode(newNodes, 'input', step.id + '-left', step.params.name, step, xPos, yPos, getColorForAction);
             firstNonDataSourceNode = false;
             createEdge(newEdges, step, `e${step.id}-left`, step.id + '-left', step.id);
           }
@@ -97,7 +97,18 @@ const PipelineVisualiser: React.FC<PipelineVisualiserProps> = ({ pipelineDefinit
             id: step.id,
             type: 'default',
             position: { x: xPos, y: yPos },
-            data: { label: step.action },
+            
+            data: {
+              label: step.action === 'load_from_service' ? step.params.data_source_name : (
+                <>
+                 <strong>{step.action.toUpperCase()}</strong> 
+                  <br />
+                  <br />
+                 {JSON.stringify(step.params, null, 2)}
+                </>
+              )
+            },
+           
             sourcePosition: Position.Right,
             targetPosition: Position.Left,
             style: { background: getColorForAction(step.action), color: 'white' },
@@ -120,7 +131,7 @@ const PipelineVisualiser: React.FC<PipelineVisualiserProps> = ({ pipelineDefinit
           //if we're a join action, create a data source ABOVE the join node
           if (step.action === 'join') {
 
-            createJoinDataSourceNode(newNodes, step.id + '-join', step.params.other_name, step, xPos-150, yPos - 100, getColorForAction, );
+            createJoinDataSourceNode(newNodes, 'default', step.id + '-join', step.params.other_name, step, xPos-150, yPos - 100, getColorForAction, );
             createEdge(newEdges, step, `e${step.id}-join`, step.id + '-join', step.id);
 
           }
@@ -129,7 +140,7 @@ const PipelineVisualiser: React.FC<PipelineVisualiserProps> = ({ pipelineDefinit
 
           xPos += horizontalSpacing;
           //add a node to the left, using the input data source name of this step
-          createDataSourceNode(newNodes, step.id + '-right', step.params.name, step, xPos, yPos, getColorForAction);
+          createDataSourceNode(newNodes, 'default', step.id + '-right', step.params.name, step, xPos, yPos, getColorForAction);
         }
 
         
@@ -138,15 +149,6 @@ const PipelineVisualiser: React.FC<PipelineVisualiserProps> = ({ pipelineDefinit
 
       });
 
-      //count how many load_from_service nodes there are
-      let numberOfDataSources = 0;
-      pipeline.forEach((step, index) => {
-        if (step.action === 'load_from_service') {
-          numberOfDataSources++;
-        }
-      });
-
-     
 
 
 
@@ -183,10 +185,10 @@ function createEdge(newEdges: Edge<any>[], step: PipelineStep, id: string, sourc
   });
 }
 
-function createDataSourceNode(newNodes: Node<any>[], id: string, label: string, step: PipelineStep, xPos: number, yPos: number, getColorForAction: (action: string) => string) {
+function createDataSourceNode(newNodes: Node<any>[], type: string, id: string, label: string, step: PipelineStep, xPos: number, yPos: number, getColorForAction: (action: string) => string) {
   newNodes.push({
     id: id,
-    type: 'default',
+    type: type,
     position: { x: xPos, y: yPos },
     data: { label: label },
     sourcePosition: Position.Right,
@@ -196,10 +198,10 @@ function createDataSourceNode(newNodes: Node<any>[], id: string, label: string, 
 }
 
 
-function createJoinDataSourceNode(newNodes: Node<any>[], id: string, label: string, step: PipelineStep, xPos: number, yPos: number, getColorForAction: (action: string) => string) {
+function createJoinDataSourceNode(newNodes: Node<any>[], type: string, id: string, label: string, step: PipelineStep, xPos: number, yPos: number, getColorForAction: (action: string) => string) {
   newNodes.push({
     id: id,
-    type: 'default',
+    type: type,
     position: { x: xPos, y: yPos },
     data: { label: label },
     sourcePosition: Position.Bottom,
