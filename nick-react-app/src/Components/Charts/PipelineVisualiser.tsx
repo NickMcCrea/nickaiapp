@@ -85,8 +85,9 @@ const PipelineVisualiser: React.FC<PipelineVisualiserProps> = ({ pipelineDefinit
           //is this the first step that is not a data source?
           if (firstNonDataSourceNode) {
 
-            createDataSourceNode(newNodes, step.id + '-left',step.params.name, step, xPos, yPos, getColorForAction);
+            createDataSourceNode(newNodes, step.id + '-left', step.params.name, step, xPos, yPos, getColorForAction);
             firstNonDataSourceNode = false;
+            createEdge(newEdges, step, `e${step.id}-left`, step.id + '-left', step.id);
           }
 
           xPos += horizontalSpacing;
@@ -102,24 +103,52 @@ const PipelineVisualiser: React.FC<PipelineVisualiserProps> = ({ pipelineDefinit
             style: { background: getColorForAction(step.action), color: 'white' },
           });
 
+          //step id minus one
+          if (index > 0) {
+            const previousStepId = index - 1;
+            createEdge(newEdges, step, `e${step.id}-left`, previousStepId + '-right', step.id);
+          }
+
+          //if it's the last index
+          if (index === pipeline.length - 1) {
+            const previousStepId = index;
+            createEdge(newEdges, step, `e${step.id}-left`, previousStepId + '-right', step.id);
+          }
+         
+          createEdge(newEdges, step, `e${step.id}-right`, step.id, step.id + '-right');
+
           //if we're a join action, create a data source ABOVE the join node
           if (step.action === 'join') {
-            
-            createDataSourceNode(newNodes, step.id + '-join',step.params.other_name, step, xPos, yPos-100, getColorForAction);
-  
+
+            createJoinDataSourceNode(newNodes, step.id + '-join', step.params.other_name, step, xPos-150, yPos - 100, getColorForAction, );
+            createEdge(newEdges, step, `e${step.id}-join`, step.id + '-join', step.id);
+
           }
 
 
 
           xPos += horizontalSpacing;
-
           //add a node to the left, using the input data source name of this step
-          createDataSourceNode(newNodes, step.id + '-right',step.params.name, step, xPos, yPos, getColorForAction);
+          createDataSourceNode(newNodes, step.id + '-right', step.params.name, step, xPos, yPos, getColorForAction);
         }
+
+        
 
 
 
       });
+
+      //count how many load_from_service nodes there are
+      let numberOfDataSources = 0;
+      pipeline.forEach((step, index) => {
+        if (step.action === 'load_from_service') {
+          numberOfDataSources++;
+        }
+      });
+
+     
+
+
 
       setNodes(newNodes);
       setEdges(newEdges);
@@ -144,7 +173,17 @@ const PipelineVisualiser: React.FC<PipelineVisualiserProps> = ({ pipelineDefinit
 
 export default PipelineVisualiser;
 
-function createDataSourceNode(newNodes: Node<any>[], id: string, label:string, step: PipelineStep, xPos: number, yPos: number, getColorForAction: (action: string) => string) {
+function createEdge(newEdges: Edge<any>[], step: PipelineStep, id: string, source: string, target: string) {
+  newEdges.push({
+    id: id,
+    source: source,
+    target: target,
+    animated: true,
+    style: { stroke: '#333', strokeWidth: 2 },
+  });
+}
+
+function createDataSourceNode(newNodes: Node<any>[], id: string, label: string, step: PipelineStep, xPos: number, yPos: number, getColorForAction: (action: string) => string) {
   newNodes.push({
     id: id,
     type: 'default',
@@ -152,6 +191,19 @@ function createDataSourceNode(newNodes: Node<any>[], id: string, label:string, s
     data: { label: label },
     sourcePosition: Position.Right,
     targetPosition: Position.Left,
+    style: { background: getColorForAction('load_from_service'), color: 'white' },
+  });
+}
+
+
+function createJoinDataSourceNode(newNodes: Node<any>[], id: string, label: string, step: PipelineStep, xPos: number, yPos: number, getColorForAction: (action: string) => string) {
+  newNodes.push({
+    id: id,
+    type: 'default',
+    position: { x: xPos, y: yPos },
+    data: { label: label },
+    sourcePosition: Position.Bottom,
+    targetPosition: Position.Top,
     style: { background: getColorForAction('load_from_service'), color: 'white' },
   });
 }
