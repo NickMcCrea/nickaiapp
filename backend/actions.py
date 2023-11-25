@@ -86,13 +86,13 @@ class ActionsManager:
 
        
         #given the pipeline definition, take the last frame name
-        last_data_frame_name = pipeline_definition[-1]["params"]["name"]
+        last_data_frame_name = pipeline_definition[-1]["params"]["output_name"]
 
         #persist the last data frame
         self.data_service.persist_data_source(data_source_name, result_data_frames[last_data_frame_name], data_source_description, "User Generated Data Sets")
 
 
-        convo_history.set_app_state("Default")
+        convo_history.set_app_state(AppState.Default)
 
         #return the data set
         data = None
