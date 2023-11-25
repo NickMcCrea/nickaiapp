@@ -111,10 +111,10 @@ def build_pipeline_prompt(convo_history, user_input, data_source_schemas, exampl
     please generate a valid pipeline JSON to help generate data, to the user's specification:
     {user_input}
 
-    Consider iterating on the most recent pipeline generated.
+    Iterate on the most recent pipeline generated, if one exists:
     {current_data_pipeline_str}
 
-    Make sure you respond with only the changes asked for by the user. Don't change anything else in the pipeline.
+    DO NOT go beyond what the user has specified - let the user define the pipeline definition incrementally. Don't generate steps that the user hasn't specified.
 
     Respond with only JSON pipeline. No other commentary outside of the JSON. Don't prefix the JSON object with "json" or any other text.
     Use the load_from_service method to load data rather than load.

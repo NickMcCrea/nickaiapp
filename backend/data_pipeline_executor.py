@@ -87,17 +87,17 @@ class DataPipelineExecutor:
 
     
 
-example_data_pipeline = [
-    {'action': 'load_from_service', 'params': {'name': 'source1', 'output_name': 'df_initial'}},
-    {'action': 'filter', 'params': {'name': 'df_initial', 'conditions': {'column_name': {'greater_than': 10}}, 'output_name': 'df_filtered'}},
-    {'action': 'join', 'params': {'name': 'df_filtered', 'other_name': 'source2', 'on': 'common_column', 'how': 'inner', 'output_name': 'df_joined'}},
-    {'action': 'select_columns', 'params': {'name': 'df_joined', 'columns': ['column1', 'column2'], 'output_name': 'df_selected_columns'}},
-    {'action': 'rename_columns', 'params': {'name': 'df_selected_columns', 'rename_map': {'old_name1': 'new_name1', 'old_name2': 'new_name2'}, 'output_name': 'df_renamed'}},
-    {'action': 'sort_data', 'params': {'name': 'df_renamed', 'by': 'sort_column', 'ascending': True, 'output_name': 'df_sorted'}},
-    {'action': 'aggregate', 'params': {'name': 'df_sorted', 'group_by': ['group_column'], 'aggregations': [{'column': 'column1', 'aggregation': 'sum'}, {'column': 'column2', 'aggregation': 'mean'}], 'output_name': 'df_aggregated'}},
-    {'action': 'add_columns', 'params': {'name': 'df_aggregated', 'new_columns': {'new_column1': 'default_value1', 'new_column2': 'default_value2'}, 'output_name': 'df_with_new_columns'}},
-    {'action': 'apply_conditional_logic', 'params': {'name': 'df_with_new_columns', 'condition_str': 'condition_expression', 'update_values': {'column1': 'new_value1', 'column2': 'new_value2'}, 'output_name': 'df_final'}}
-]
+    example_data_pipeline = [
+        {'action': 'load_from_service', 'params': {'name': 'source1', 'output_name': 'df_initial'}},
+        {'action': 'filter', 'params': {'name': 'df_initial', 'conditions': {'column_name': {'greater_than': 10}}, 'output_name': 'df_filtered'}},
+        {'action': 'join', 'params': {'name': 'df_filtered', 'other_name': 'source2', 'on': 'common_column', 'how': 'inner', 'output_name': 'df_joined'}},
+        {'action': 'select_columns', 'params': {'name': 'df_joined', 'columns': ['column1', 'column2'], 'output_name': 'df_selected_columns'}},
+        {'action': 'rename_columns', 'params': {'name': 'df_selected_columns', 'rename_map': {'old_name1': 'new_name1', 'old_name2': 'new_name2'}, 'output_name': 'df_renamed'}},
+        {'action': 'sort_data', 'params': {'name': 'df_renamed', 'by': 'sort_column', 'ascending': True, 'output_name': 'df_sorted'}},
+        {'action': 'aggregate', 'params': {'name': 'df_sorted', 'group_by': ['group_column'], 'aggregations': [{'column': 'column1', 'aggregation': 'sum'}, {'column': 'column2', 'aggregation': 'mean'}], 'output_name': 'df_aggregated'}},
+        {'action': 'add_columns', 'params': {'name': 'df_aggregated', 'new_columns': {'new_column1': 'default_value1', 'new_column2': 'default_value2'}, 'output_name': 'df_with_new_columns'}},
+        {'action': 'apply_conditional_logic', 'params': {'name': 'df_with_new_columns', 'condition_str': 'condition_expression', 'update_values': {'column1': 'new_value1', 'column2': 'new_value2'}, 'output_name': 'df_final'}}
+    ]
 
 
 

@@ -9,7 +9,7 @@ class UserSessionState:
 
 
 
-    app_state = AppState.Default
+    app_state = AppState.Workspace
 
     current_data_pipeline = None
    

@@ -377,8 +377,6 @@ class TestDataPipelineExecutor(unittest.TestCase):
         self.assertIn('final_df', result)
         pd.testing.assert_frame_equal(result['final_df'], conditional_logic_df)
 
- 
-
 
 
     def tearDown(self):
