@@ -160,7 +160,7 @@ function App() {
   };
 
   //create an example pipeline
-const examplePipelineDefinition: PipelineStep[] = [
+const examplePipeDefinition: PipelineStep[] = [
   {
     "action": "load_from_service",
     "id": "1",
@@ -527,9 +527,7 @@ const examplePipelineDefinition: PipelineStep[] = [
         </ResizableBox>
 
         <div style={{ flex: 1, display: 'flex', overflow: 'auto', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ width: '90%', height: '90%' }}> {/* Ensure this container has width and height */}
-            <PipelineVisualiser pipelineDefinition={examplePipelineDefinition} />
-          </div>
+        {renderActiveContent()}
         </div>
       </div>
     </div>

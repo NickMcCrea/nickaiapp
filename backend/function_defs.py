@@ -186,7 +186,7 @@ create_workspace = {
         "properties": {
             "prompt_user_for_data": {
                 "type": "string",
-                "description": "Prompt the user to suggest data to include in the workspace."
+                "description": "Very briefly prompt the user to start defining the data set - e.g. 'What data set would you like to create?'"
             }
         }
     }
