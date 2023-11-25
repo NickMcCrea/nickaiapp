@@ -8,6 +8,8 @@ import ReactFlow, {
   Position,
   Controls
 } from 'react-flow-renderer';
+import dagre from 'dagre';
+
 
 export interface PipelineStep {
   id: string;
@@ -23,6 +25,8 @@ interface PipelineVisualiserProps {
 interface ColorMapping {
   [action: string]: string;
 }
+
+
 
 const PipelineVisualiser: React.FC<PipelineVisualiserProps> = ({ pipelineDefinition }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
@@ -40,119 +44,182 @@ const PipelineVisualiser: React.FC<PipelineVisualiserProps> = ({ pipelineDefinit
       'persist': '#8B4513',             // Saddle Brown
       'add_columns': '#6A5ACD',       // Slate Blue
       'apply_conditional_logic': '#FF8C00', // Dark Orange
+      'data_frame': '#C39BD3',        
       // Add more actions and their corresponding colors here
     };
     return colorMapping[action] || '#95A3AB'; // Default color if action not found
   };
 
+  const applyDagreLayout = (nodes: Node[], edges: Edge[]) => {
+    const g = new dagre.graphlib.Graph();
+    g.setGraph({ rankdir: 'LR', ranksep: 100, nodesep: 50 }); // Customize these values as needed
+    g.setDefaultEdgeLabel(() => ({}));
+  
+    nodes.forEach(node => {
+      g.setNode(node.id, { width: 150, height: 200 }); // Adjust size as per your node's dimensions
+    });
+  
+    edges.forEach(edge => {
+      g.setEdge(edge.source, edge.target);
+    });
+  
+    dagre.layout(g);
+  
+    return nodes.map(node => {
+      const nodeWithPosition = g.node(node.id);
+      return {
+        ...node,
+        position: {
+          x: nodeWithPosition.x - nodeWithPosition.width / 2,
+          y: nodeWithPosition.y - nodeWithPosition.height / 2
+        }
+      };
+    });
+  };
+  
+
 
 
   useEffect(() => {
     const convertToFlowElements = (pipeline: PipelineStep[]): void => {
-      const horizontalSpacing = 250; // Adjust spacing between nodes
-      let xPos = 0;
-      let yPos = 300;
-      let xPosData = 100;
+      
+      let xPosLoadFromService = 0;
+      let yPosLoadFromService = 0;
+      let xPos = 450;
+      let yPos = 0;
+      let horizontalSpacing= 400;
+      let verticalSpacing = 200;
+
 
 
       const newNodes: Node[] = [];
       const newEdges: Edge[] = [];
       // Determine if the node is a data source node
-      let firstNonDataSourceNode = true;
 
+      //how many load_from_service nodes are there?
+      let loadFromServiceNodeCount = 0;
+      pipeline.forEach((step, index) => {
+        if (step.action === 'load_from_service') {
+          loadFromServiceNodeCount++;
+        }
+      });
+
+      //set the yPos to be the middle of the canvas
+      yPos = (loadFromServiceNodeCount * verticalSpacing) / 3;
+   
       pipeline.forEach((step, index) => {
 
-        //if the pipeline step action is load_from_service, create at teh top of the graph
-        if (step.action === 'load_from_service') {
+        newNodes.push({
+          id: step.id,
+          type: 'default',
+          position: step.action === 'load_from_service' ? { x: xPosLoadFromService, y: yPosLoadFromService } : { x: xPos, y: yPos },
+          
+          data: {
+            label: (
+              <>
+               <strong>{step.action.toUpperCase()}</strong> 
+                <br />
+                <br />
+               {JSON.stringify(step.params, null, 2)}
+              </>
+            )
+          },
+         
+          sourcePosition: Position.Right,
+          targetPosition: Position.Left,
+          style: { background: getColorForAction(step.action), color: 'white' },
+        });
 
-          //add a new node
+        
+       if (step.action === 'load_from_service') {
+        
+
+        //create a node for the output of the load_from_service node
           newNodes.push({
-            id: step.id + '-data-source',
-            type: 'input',
-            position: { x: xPosData, y: 0 },
-            data: { label: step.params.data_source_name },
-            style: { background: getColorForAction(step.action), color: 'white' },
-          });
-
-          xPosData += horizontalSpacing;
-
-        }
-
-        if (step.action !== 'load_from_service') {
-
-          //add a node to the left, using the input data source name of this step
-
-          //is this the first step that is not a data source?
-          if (firstNonDataSourceNode) {
-
-            createDataSourceNode(newNodes, 'input', step.id + '-left', step.params.name, step, xPos, yPos, getColorForAction);
-            firstNonDataSourceNode = false;
-            createEdge(newEdges, step, `e${step.id}-left`, step.id + '-left', step.id);
-          }
-
-          xPos += horizontalSpacing;
-
-          //add a new node
-          newNodes.push({
-            id: step.id,
+            id: step.params.output_name,
             type: 'default',
-            position: { x: xPos, y: yPos },
-            
+            position: { x: xPosLoadFromService+200, y: yPosLoadFromService },
             data: {
-              label: step.action === 'load_from_service' ? step.params.data_source_name : (
+              label: (
                 <>
-                 <strong>{step.action.toUpperCase()}</strong> 
-                  <br />
-                  <br />
-                 {JSON.stringify(step.params, null, 2)}
+                  <strong>{step.params.output_name}</strong>
                 </>
               )
             },
-           
             sourcePosition: Position.Right,
             targetPosition: Position.Left,
-            style: { background: getColorForAction(step.action), color: 'white' },
+            style: { background: getColorForAction('data_frame'), color: 'white' },
           });
 
-          //step id minus one
-          if (index > 0) {
-            const previousStepId = index - 1;
-            createEdge(newEdges, step, `e${step.id}-left`, previousStepId + '-right', step.id);
-          }
-
-          //if it's the last index
-          if (index === pipeline.length - 1) {
-            const previousStepId = index;
-            createEdge(newEdges, step, `e${step.id}-left`, previousStepId + '-right', step.id);
-          }
+          //create an edge between the load_from_service node and the output node
+          newEdges.push({
+            id: `e${index}-1`,
+            source: step.id,
+            target: step.params.output_name,
+            animated: true,
+            style: { stroke: '#333', strokeWidth: 2 },
+          });
          
-          createEdge(newEdges, step, `e${step.id}-right`, step.id, step.id + '-right');
 
-          //if we're a join action, create a data source ABOVE the join node
-          if (step.action === 'join') {
+          yPosLoadFromService += verticalSpacing;
 
-            createJoinDataSourceNode(newNodes, 'default', step.id + '-join', step.params.other_name, step, xPos-150, yPos - 100, getColorForAction, );
-            createEdge(newEdges, step, `e${step.id}-join`, step.id + '-join', step.id);
+        }
+        else {
 
-          }
-
-
-
+          newNodes.push({
+            id: step.params.output_name,
+            type: 'default',
+            position: { x: xPos+200, y: yPos },
+            data: {
+              label: (
+                <>
+                  <strong>{step.params.output_name}</strong>
+                </>
+              )
+            },
+            sourcePosition: Position.Right,
+            targetPosition: Position.Left,
+            style: { background: getColorForAction('data_frame'), color: 'white' },
+          });
           xPos += horizontalSpacing;
-          //add a node to the left, using the input data source name of this step
-          createDataSourceNode(newNodes, 'default', step.id + '-right', step.params.name, step, xPos, yPos, getColorForAction);
         }
 
+        //create an edge between the current node and the output node
+        newEdges.push({
+          id: `e${index}-2`,
+          source: step.id,
+          target: step.params.output_name,
+          animated: true,
+          style: { stroke: '#333', strokeWidth: 2 },
+        });
+
+        //create an edge between the node and its input node
         
+        newEdges.push({
+          id: `e${index}-3`,
+          source: step.params.name,
+          target: step.id,
+          animated: true,
+          style: { stroke: '#333', strokeWidth: 2 },
+        });
 
-
+        //if you're a join node
+        if (step.action === 'join') {
+          //create an edge between the node and its second input node
+          newEdges.push({
+            id: `e${index}-4`,
+            source: step.params.other_name,
+            target: step.id,
+            animated: true,
+            style: { stroke: '#333', strokeWidth: 2 },
+          });
+        }
+        
 
       });
 
-
-
-
-      setNodes(newNodes);
+      const laidOutNodes = applyDagreLayout(newNodes, newEdges);
+      setNodes(laidOutNodes);
       setEdges(newEdges);
     };
 
@@ -175,37 +242,4 @@ const PipelineVisualiser: React.FC<PipelineVisualiserProps> = ({ pipelineDefinit
 
 export default PipelineVisualiser;
 
-function createEdge(newEdges: Edge<any>[], step: PipelineStep, id: string, source: string, target: string) {
-  newEdges.push({
-    id: id,
-    source: source,
-    target: target,
-    animated: true,
-    style: { stroke: '#333', strokeWidth: 2 },
-  });
-}
 
-function createDataSourceNode(newNodes: Node<any>[], type: string, id: string, label: string, step: PipelineStep, xPos: number, yPos: number, getColorForAction: (action: string) => string) {
-  newNodes.push({
-    id: id,
-    type: type,
-    position: { x: xPos, y: yPos },
-    data: { label: label },
-    sourcePosition: Position.Right,
-    targetPosition: Position.Left,
-    style: { background: getColorForAction('load_from_service'), color: 'white' },
-  });
-}
-
-
-function createJoinDataSourceNode(newNodes: Node<any>[], type: string, id: string, label: string, step: PipelineStep, xPos: number, yPos: number, getColorForAction: (action: string) => string) {
-  newNodes.push({
-    id: id,
-    type: type,
-    position: { x: xPos, y: yPos },
-    data: { label: label },
-    sourcePosition: Position.Bottom,
-    targetPosition: Position.Top,
-    style: { background: getColorForAction('load_from_service'), color: 'white' },
-  });
-}

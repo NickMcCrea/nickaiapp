@@ -159,6 +159,81 @@ function App() {
     console.log(model);
   };
 
+  //create an example pipeline
+const examplePipelineDefinition: PipelineStep[] = [
+  {
+    "action": "load_from_service",
+    "id": "1",
+    "params": {
+        "name": "trial_balance_data",
+        "output_name": "df_trial_balance"
+    }
+},
+{
+    "action": "filter",
+    "id": "2",
+    "params": {
+        "conditions": {
+            "company_code": "0302"
+        },
+        "name": "df_trial_balance",
+        "output_name": "df_trial_balance_filtered"
+    }
+},
+{
+    "action": "load_from_service",
+    "id": "3",
+    "params": {
+        "name": "counterparty_data",
+        "output_name": "df_counterparty"
+    }
+},
+{
+    "action": "load_from_service",
+    "id": "4",
+    "params": {
+        "name": "product_data",
+        "output_name": "df_product"
+    }
+},
+{
+    "action": "join",
+    "id": "5",
+    "params": {
+        "how": "inner",
+        "name": "df_trial_balance_filtered",
+        "on": "counterparty_id",
+        "other_name": "df_counterparty",
+        "output_name": "df_trial_counterparty_joined"
+    }
+},
+{
+    "action": "join",
+    "id": "6",
+    "params": {
+        "how": "inner",
+        "name": "df_trial_counterparty_joined",
+        "on": "product_id",
+        "other_name": "df_product",
+        "output_name": "df_final_joined"
+    }
+},
+{
+    "action": "select_columns",
+    "id": "7",
+    "params": {
+        "columns": [
+            "company_code",
+            "balance",
+            "counterparty_name",
+            "product_type"
+        ],
+        "name": "df_final_joined",
+        "output_name": "df_selected_columns"
+    }
+}
+];
+
 
 
 
@@ -452,7 +527,9 @@ function App() {
         </ResizableBox>
 
         <div style={{ flex: 1, display: 'flex', overflow: 'auto', alignItems: 'center', justifyContent: 'center' }}>
-          {renderActiveContent()}
+        <div style={{ width: '90%', height: '90%' }}> {/* Ensure this container has width and height */}
+            <PipelineVisualiser pipelineDefinition={examplePipelineDefinition} />
+          </div>
         </div>
       </div>
     </div>
