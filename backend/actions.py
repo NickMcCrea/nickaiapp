@@ -8,7 +8,7 @@ import completion_builder as completion_builder
 from user_session_state import UserSessionState
 from data_pipeline_executor import DataPipelineExecutor
 from data_processor import DataProcessor
-from user_session_state import UserSessionState
+from user_session_state import AppState
 import llm_wrapper
 
 #constructor for a functions class
@@ -121,7 +121,7 @@ class ActionsManager:
 
     def function_enter_workspace_state(self, socketio, session_id, convo_history: UserSessionState, user_input, prompt_user_for_data):
 
-        convo_history.set_app_state("DatasetLoad")
+        convo_history.set_app_state(AppState.Workspace)
         commentary = prompt_user_for_data
         data = None
         metadata = None
@@ -384,14 +384,14 @@ class ActionsManager:
         else:
             raise ValueError(f"Function '{name}' not found.")
         
-    def get_functions(self, state: str):
+    def get_functions(self, state: AppState):
 
-        if state == "Default":
+        if state == state.Default:
             return function_defs.default_functions()
         
-        elif state == "Workspace": 
+        elif state == state.Workspace:
             return function_defs.workspace_functions()
         
-        elif state == "DatasetLoad":
+        elif state == state.DataSetLoad:
             return function_defs.load_data_into_workspace()
        

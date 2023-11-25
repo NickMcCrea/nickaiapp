@@ -7,16 +7,7 @@ class DataProcessor:
     def __init__(self):
         self.data = {}
 
-        
 
-    @staticmethod
-    def load(filepath, spec_path):
-        """Load a CSV file with specified data types based on a JSON spec."""
-        with open(spec_path, 'r') as spec_file:
-            spec = json.load(spec_file)
-            dtype_mapping, parse_dates = DataProcessor._parse_dtype_spec(spec['fields'])
-
-        return pd.read_csv(filepath, dtype=dtype_mapping, parse_dates=parse_dates)
     
 
     @staticmethod

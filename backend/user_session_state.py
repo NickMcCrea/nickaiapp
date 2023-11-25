@@ -1,8 +1,15 @@
+from enum import Enum
 
+class AppState(Enum):
+    Default = 1
+    Workspace = 2
+    DataSetLoad = 3
 
 class UserSessionState:
 
-    app_state = "Default"
+
+
+    app_state = AppState.Default
 
     current_data_pipeline = None
    
