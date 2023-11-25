@@ -129,6 +129,47 @@ class TestDataProcessor(unittest.TestCase):
         expected_df = df.copy()
         result_df = DataProcessor.apply_conditional_logic(df, condition_str, update_values)
         pd.testing.assert_frame_equal(result_df, expected_df)
+
+    def test_filter_with_incorrect_format(self):
+
+        self.df = pd.DataFrame({
+            'column1': [1, 2, 3, 4, 5],
+            'column2': ['a', 'b', 'c', 'd', 'e']
+        })
+
+        # Test cases with incorrect formats
+        test_cases = [
+            {'column1': {'wrong_key': 3}},  # Wrong key in condition
+            {'column3': {'equals': 1}},     # Non-existent column
+            {'column1': 'equals'},          # Incorrect condition format
+            {'column1': [1, 2, 3]},         # Incorrect condition format
+            {'column1': {'between': [1]}},  # Incorrect number of arguments in 'between'
+            # Add more incorrect formats as needed
+        ]
+
+        for conditions in test_cases:
+            with self.assertRaises(Exception):  # Replace Exception with the specific exception you expect
+                DataProcessor.filter(self.df, conditions)
+
+    
+    def test_filter_with_non_dict_conditions(self):
+
+        self.df = pd.DataFrame({
+            'column1': [1, 2, 3, 4, 5],
+            'column2': ['a', 'b', 'c', 'd', 'e']
+        })
+        
+        # Test cases with non-dictionary conditions
+        test_cases = [
+            "company_code in ['0302', '0571']",  # String
+            ['0302', '0571'],                    # List
+            42,                                  # Integer
+            # Add other non-dictionary types as needed
+        ]
+
+        for conditions in test_cases:
+            with self.assertRaises(TypeError):
+                DataProcessor.filter(self.df, conditions)
  
     def tearDown(self):
         # Tear down (cleanup) actions if required

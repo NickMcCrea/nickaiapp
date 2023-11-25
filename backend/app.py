@@ -49,8 +49,10 @@ def on_disconnect():
         user_sessions.pop(session_id, None)
         print(f"Session {session_id} has disconnected.")
 
+meta_data_service = MetaDataService()
+meta_data_service.initialize_data_sources()
 
-actions_manager = ActionsManager(current_model, MetaDataService())
+actions_manager = ActionsManager(current_model, meta_data_service)
 
 
 # Costs for different models

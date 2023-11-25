@@ -91,6 +91,8 @@ def build_pipeline_prompt(convo_history, user_input, data_source_schemas, exampl
     Here is an example of a pipeline definition:
     {example_data_pipeline}
 
+    Note that for filter steps, the conditions parameter has to be a dictionary.  
+
     Remember to replace the values in the example with the actual values you want to use, including the correct data source names.
 
     Here's some valid condition expressions. These will be executed by pandas query method, so they should be valid pandas query expressions.

@@ -6,7 +6,7 @@ import pandas as pd
 class MetaDataService:
     def __init__(self):
         self.data_sources = {}
-        self.initialize_data_sources()
+        
 
     def initialize_data_sources(self):
         # Load the metadata from JSON files

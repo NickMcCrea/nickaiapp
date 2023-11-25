@@ -34,25 +34,43 @@ class DataProcessor:
 
     @staticmethod
     def filter(df, conditions):
+
+          # Check if conditions is a dictionary
+        if not isinstance(conditions, dict):
+            raise TypeError("Conditions must be a dictionary.")
+        
         """Apply various filter conditions to the data."""
-       
         for column, condition in conditions.items():
-            if 'equals' in condition:
-                df = df[df[column] == condition['equals']]
-            elif 'greater_than' in condition:
-                df = df[df[column] > condition['greater_than']]
-            elif 'less_than' in condition:
-                df = df[df[column] < condition['less_than']]
-            elif 'in' in condition:
-                df = df[df[column].isin(condition['in'])]
-            elif 'not_in' in condition:
-                df = df[~df[column].isin(condition['not_in'])]
-            elif 'between' in condition:
-                lower, upper = condition['between']
-                df = df[df[column].between(lower, upper)]
-            elif 'not_equals' in condition:
-                df = df[df[column] != condition['not_equals']]
-            # Add more condition types as needed
+            if not isinstance(condition, dict):
+                raise ValueError("Each condition must be a dictionary.")
+
+            if column not in df.columns:
+                raise KeyError(f"Column '{column}' not found in DataFrame.")
+
+            valid_keys = {'equals', 'greater_than', 'less_than', 'in', 'not_in', 'between', 'not_equals'}
+            if not any(key in condition for key in valid_keys):
+                raise ValueError("Condition does not contain a valid key.")
+
+            try:
+                if 'equals' in condition:
+                    df = df[df[column] == condition['equals']]
+                elif 'greater_than' in condition:
+                    df = df[df[column] > condition['greater_than']]
+                elif 'less_than' in condition:
+                    df = df[df[column] < condition['less_than']]
+                elif 'in' in condition:
+                    df = df[df[column].isin(condition['in'])]
+                elif 'not_in' in condition:
+                    df = df[~df[column].isin(condition['not_in'])]
+                elif 'between' in condition:
+                    lower, upper = condition['between']
+                    df = df[df[column].between(lower, upper)]
+                elif 'not_equals' in condition:
+                    df = df[df[column] != condition['not_equals']]
+                # Add more condition types as needed
+            except Exception as e:
+                raise ValueError(f"Error processing condition for column '{column}': {str(e)}")
+
         return df
 
     @staticmethod
