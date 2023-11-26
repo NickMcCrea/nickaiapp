@@ -521,7 +521,7 @@ const examplePipeDefinition: PipelineStep[] = [
   return (
     <div className="App">
       <Header estimatedCost={estimatedCost} selectedModel={selectedModel} onModelChange={handleModelChange} />
-      <div style={{ display: 'flex', height: 1100 }}> {/* Flex container */}
+      <div style={{ display: 'flex', height: 900 }}> {/* Flex container */}
         <ResizableBox width={width} height={300} onResize={onResize} minConstraints={[100, 300]} maxConstraints={[800, 300]} handle={<span className="react-resizable-handle react-resizable-handle-e"></span>}>
           <AIChatBox messages={messages} handleSendMessage={handleSendMessage} />
         </ResizableBox>
