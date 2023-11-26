@@ -81,6 +81,44 @@ def build_analysis_recommendation_prompt(convo_history, user_input, data_source_
 
 
 
+example_filter_step = [
+    {
+        "action": "filter",
+        "params": {
+            "name": "another_input_dataframe",
+            "conditions": {
+                "status": {
+                    "equals": "active"
+                },
+                "score": {
+                    "less_than": 50
+                }
+            },
+            "output_name": "active_low_score"
+        }
+    }
+]
+
+example_filter_step2 = [
+    {
+        "action": "filter",
+        "params": {
+            "name": "input_dataframe_name", 
+            "conditions": {
+                "age": {
+                    "greater_than": 30
+                }
+            },
+            "output_name": "age_above_30"
+        }
+    }
+]
+
+valid_keys = {'equals', 'greater_than', 'less_than', 'in', 'not_in', 'between', 'not_equals'}
+     
+     
+
+
 def build_pipeline_prompt(convo_history, user_input, data_source_schemas, example_data_pipeline):
     
     current_data_pipeline = convo_history.get_current_data_pipeline()
@@ -101,9 +139,17 @@ def build_pipeline_prompt(convo_history, user_input, data_source_schemas, exampl
     Note that for filter steps, the conditions parameter has to be a dictionary.  
 
     Remember to replace the values in the example with the actual values you want to use, including the correct data source names.
+    Here's a couple of examples of valid filter steps:
 
-    Here's some valid condition expressions. These will be executed by pandas query method, so they should be valid pandas query expressions.
-    Note that the conditions parameter has to be a dictionary.
+    {example_filter_step}
+
+    and
+
+    {example_filter_step2}
+
+    Here's a list of valid keys for the conditions parameter:
+    {valid_keys}
+
 
     'age > 30',  # Rows where age is greater than 30
     'salary <= 50000',  # Rows where salary is less than or equal to 50,000

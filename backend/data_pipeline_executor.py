@@ -21,67 +21,73 @@ class DataPipelineExecutor:
         """
         data_frames = {}
 
-        for step in pipeline_def:
-            action = step['action']
-            params = step['params']
-            output_name = params.get('output_name', params['name'])
+        for index, step in enumerate(pipeline_def):
+            try:
+                action = step['action']
+                params = step['params']
+                output_name = params.get('output_name', params['name'])
 
-            if action == 'load_from_service':
-                data_source_name = params['name']
-                data_source = self.meta_data_service.get_data_source(data_source_name)
-                meta_data = data_source['meta']
-                data = data_source['db'].query(f"SELECT * FROM {data_source_name}")
-                data_frames[output_name] = self.processor.load_from_data(meta_data, data)
+                if action == 'load_from_service':
+                    data_source_name = params['name']
+                    data_source = self.meta_data_service.get_data_source(data_source_name)
+                    meta_data = data_source['meta']
+                    data = data_source['db'].query(f"SELECT * FROM {data_source_name}")
+                    data_frames[output_name] = self.processor.load_from_data(meta_data, data)
 
-            elif action == 'filter':
-                input_name = params['name']
-                data_frames[output_name] = self.processor.filter(data_frames[input_name], params['conditions'])
+                elif action == 'filter':
+                    input_name = params['name']
+                    data_frames[output_name] = self.processor.filter(data_frames[input_name], params['conditions'])
 
-            elif action == 'join':
-                base_df_name = params['name']
-                other_df_name = params['other_name']
-                on = params['on']
-                how = params.get('how', 'inner')
-                data_frames[output_name] = self.processor.join(data_frames[base_df_name], data_frames[other_df_name], on, how)
+                elif action == 'join':
+                    base_df_name = params['name']
+                    other_df_name = params['other_name']
+                    on = params['on']
+                    how = params.get('how', 'inner')
+                    data_frames[output_name] = self.processor.join(data_frames[base_df_name], data_frames[other_df_name], on, how)
 
-            elif action == 'select_columns':
-                input_name = params['name']
-                columns = params['columns']
-                data_frames[output_name] = self.processor.select_columns(data_frames[input_name], columns)
+                elif action == 'select_columns':
+                    input_name = params['name']
+                    columns = params['columns']
+                    data_frames[output_name] = self.processor.select_columns(data_frames[input_name], columns)
 
-            elif action == 'rename_columns':
-                input_name = params['name']
-                rename_map = params['rename_map']
-                data_frames[output_name] = self.processor.rename_columns(data_frames[input_name], rename_map)
+                elif action == 'rename_columns':
+                    input_name = params['name']
+                    rename_map = params['rename_map']
+                    data_frames[output_name] = self.processor.rename_columns(data_frames[input_name], rename_map)
 
-            elif action == 'sort_data':
-                input_name = params['name']
-                by = params['by']
-                ascending = params.get('ascending', True)
-                data_frames[output_name] = self.processor.sort_data(data_frames[input_name], by, ascending)
+                elif action == 'sort_data':
+                    input_name = params['name']
+                    by = params['by']
+                    ascending = params.get('ascending', True)
+                    data_frames[output_name] = self.processor.sort_data(data_frames[input_name], by, ascending)
 
-            elif action == 'aggregate':
-                input_name = params['name']
-                group_by = params['group_by']
-                aggregations = params['aggregations']
-                data_frames[output_name] = self.processor.aggregate(data_frames[input_name], group_by, aggregations)
+                elif action == 'aggregate':
+                    input_name = params['name']
+                    group_by = params['group_by']
+                    aggregations = params['aggregations']
+                    data_frames[output_name] = self.processor.aggregate(data_frames[input_name], group_by, aggregations)
 
-            elif action == 'persist':
-                input_name = params['name']
-                description = params.get('description', '')
-                category = params.get('category', 'Your Data')
-                self.meta_data_service.persist_data_source(input_name, data_frames[input_name], description, category)
+                elif action == 'persist':
+                    input_name = params['name']
+                    description = params.get('description', '')
+                    category = params.get('category', 'Your Data')
+                    self.meta_data_service.persist_data_source(input_name, data_frames[input_name], description, category)
 
-            elif action == 'add_columns':
-                input_name = params['name']
-                new_columns = params['new_columns']
-                data_frames[output_name] = self.processor.add_columns(data_frames[input_name], new_columns)
+                elif action == 'add_columns':
+                    input_name = params['name']
+                    new_columns = params['new_columns']
+                    data_frames[output_name] = self.processor.add_columns(data_frames[input_name], new_columns)
 
-            elif action == 'apply_conditional_logic':
-                input_name = params['name']
-                condition_str = params['condition_str']
-                update_values = params['update_values']
-                data_frames[output_name] = self.processor.apply_conditional_logic(data_frames[input_name], condition_str, update_values)
+                elif action == 'apply_conditional_logic':
+                    input_name = params['name']
+                    condition_str = params['condition_str']
+                    update_values = params['update_values']
+                    data_frames[output_name] = self.processor.apply_conditional_logic(data_frames[input_name], condition_str, update_values)
+
+            except Exception as e:
+                raise RuntimeError(f"Error in pipeline at step {index + 1} ({action}): {e}") from e
+
+            
 
         return data_frames
 
