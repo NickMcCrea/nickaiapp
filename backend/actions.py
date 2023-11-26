@@ -18,7 +18,6 @@ class ActionsManager:
     #constructor
     def __init__(self, current_model, data_service: MetaDataService):
         self.current_model = current_model
-
         self.data_pipline_executor = DataPipelineExecutor(DataProcessor(), data_service)
         self.data_service = data_service
 
