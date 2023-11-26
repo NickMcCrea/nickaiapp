@@ -1,8 +1,9 @@
 import unittest
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, patch, MagicMock
 from data_processor import DataProcessor
 from meta_data_service import MetaDataService
 from data_pipeline_executor import DataPipelineExecutor
+from pandas import DataFrame
 import pandas as pd
 
 class TestDataPipelineExecutor(unittest.TestCase):
@@ -376,6 +377,13 @@ class TestDataPipelineExecutor(unittest.TestCase):
         self.mock_processor.apply_conditional_logic.assert_called_once_with(added_columns_df, 'group == "A"', {'new_column': 200})
         self.assertIn('final_df', result)
         pd.testing.assert_frame_equal(result['final_df'], conditional_logic_df)
+
+   
+
+
+
+
+
 
 
 

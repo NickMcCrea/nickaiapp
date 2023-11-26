@@ -104,7 +104,7 @@ class ActionsManager:
 
         prompt = completion_builder.build_pipeline_prompt(convo_history, user_input, self.data_service.get_all_meta_data(), self.data_pipline_executor.example_data_pipeline)
 
-        messages = completion_builder.build_basic_message_list(prompt)
+        messages = completion_builder.build_message_list_for_pipeline_generation(prompt)
 
         response = llm_wrapper.llm_call(messages)
 

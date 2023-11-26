@@ -34,6 +34,13 @@ def build_message_list_for_sql_generation(prompt):
     messages.append({"role": "user", "content": prompt})
     return messages
 
+def build_message_list_for_pipeline_generation(prompt):
+    messages = [{"role": "system", "content": "You are a helpful assistant."}]
+    messages.append({"role": "system", "content": "You are helping the user generate valid data pipelines."})
+    messages.append({"role": "system", "content": "These pipelines are specified in JSON, and executed by the backend. Each step is ultimately executed on a pandas dataframe."})
+    messages.append({"role": "user", "content": prompt})
+    return messages
+
 
 def build_data_analysis_prompt(convo_history, user_input, data_str):
     return f"""
@@ -96,6 +103,8 @@ def build_pipeline_prompt(convo_history, user_input, data_source_schemas, exampl
     Remember to replace the values in the example with the actual values you want to use, including the correct data source names.
 
     Here's some valid condition expressions. These will be executed by pandas query method, so they should be valid pandas query expressions.
+    Note that the conditions parameter has to be a dictionary.
+
     'age > 30',  # Rows where age is greater than 30
     'salary <= 50000',  # Rows where salary is less than or equal to 50,000
     'status == "Active"',  # Rows where status is 'Active'

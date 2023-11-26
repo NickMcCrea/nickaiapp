@@ -89,7 +89,7 @@ class DataPipelineExecutor:
 
     example_data_pipeline = [
         {'action': 'load_from_service', 'params': {'name': 'source1', 'output_name': 'df_initial'}},
-        {'action': 'filter', 'params': {'name': 'df_initial', 'conditions': {'column_name': {'greater_than': 10}}, 'output_name': 'df_filtered'}},
+        {'action': 'filter', 'params': {'name': 'df_initial', 'conditions': {'column_name': {'in': ['value1', 'value2']}}, 'output_name': 'df_filtered'}},
         {'action': 'join', 'params': {'name': 'df_filtered', 'other_name': 'source2', 'on': 'common_column', 'how': 'inner', 'output_name': 'df_joined'}},
         {'action': 'select_columns', 'params': {'name': 'df_joined', 'columns': ['column1', 'column2'], 'output_name': 'df_selected_columns'}},
         {'action': 'rename_columns', 'params': {'name': 'df_selected_columns', 'rename_map': {'old_name1': 'new_name1', 'old_name2': 'new_name2'}, 'output_name': 'df_renamed'}},

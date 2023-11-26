@@ -37,7 +37,7 @@ class DataProcessor:
 
           # Check if conditions is a dictionary
         if not isinstance(conditions, dict):
-            raise TypeError("Conditions must be a dictionary.")
+            raise TypeError("Filter conditions must be a dictionary.")
         
         """Apply various filter conditions to the data."""
         for column, condition in conditions.items():
