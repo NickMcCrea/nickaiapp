@@ -24,7 +24,7 @@ const BasicDataGridAgGrid: React.FC<BasicDataGridAgGridProps> = ({ data }) => {
   }));
 
   return (
-    <div className="ag-theme-alpine" style={{ height: 400, width: '100%' }}>
+    <div className="ag-theme-alpine" style={{ height: '100%', width: '100%' }}>
       <AgGridReact
         onGridReady={onGridReady}
         rowData={data}
