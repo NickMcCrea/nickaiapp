@@ -7,6 +7,8 @@ import { PieChartData } from './SimplePieChart';
 import SimplePieChart from './SimplePieChart';
 import SimpleScatterChart from './SimpleScatterChart';
 import { ScatterChartData } from './SimpleScatterChart';
+import BasicDataGridPremium from './BasicDataGrid';
+import BasicDataGridAgGrid from './BasicAgGrid';
 
 type ChartType = 'bar' | 'line' | 'table' | 'pie' | 'scatter';
 
@@ -34,7 +36,7 @@ const GenericChart: React.FC<GenericChartProps> = ({ type, data, metaData }) => 
       return <SimpleScatterChart data={data as ScatterChartData[]} {...metaData} />;  
 
     case 'table':
-      return <BasicTable data={data} />;
+      return <BasicDataGridAgGrid data={data} />;
     default:
       return null;
   }
