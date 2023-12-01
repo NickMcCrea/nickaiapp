@@ -15,6 +15,7 @@ import { PieChartData } from './Components/Charts/SimplePieChart';
 import { ScatterChartData } from './Components/Charts/SimpleScatterChart';
 import { DataSourceMetaDeta } from './Components/DataCatalogueDisplay';
 import PipelineVisualiser, { PipelineStep } from './Components/Charts/PipelineVisualiser';
+import PowerBIReport from './Components/PowerBIComponent';
 
 
 
@@ -43,69 +44,6 @@ function App() {
   const [activeContent, setActiveContent] = useState<string | null>(null); // New state for active content
 
   const [pipelineData, setPipelineData] = useState<PipelineStep[]>([]);
-
-
-  const testPipelineData =
-    [
-      {
-        "id": "1",
-        "action": "load_from_service",
-        "params": {
-          "data_source_name": "trial_balance_data"
-        }
-      },
-      {
-        "id": "2",
-        "action": "filter",
-        "params": {
-          "name": "trial_balance_data",
-          "conditions": {
-            "company_code": "0302"
-          }
-        }
-      },
-      {
-        "id": "3",
-        "action": "load_from_service",
-        "params": {
-          "data_source_name": "counterparty_data"
-        }
-      },
-      {
-        "id": "4",
-        "action": "load_from_service",
-        "params": {
-          "data_source_name": "product_data"
-        }
-      },
-      {
-        "id": "5",
-        "action": "join",
-        "params": {
-          "name": "trial_balance_data",
-          "other_name": "counterparty_data",
-          "on": "counterparty_id"
-        }
-      },
-      {
-        "id": "6",
-        "action": "join",
-        "params": {
-          "name": "trial_balance_data",
-          "other_name": "product_data",
-          "on": "product_id"
-        }
-      },
-      {
-        "id": "7",
-        "action": "select_columns",
-        "params": {
-          "name": "trial_balance_data",
-          "columns": ["company_code", "balance", "counterparty_name", "product_type"]
-        }
-      }
-    ];
-
 
 
 
@@ -158,84 +96,6 @@ function App() {
     setSelectedModel(model);
     console.log(model);
   };
-
-  //create an example pipeline
-const examplePipeDefinition: PipelineStep[] = [
-  {
-    "action": "load_from_service",
-    "id": "1",
-    "params": {
-        "name": "trial_balance_data",
-        "output_name": "df_trial_balance"
-    }
-},
-{
-    "action": "filter",
-    "id": "2",
-    "params": {
-        "conditions": {
-            "company_code": "0302"
-        },
-        "name": "df_trial_balance",
-        "output_name": "df_trial_balance_filtered"
-    }
-},
-{
-    "action": "load_from_service",
-    "id": "3",
-    "params": {
-        "name": "counterparty_data",
-        "output_name": "df_counterparty"
-    }
-},
-{
-    "action": "load_from_service",
-    "id": "4",
-    "params": {
-        "name": "product_data",
-        "output_name": "df_product"
-    }
-},
-{
-    "action": "join",
-    "id": "5",
-    "params": {
-        "how": "inner",
-        "name": "df_trial_balance_filtered",
-        "on": "counterparty_id",
-        "other_name": "df_counterparty",
-        "output_name": "df_trial_counterparty_joined"
-    }
-},
-{
-    "action": "join",
-    "id": "6",
-    "params": {
-        "how": "inner",
-        "name": "df_trial_counterparty_joined",
-        "on": "product_id",
-        "other_name": "df_product",
-        "output_name": "df_final_joined"
-    }
-},
-{
-    "action": "select_columns",
-    "id": "7",
-    "params": {
-        "columns": [
-            "company_code",
-            "balance",
-            "counterparty_name",
-            "product_type"
-        ],
-        "name": "df_final_joined",
-        "output_name": "df_selected_columns"
-    }
-}
-];
-
-
-
 
 
   const renderChart = () => {
