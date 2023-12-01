@@ -13,9 +13,10 @@ import DataSourceCatalogueDisplay from './Components/DataCatalogueDisplay';
 import GenericChart from './Components/Charts/GenericChart';
 import { PieChartData } from './Components/Charts/SimplePieChart';
 import { ScatterChartData } from './Components/Charts/SimpleScatterChart';
-import { DataSourceMetaDeta } from './Components/DataCatalogueDisplay';
+import { DataSourceMetaDeta } from './Components/DataSourceMetaDeta';
 import PipelineVisualiser, { PipelineStep } from './Components/Charts/PipelineVisualiser';
 import PowerBIReport from './Components/PowerBIComponent';
+import DataZoneDisplay from './Components/DataZoneDisplay';
 
 
 
@@ -176,7 +177,7 @@ function App() {
       case "catalogue":
         return (
           <div style={{ width: '90%', height: '90%', overflow: 'auto' }}>
-            <DataSourceCatalogueDisplay dataSources={dataCatalogueMeta} commentary={catalogueCommentary} />
+            <DataZoneDisplay dataSources={dataCatalogueMeta} commentary={catalogueCommentary} />
           </div>
         );
       case "metaData":

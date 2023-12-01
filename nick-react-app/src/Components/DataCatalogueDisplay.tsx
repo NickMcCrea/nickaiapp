@@ -5,6 +5,8 @@ import MusicNoteIcon from '@mui/icons-material/MusicNote';
 import StorageIcon from '@mui/icons-material/Storage';
 import SportsBasketballIcon from '@mui/icons-material/SportsBasketball';
 import TvIcon from '@mui/icons-material/Tv';
+import { DataSourceCatalogueDisplayProps } from './DataSourceCatalogueDisplayProps';
+import { DataSourceMetaDeta } from './DataSourceMetaDeta';
 
 
 // Define the shape of the accumulator object
@@ -65,18 +67,6 @@ const DataSourceCategory: React.FC<{ category: string; dataSources: DataSourceMe
       </div>
     </div>
   );
-};
-
-export interface DataSourceMetaDeta {
-  name: string;
-  description: string;
-  category: string;
-}
-
-// Define a type for the DataSourceCatalogueDisplay props
-type DataSourceCatalogueDisplayProps = {
-  dataSources: DataSourceMetaDeta[];
-  commentary: string;
 };
 
 // Modified DataSourceCatalogueDisplay component
