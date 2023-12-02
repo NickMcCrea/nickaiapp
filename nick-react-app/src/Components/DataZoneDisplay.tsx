@@ -4,6 +4,8 @@ import {DataSourceCatalogueDisplayProps} from './DataSourceCatalogueDisplayProps
 import StorageIcon from '@mui/icons-material/Storage';
 import './DataZoneDisplay.css';
 import { DataSourceManifest } from './MetaDataDisplay/DataSourceManifest';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
 
 
 
@@ -12,6 +14,13 @@ import { DataSourceManifest } from './MetaDataDisplay/DataSourceManifest';
 const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSources, commentary }) => {
  
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
+
+  const [activeTab, setActiveTab] = useState(0);
+
+  const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+    setActiveTab(newValue);
+  };
+
 
   //store meta data we get back from the api
   const [metaData, setMetaData] = useState<DataSourceManifest | null>(null);
@@ -80,6 +89,35 @@ const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSource
  
         </div>
       )}
+
+<Tabs
+          value={activeTab}
+          onChange={handleTabChange}
+          indicatorColor="primary"
+          textColor="primary"
+          centered
+          variant='fullWidth'
+        >
+      
+          <Tab label="Fields" />
+          <Tab label="Data Sample" />
+          <Tab label="Request Access" />
+          <Tab label="Data Quality" />
+          <Tab label="Data Dictionary" />
+          {/* Add more tabs as needed */}
+        </Tabs>
+
+        {/* Content of Tab Panels */}
+        {activeTab === 0 && (
+          <div>
+            {/* Content for Tab 1 */}
+          </div>
+        )}
+        {activeTab === 1 && (
+          <div>
+            {/* Content for Tab 2 */}
+          </div>
+        )}
 
 
     </div>

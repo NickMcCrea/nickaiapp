@@ -82,6 +82,11 @@ p {
     border: 1px solid #ccc;
 }
 
+.right-panel .MuiTabs-root {
+    width: 100%;
+  }
+  
+
 
 
 .right-panel-data-source-header{
@@ -91,6 +96,7 @@ text-align: left;
 margin-left: 10px;
 margin-right: 10px;
 font-size: 0.8rem;
+margin-bottom: 30px;
 }
 
 .right-panel-data-source-header hr {
