@@ -75,6 +75,24 @@ def get_meta_data():
     return jsonify(meta_data), 200
 
 
+@app.route("/ask_specific", methods=["POST"])
+def ask_specific():
+    user_session_state = get_user_session_state()
+    session_id = session.get("session_id")
+    user_input = request.json.get("input", "")
+    data_source_name = request.json.get("data_source_name", "")
+    user_session_state.set_specific_data_set(data_source_name)
+
+    try:
+        state = get_server_state(user_session_state)
+        return state.process_request(socketio, session_id, actions_manager, user_session_state, user_input)
+                    
+
+    except Exception as e:
+        print("Exception: ", e)
+        return jsonify({"error": str(e)}), 500
+
+
 @app.route("/ask", methods=["POST"])
 def ask():
  
@@ -82,6 +100,11 @@ def ask():
     user_session_state = get_user_session_state()
     session_id = session.get("session_id")
     user_input = request.json.get("input", "")
+
+    if user_session_state.get_specific_data_set() is not None:
+        #set it to none
+        user_session_state.set_specific_data_set(None)
+   
 
     try:
         state = get_server_state(user_session_state)

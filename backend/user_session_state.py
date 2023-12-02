@@ -10,8 +10,8 @@ class UserSessionState:
 
 
     app_state = AppState.Default
-
     current_data_pipeline = None
+    specific_data_set = None
    
 
     def __init__(self):
@@ -47,7 +47,12 @@ class UserSessionState:
         return self.last_executed_query
     
     def get_app_state(self):
-        return self.app_state
+
+        #if we have a specific data set always return default
+        if self.specific_data_set is not None:
+            return AppState.Default
+        else:
+            return self.app_state
     
     def set_app_state(self, state):
         self.app_state = state
@@ -57,4 +62,10 @@ class UserSessionState:
     
     def set_current_data_pipeline(self, pipeline):
         self.current_data_pipeline = pipeline
+
+    def get_specific_data_set(self):
+        return self.specific_data_set
+    
+    def set_specific_data_set(self, data_set):
+        self.specific_data_set = data_set
     
