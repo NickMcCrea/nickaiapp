@@ -1,18 +1,13 @@
 import React from 'react';
 import FieldCard from './FieldCard';
 import './DataSet.css'; // Path to your CSS file
+import { DataSourceManifest } from './DataSourceManifest';
 
 // TypeScript interfaces for the JSON structure
-interface Field {
+export interface Field {
   fieldName: string;
   fieldDescription: string;
   fieldType: string; // You may want to use a union type or enum if you have a fixed set of field types
-}
-
-interface DataSourceManifest {
-  name: string;
-  description: string;
-  fields: Field[];
 }
 
 // Props for the DataSet component

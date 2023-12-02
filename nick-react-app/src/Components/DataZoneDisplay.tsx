@@ -3,6 +3,7 @@ import { DataSourceMetaDeta } from './DataSourceMetaDeta';
 import {DataSourceCatalogueDisplayProps} from './DataSourceCatalogueDisplayProps';
 import StorageIcon from '@mui/icons-material/Storage';
 import './DataZoneDisplay.css';
+import { DataSourceManifest } from './MetaDataDisplay/DataSourceManifest';
 
 
 
@@ -11,6 +12,9 @@ import './DataZoneDisplay.css';
 const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSources, commentary }) => {
  
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
+
+  //store meta data we get back from the api
+  const [metaData, setMetaData] = useState<DataSourceManifest | null>(null);
 
   const handleCardClick = (dataSource: DataSourceMetaDeta) => {
     setSelectedCard(dataSource.name); // assuming 'name' is unique for each dataSource
@@ -22,7 +26,9 @@ const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSource
     try {
       const response = await fetch(url);
       const data = await response.json();
-      console.log(data); // Handle the response data as needed
+    
+      setMetaData(data);
+
     } catch (error) {
       console.error('Error fetching meta data:', error);
     }
@@ -55,6 +61,27 @@ const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSource
     ))}
   </div>
   <div className="right-panel">
+
+      {metaData && (
+        <div className='right-panel-data-source-header'>
+          {/* Display the metadata here. Adjust as needed based on the structure of your metadata */}
+          <h2>{metaData.displayname || metaData.name}</h2>
+          <hr/>
+          <h3>Metadata:</h3>
+          <p>{metaData.description}</p>
+        
+ {/* Conditional rendering for optional properties */}
+ {metaData.displayname && <p><strong>Display Name:</strong> {metaData.displayname}</p>}
+ {metaData.name && <p><strong>Name:</strong> {metaData.name}</p>}
+  {metaData.version && <p><strong>Version:</strong> {metaData.version}</p>}
+  {metaData.owner && <p><strong>Owner:</strong> {metaData.owner}</p>}
+  {metaData.category && <p><strong>Category:</strong> {metaData.category}</p>}
+ 
+ 
+        </div>
+      )}
+
+
     </div>
   </div>
 

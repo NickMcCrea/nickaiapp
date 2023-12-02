@@ -1,7 +1,10 @@
 {
     "name": "counterparty_data",
+    "displayname": "Counterparty Data",
     "description": "Information about various counterparties including type and industry classification",
     "category": "Reference > Counterparty",
+    "owner": "Counterparty Data Team",
+    "version:": "1.0",
     "fields": [
         {
             "fieldName": "counterparty_id",
