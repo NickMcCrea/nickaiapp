@@ -62,6 +62,8 @@ const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSource
    
   };
 
+ 
+
   const fetchMetaData = async (dataSourceName: string) => {
     const url = `http://127.0.0.1:5001/get_meta_data?data_source_name=${encodeURIComponent(dataSourceName)}`;
     try {
@@ -72,9 +74,23 @@ const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSource
 
       //we want a JSON object that has the field names as keys and the values as the values
       //so we need to do some transformation
-     
+      console.log('fields');
       console.log(data.fields);
       
+      //declare an object array with 3 keys - field_name, field_type, field_description
+      let fields: any[] = [];
+
+      //make the keys
+      data.fields.forEach((field: any) => {
+        fields.push({
+          field_name: field.fieldName,
+          field_type: field.fieldType,
+          field_description: field.fieldDescription
+        });
+      });
+
+      
+      setFields(fields);
 
     } catch (error) {
       console.error('Error fetching meta data:', error);
@@ -136,9 +152,10 @@ const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSource
             textColor="primary"
             centered
             variant='fullWidth'
-            style={{ overflow: 'auto' }}
+            style={{ overflow: 'auto'}}
+          
           >
-            <Tab label="Fields" />
+            <Tab label="Fields"  />
             <Tab label="Data Sample" />
             <Tab label="Request Access" />
             <Tab label="Data Quality" />
@@ -150,7 +167,9 @@ const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSource
           {/* Content of Tab Panels */}
           {activeTab === 0 && (
             <div>
-           
+           {
+              fields && ( <BasicTable data={fields} /> )
+           }
             </div>
           )}
           {activeTab === 1 && (
