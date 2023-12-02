@@ -104,6 +104,7 @@ const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSource
           <Tab label="Request Access" />
           <Tab label="Data Quality" />
           <Tab label="Data Dictionary" />
+          <Tab label="Ask" />
           {/* Add more tabs as needed */}
         </Tabs>
 
