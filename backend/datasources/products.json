@@ -1,7 +1,7 @@
 {
     "name": "product_data",
     "description": "Data on various financial products including types, risk, and dates",
-    "category": "Reference",
+    "category": "Reference > Product",
     "fields": [
         {
             "fieldName": "product_id",
