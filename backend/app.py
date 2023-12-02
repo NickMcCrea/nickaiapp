@@ -58,6 +58,21 @@ actions_manager = ActionsManager(current_model, meta_data_service)
 # Costs for different models
 
 
+#app route for getting meta data for a specific data source
+@app.route("/get_meta_data", methods=["GET"])
+def get_meta_data():
+    user_session_state = get_user_session_state()
+    session_id = session.get("session_id")
+    
+    #get the data source name from the query parameter
+    data_source_name = request.args.get("data_source_name")
+
+    data_source = meta_data_service.get_data_source(data_source_name)
+    if data_source is None:
+        return jsonify({"error": f"Data source {data_source_name} not found"}), 404
+    
+    meta_data = data_source['meta']
+    return jsonify(meta_data), 200
 
 
 @app.route("/ask", methods=["POST"])

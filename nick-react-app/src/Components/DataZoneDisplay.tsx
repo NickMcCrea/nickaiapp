@@ -14,7 +14,20 @@ const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSource
 
   const handleCardClick = (dataSource: DataSourceMetaDeta) => {
     setSelectedCard(dataSource.name); // assuming 'name' is unique for each dataSource
+    fetchMetaData(dataSource.name);
   };
+
+  const fetchMetaData = async (dataSourceName: string) => {
+    const url = `http://127.0.0.1:5001/get_meta_data?data_source_name=${encodeURIComponent(dataSourceName)}`;
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      console.log(data); // Handle the response data as needed
+    } catch (error) {
+      console.error('Error fetching meta data:', error);
+    }
+  };
+
 
   //loop through the data sources and display the name
   return(
