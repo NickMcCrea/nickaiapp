@@ -48,7 +48,13 @@ const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSource
 const renderPowerBiIcon = (metadata: any) => {
   // Example condition, replace with your actual logic
   if (metadata.powerbi === 'true') {
-    return  <img src={powerBiImage} alt="Power BI Icon"/>
+   
+    return ( 
+      <div className='data-zone-card-icon-two'>
+    <img src={powerBiImage} alt="Power BI Icon" style={{scale: '90%'}}/>
+    </div>
+    );
+   
   }
 };
 
@@ -157,11 +163,10 @@ const renderPowerBiIcon = (metadata: any) => {
               <p>{dataSource.category}</p>
             </div>
 
-           <div className='data-zone-card-icon-two'>
-             
+          
              {renderPowerBiIcon(dataSource)}
             
-          </div>
+          
           </div>
 
         ))}
