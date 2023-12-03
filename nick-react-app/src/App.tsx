@@ -37,8 +37,7 @@ function App() {
   const [dataSourceNames, setDataSourceNames] = useState<string[]>([]);
   const [catalogueCommentary, setCatalogueCommentary] = useState<string>("");
   const [fadeIn, setFadeIn] = useState(false);
-  const [width, setWidth] = useState(600); // Default width for the resizable panel
-  const [rightPanelWidth, setRightPanelWidth] = useState(window.innerWidth - width); // Width for the right panel
+
   const [chatService, setChatService] = useState<ChatService | null>(null);
   const [dataCatalogueMeta, setDataCatalogueMeta] = useState<DataSourceMetaDeta[]>([]);
 
@@ -76,22 +75,7 @@ function App() {
 
 
 
-  // This effect adjusts the right panel width when the left panel resizes or the window resizes
-  useEffect(() => {
-    const updateRightPanelWidth = () => {
-      setRightPanelWidth(window.innerWidth - width);
-    };
 
-    window.addEventListener('resize', updateRightPanelWidth);
-
-    return () => {
-      window.removeEventListener('resize', updateRightPanelWidth);
-    };
-  }, [width]);
-
-  const onResize = (event: any, { size }: any) => {
-    setWidth(size.width);
-  };
 
   const handleModelChange = (model: string) => {
     setSelectedModel(model);
@@ -383,12 +367,11 @@ function App() {
     <div className="App">
       <Header estimatedCost={estimatedCost} selectedModel={selectedModel} onModelChange={handleModelChange} />
       <div style={{ display: 'flex', height: 1200 }}> {/* Flex container */}
-        <ResizableBox width={width} height={500} onResize={onResize} minConstraints={[100, 500]} maxConstraints={[800, 500]} handle={<span className="react-resizable-handle react-resizable-handle-e"></span>}>
+        <div style={{width: '25%'}}>
           <AIChatBox messages={messages} handleSendMessage={handleSendMessage} />
-        </ResizableBox>
-
-        <div style={{ flex: 1, display: 'flex', overflow: 'auto', alignItems: 'center', justifyContent: 'center' }}>
-        {renderActiveContent()}
+        </div>
+        <div style={{ width: '75%', flex: 1, display: 'flex', overflow: 'auto', alignItems: 'center', justifyContent: 'center' }}>
+          {renderActiveContent()}
         </div>
       </div>
     </div>
