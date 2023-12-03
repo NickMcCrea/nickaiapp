@@ -71,12 +71,14 @@ const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSource
       const response = await fetch(url);
       const data = await response.json();
 
+      
       setMetaData(data);
 
       //we want a JSON object that has the field names as keys and the values as the values
       //so we need to do some transformation
       console.log('fields');
       console.log(data.fields);
+
       
       //declare an object array with 3 keys - field_name, field_type, field_description
       let fields: any[] = [];
@@ -126,6 +128,7 @@ const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSource
       </div>
       <div className="right-panel">
 
+
         {metaData && (
           <div className='right-panel-data-source-header'>
             {/* Display the metadata here. Adjust as needed based on the structure of your metadata */}
@@ -134,12 +137,22 @@ const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSource
             <h3>Metadata:</h3>
             <p>{metaData.description}</p>
 
-            {/* Conditional rendering for optional properties */}
-            {metaData.displayname && <p><strong>Display Name:</strong> {metaData.displayname}</p>}
-            {metaData.name && <p><strong>Name:</strong> {metaData.name}</p>}
-            {metaData.version && <p><strong>Version:</strong> {metaData.version}</p>}
-            {metaData.owner && <p><strong>Owner:</strong> {metaData.owner}</p>}
-            {metaData.category && <p><strong>Category:</strong> {metaData.category}</p>}
+      <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start' }}>
+      <div style={{ marginRight: '30px', color: '#015C94' }}> {/* Adjust marginRight for spacing */}
+      {metaData.displayname && <p><strong>Display Name:</strong></p>}
+        {metaData.name && <p><strong>Name:</strong></p>}
+        {metaData.version && <p><strong>Version:</strong></p>}
+        {metaData.owner && <p><strong>Owner:</strong></p>}
+        {metaData.category && <p><strong>Category:</strong></p>}
+      </div>
+      <div>
+        {metaData.displayname && <p>{metaData.displayname}</p>}
+        {metaData.name && <p>{metaData.name}</p>}
+        {metaData.version && <p>{metaData.version}</p>}
+        {metaData.owner && <p>{metaData.owner}</p>}
+        {metaData.category && <p>{metaData.category}</p>}
+      </div>
+    </div>
 
 
           </div>

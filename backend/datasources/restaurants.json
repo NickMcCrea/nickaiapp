@@ -2,6 +2,7 @@
     "name": "restaurant_info",
     "description": "Information about various restaurants including ratings, cuisine, pricing, and safety measures",
     "category": "Miscellaneous",
+    "owner": "Food Team",
     "fields": [
         {
             "fieldName": "restaurant_name",
