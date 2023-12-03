@@ -4,4 +4,5 @@ import { DataSourceMetaDeta } from './DataSourceMetaDeta';
 export type DataSourceCatalogueDisplayProps = {
   dataSources: DataSourceMetaDeta[];
   commentary: string;
+  onPowerBiClick: (powerBiValue: string) => void;
 };

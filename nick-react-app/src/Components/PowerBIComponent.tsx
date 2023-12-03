@@ -1,6 +1,7 @@
 import React from 'react';
 import { PowerBIEmbed } from 'powerbi-client-react';
 import { models, IEmbedConfiguration, service } from 'powerbi-client';
+import './PowerBIComponent.css';
 
 
 interface PowerBIReportProps {
@@ -20,6 +21,7 @@ const PowerBIReport: React.FC<PowerBIReportProps> = ({ embedUrl, reportId, acces
         settings: {
             filterPaneEnabled: true,
             navContentPaneEnabled: true,
+            
         },
     };
 
@@ -37,11 +39,12 @@ const PowerBIReport: React.FC<PowerBIReportProps> = ({ embedUrl, reportId, acces
     ]);
 
     return (
-        <div className="powerbi-container">
+        <div className="powerbi-container" >
             <PowerBIEmbed
                 embedConfig={embedConfig}
                 eventHandlers={eventHandlers}
                 cssClassName={'powerbi-frame'}
+               
             />
         </div>
     );

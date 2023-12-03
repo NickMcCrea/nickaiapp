@@ -21,7 +21,7 @@ import powerBiImage from './power-bi.png';
 
 
 // Modified DataSourceCatalogueDisplay component
-const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSources, commentary }) => {
+const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSources, onPowerBiClick }) => {
 
 
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
@@ -45,12 +45,12 @@ const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSource
   };
 
   // 
-const renderPowerBiIcon = (metadata: any) => {
+const renderPowerBiIcon = (metadata: any, onClickHandler : (powerBiValue: string) => void) => {
   // Example condition, replace with your actual logic
-  if (metadata.powerbi === 'true') {
+  if (metadata.powerbi) {
    
     return ( 
-      <div className='data-zone-card-icon-two'>
+      <div className='data-zone-card-icon-two' onClick={() => onClickHandler(metadata.powerbi)}>
     <img src={powerBiImage} alt="Power BI Icon" style={{scale: '90%'}}/>
     </div>
     );
@@ -164,7 +164,7 @@ const renderPowerBiIcon = (metadata: any) => {
             </div>
 
           
-             {renderPowerBiIcon(dataSource)}
+             {renderPowerBiIcon(dataSource, onPowerBiClick)}
             
           
           </div>
