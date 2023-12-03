@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { CSSProperties, useState, useEffect, useCallback } from 'react';
 import { ResizableBox } from 'react-resizable';
 import ChatService from './Services/ChatService';
 import { Message } from './Components/ChatHistory';
@@ -17,12 +17,70 @@ import { DataSourceMetaDeta } from './Components/DataSourceMetaDeta';
 import PipelineVisualiser, { PipelineStep } from './Components/Charts/PipelineVisualiser';
 import PowerBIReport from './Components/PowerBIComponent';
 import DataZoneDisplay from './Components/DataZoneDisplay';
+import IconButton from '@mui/material/IconButton';
+import ChatIcon from '@mui/icons-material/Chat';
+import FolderCopyIcon from '@mui/icons-material/FolderCopy';
 
 
 
 const dataSets: any[] = [];
 
 function App() {
+
+   // State to control the visibility of AIChatBox
+   const [isChatBoxVisible, setIsChatBoxVisible] = useState(true);
+
+
+   // Toggle function for AIChatBox visibility
+   const toggleChatBoxVisibility = () => {
+     setIsChatBoxVisible(!isChatBoxVisible);
+   };
+
+   const addCatalogueMessage = () => {
+    const newMessage = { 
+      type: 'text', 
+      content: 'Show me the catalogue please', 
+      timestamp: new Date(), 
+      sender: 'You' 
+    };
+
+    setMessages([...messages, { type: 'text', content: newMessage.content, timestamp: newMessage.timestamp, sender: newMessage.sender}]);
+
+    // If you also want to simulate sending this message (like a user would do)
+    handleSendMessage('Show me the catalogue please');
+  };
+
+
+   // Dynamic styles for panels based on AIChatBox visibility
+  const leftPanelStyle = {
+    width: isChatBoxVisible ? '25%' : '0%',
+    transition: 'width 0.3s ease-in-out',
+    overflow: 'hidden',
+  };
+
+  const rightPanelStyle = {
+    width: isChatBoxVisible ? '75%' : '100%',
+    transition: 'width 0.3s ease-in-out',
+    display: 'flex',
+    overflow: 'auto',
+    alignItems: 'center',
+    justifyContent: 'center',
+  };
+
+  const chatVisibleStyle: CSSProperties  = {
+    position: 'absolute', // Position it over the other components
+    bottom: 0,
+    left: 0,
+    zIndex: 1000, // Ensure it's above other elements
+  };
+
+  const catalogueButtonStyle: CSSProperties  = {
+    position: 'absolute', // Position it over the other components
+    bottom: 0,
+    left: 40,
+    zIndex: 1000, // Ensure it's above other elements
+  };
+
   // Add a state to keep track of the current function call
   const [currentFunctionCall, setCurrentFunctionCall] = useState<string>('');
   const [messages, setMessages] = useState<Message[]>([]);
@@ -44,7 +102,6 @@ function App() {
   const [activeContent, setActiveContent] = useState<string | null>(null); // New state for active content
 
   const [pipelineData, setPipelineData] = useState<PipelineStep[]>([]);
-
 
 
   useEffect(() => {
@@ -366,11 +423,17 @@ function App() {
   return (
     <div className="App">
       <Header estimatedCost={estimatedCost} selectedModel={selectedModel} onModelChange={handleModelChange} />
+      <IconButton onClick={toggleChatBoxVisibility} style={chatVisibleStyle}>
+        <ChatIcon />
+      </IconButton>
+      <IconButton onClick={addCatalogueMessage} style={catalogueButtonStyle}>
+        <FolderCopyIcon />
+      </IconButton>
       <div style={{ display: 'flex', height: 1200 }}> {/* Flex container */}
-        <div style={{width: '25%'}}>
+      < div style={leftPanelStyle}>
           <AIChatBox messages={messages} handleSendMessage={handleSendMessage} />
         </div>
-        <div style={{ width: '75%', flex: 1, display: 'flex', overflow: 'auto', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={rightPanelStyle}>
           {renderActiveContent()}
         </div>
       </div>
