@@ -5,6 +5,9 @@
     "category": "Reference > Counterparty",
     "owner": "Counterparty Data Team",
     "version": "1.0",
+    "icon": "folder",
+    "iconcolor": "#015C94",
+    "powerbi": "true",
     "fields": [
         {
             "fieldName": "counterparty_id",

@@ -52,6 +52,20 @@ p {
    
 }
 
+.data-zone-card-icon-two{
+    display: flex;
+    justify-content: right;
+    align-items: right;
+    margin-left: auto;
+    margin-right: 10px;
+    margin-top: auto;
+    margin-bottom: auto;
+    min-width: 75px;
+    width: 50px;
+    height: 50px;
+   
+}
+
 .data-zone-card-text{
 
     display: flex;

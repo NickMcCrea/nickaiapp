@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { DataSourceMetaDeta } from './DataSourceMetaDeta';
 import { DataSourceCatalogueDisplayProps } from './DataSourceCatalogueDisplayProps';
-import StorageIcon from '@mui/icons-material/Storage';
+import { styled } from '@mui/system';
 import './DataZoneDisplay.css';
 import { DataSourceManifest } from './MetaDataDisplay/DataSourceManifest';
 import Tabs from '@mui/material/Tabs';
@@ -9,6 +9,13 @@ import Tab from '@mui/material/Tab';
 import BasicTable from './Charts/BasicTable';
 import BasicDataGridAgGrid from './Charts/BasicAgGrid';
 import MiniAskAI from './MiniAskAI';
+import StorageIcon from '@mui/icons-material/Storage';
+import ListIcon from '@mui/icons-material/List';
+import FolderCopyIcon from '@mui/icons-material/FolderCopy';
+import Icon from '@mui/material/Icon';
+import powerBiImage from './power-bi.png';
+
+
 
 
 
@@ -16,19 +23,37 @@ import MiniAskAI from './MiniAskAI';
 // Modified DataSourceCatalogueDisplay component
 const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSources, commentary }) => {
 
+
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState(0);
 
   //store meta data we get back from the api
   const [metaData, setMetaData] = useState<DataSourceManifest | null>(null);
-  
+
   //store meta data we get back from the api
   const [sampleData, setSampleData] = useState<any>(null);
 
-  const[fields, setFields] = useState<any>(null);
+  const [fields, setFields] = useState<any>(null);
 
-  
- 
+  const renderIcon = (metadata: any) => {
+    // Example condition, replace with your actual logic
+    if (metadata.icon === 'folder') {
+      return <FolderCopyIcon className="icon" style={{ fontSize: 80, color: metadata.iconcolor }} />;
+    } else {
+      return <StorageIcon className="icon" style={{ fontSize: 80 }} />;
+    }
+  };
+
+  // 
+const renderPowerBiIcon = (metadata: any) => {
+  // Example condition, replace with your actual logic
+  if (metadata.powerbi === 'true') {
+    return  <img src={powerBiImage} alt="Power BI Icon"/>
+  }
+};
+
+
+
 
 
   const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
@@ -43,7 +68,7 @@ const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSource
 
 
   //fetch some rows of data from the api, hit get_sample_data endpoint
-   const fetchSampleData = async (dataSourceName: string) => {
+  const fetchSampleData = async (dataSourceName: string) => {
     const url = `http://127.0.0.1:5001/get_sample_data?data_source_name=${encodeURIComponent(dataSourceName)}`;
     try {
       const response = await fetch(url);
@@ -57,7 +82,7 @@ const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSource
       console.error('Error fetching meta data:', error);
     }
 
-   }
+  }
 
 
   const handleCardClick = (dataSource: DataSourceMetaDeta) => {
@@ -65,14 +90,14 @@ const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSource
     fetchMetaData(dataSource.name);
     setActiveTab(-1);
 
-   
+
     //clear fields and sample data
     setFields(null);
     setSampleData(null);
-   
+
   };
 
- 
+
 
   const fetchMetaData = async (dataSourceName: string) => {
     const url = `http://127.0.0.1:5001/get_meta_data?data_source_name=${encodeURIComponent(dataSourceName)}`;
@@ -80,7 +105,7 @@ const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSource
       const response = await fetch(url);
       const data = await response.json();
 
-      
+
       setMetaData(data);
 
       //we want a JSON object that has the field names as keys and the values as the values
@@ -88,7 +113,7 @@ const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSource
       console.log('fields');
       console.log(data.fields);
 
-      
+
       //declare an object array with 3 keys - field_name, field_type, field_description
       let fields: any[] = [];
 
@@ -101,7 +126,7 @@ const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSource
         });
       });
 
-      
+
       setFields(fields);
 
     } catch (error) {
@@ -123,14 +148,20 @@ const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSource
             key={index}
           >
 
-            <div className='data-zone-card-icon'><StorageIcon className="icon" style={{ fontSize: 80 }} /> </div>
-
+            <div className='data-zone-card-icon'>
+              {renderIcon(dataSource)}
+            </div>
             <div className='data-zone-card-text'>
               <h3>{dataSource.name}</h3>
               <p>{dataSource.description}</p>
               <p>{dataSource.category}</p>
             </div>
 
+           <div className='data-zone-card-icon-two'>
+             
+             {renderPowerBiIcon(dataSource)}
+            
+          </div>
           </div>
 
         ))}
@@ -146,88 +177,88 @@ const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSource
             <h3>Metadata:</h3>
             <p>{metaData.description}</p>
 
-      <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start' }}>
-      <div style={{ marginRight: '30px', color: '#015C94' }}> {/* Adjust marginRight for spacing */}
-      {metaData.displayname && <p><strong>Display Name:</strong></p>}
-        {metaData.name && <p><strong>Name:</strong></p>}
-        {metaData.version && <p><strong>Version:</strong></p>}
-        {metaData.owner && <p><strong>Owner:</strong></p>}
-        {metaData.category && <p><strong>Category:</strong></p>}
-      </div>
-      <div>
-        {metaData.displayname && <p>{metaData.displayname}</p>}
-        {metaData.name && <p>{metaData.name}</p>}
-        {metaData.version && <p>{metaData.version}</p>}
-        {metaData.owner && <p>{metaData.owner}</p>}
-        {metaData.category && <p>{metaData.category}</p>}
-      </div>
-    </div>
+            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start' }}>
+              <div style={{ marginRight: '30px', color: '#015C94' }}> {/* Adjust marginRight for spacing */}
+                {metaData.displayname && <p><strong>Display Name:</strong></p>}
+                {metaData.name && <p><strong>Name:</strong></p>}
+                {metaData.version && <p><strong>Version:</strong></p>}
+                {metaData.owner && <p><strong>Owner:</strong></p>}
+                {metaData.category && <p><strong>Category:</strong></p>}
+              </div>
+              <div>
+                {metaData.displayname && <p>{metaData.displayname}</p>}
+                {metaData.name && <p>{metaData.name}</p>}
+                {metaData.version && <p>{metaData.version}</p>}
+                {metaData.owner && <p>{metaData.owner}</p>}
+                {metaData.category && <p>{metaData.category}</p>}
+              </div>
+            </div>
 
 
           </div>
         )}
-    {selectedCard && ( // Conditional rendering based on whether a card is selected
-        <>
-          <Tabs
-            value={activeTab}
-            onChange={handleTabChange}
-            indicatorColor="primary"
-            textColor="primary"
-            centered
-            variant='fullWidth'
-           
-          
-          >
-            <Tab label="Fields"  />
-            <Tab label="Data Sample" />
-            <Tab label="Request Access" />
-            <Tab label="Data Quality" />
-            <Tab label="Data Dictionary" />
-            <Tab label="Ask" />
+        {selectedCard && ( // Conditional rendering based on whether a card is selected
+          <>
+            <Tabs
+              value={activeTab}
+              onChange={handleTabChange}
+              indicatorColor="primary"
+              textColor="primary"
+              centered
+              variant='fullWidth'
+
+
+            >
+              <Tab label="Fields" />
+              <Tab label="Data Sample" />
+              <Tab label="Request Access" />
+              <Tab label="Data Quality" />
+              <Tab label="Data Dictionary" />
+              <Tab label="Ask" />
+              {/* Add more tabs as needed */}
+            </Tabs>
+
+            {/* Content of Tab Panels */}
+            {activeTab === 0 && (
+              <div style={{ overflow: 'auto', margin: '10px' }}>
+                {
+                  fields && (<BasicTable data={fields} />)
+                }
+              </div>
+            )}
+            {activeTab === 1 && (
+              <div style={{ overflow: 'auto', margin: '10px' }}>
+                {sampleData && (<BasicTable data={sampleData} />)}
+              </div>
+            )}
+
+            {activeTab === 2 && (
+              <div style={{ overflow: 'auto', margin: '10px' }}>
+                <p>Request Access</p>
+              </div>
+            )}
+
+            {activeTab === 3 && (
+              <div style={{ overflow: 'auto', margin: '10px' }}>
+                <p>Data Quality</p>
+              </div>
+            )}
+
+            {activeTab === 4 && (
+              <div style={{ overflow: 'auto', margin: '10px' }}>
+                <p>Data Dictionary</p>
+              </div>
+            )}
+
+            {activeTab === 5 && (
+              <div style={{ margin: '10px', overflow: 'auto' }}>
+                <MiniAskAI dataSourceName={selectedCard} />
+              </div>
+            )}
+
             {/* Add more tabs as needed */}
-          </Tabs>
-
-          {/* Content of Tab Panels */}
-          {activeTab === 0 && (
-            <div  style= {{overflow: 'auto', margin: '10px'}}>
-           {
-              fields && ( <BasicTable data={fields}/> )
-           }
-            </div>
-          )}
-          {activeTab === 1 && (
-            <div  style= {{overflow: 'auto', margin: '10px' }}>
-              {sampleData &&(   <BasicTable data={sampleData} />) }
-            </div>
-          )}
-
-          {activeTab === 2 && (
-            <div  style= {{overflow: 'auto', margin: '10px' }}>
-              <p>Request Access</p>
-            </div>
-          )}
-
-          {activeTab === 3 && (
-            <div  style= {{overflow: 'auto', margin: '10px' }}>
-              <p>Data Quality</p>
-            </div>
-          )}
-
-          {activeTab === 4 && (
-            <div  style= {{overflow: 'auto', margin: '10px' }}>
-              <p>Data Dictionary</p>
-            </div>
-          )}
-
-          {activeTab === 5 && (
-            <div  style= {{margin: '10px', overflow: 'auto' }}>
-             <MiniAskAI dataSourceName={selectedCard} />
-            </div>
-          )}
-
-          {/* Add more tabs as needed */}
-        </>
-      )}
+          </>
+        )}
       </div>
     </div>
 

@@ -7,5 +7,6 @@ export interface DataSourceManifest {
   version?: string;
   owner?: string;
   category?: string;
+  powerbi?: string;
   fields: Field[];
 }
