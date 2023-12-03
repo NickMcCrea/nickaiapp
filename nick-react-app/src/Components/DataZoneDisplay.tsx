@@ -7,6 +7,7 @@ import { DataSourceManifest } from './MetaDataDisplay/DataSourceManifest';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import BasicTable from './Charts/BasicTable';
+import BasicDataGridAgGrid from './Charts/BasicAgGrid';
 
 
 
@@ -166,14 +167,14 @@ const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSource
 
           {/* Content of Tab Panels */}
           {activeTab === 0 && (
-            <div>
+            <div  style= {{overflow: 'auto', margin: '10px'}}>
            {
-              fields && ( <BasicTable data={fields} /> )
+              fields && ( <BasicTable data={fields}/> )
            }
             </div>
           )}
           {activeTab === 1 && (
-            <div>
+            <div  style= {{overflow: 'auto', margin: '10px' }}>
               {sampleData &&(   <BasicTable data={sampleData} />) }
             </div>
           )}
