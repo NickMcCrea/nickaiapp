@@ -12,7 +12,7 @@ interface BasicDataGridAgGridProps {
 const BasicDataGridAgGrid: React.FC<BasicDataGridAgGridProps> = ({ data }) => {
   const onGridReady = (params: GridReadyEvent) => {
     const api = params.api;
-    api.sizeColumnsToFit();
+   
   };
 
   // Generate column definitions
@@ -20,16 +20,19 @@ const BasicDataGridAgGrid: React.FC<BasicDataGridAgGridProps> = ({ data }) => {
     headerName: key,
     field: key,
     sortable: true,
-    filter: true
+    filter: true,
+    
+
   }));
 
   return (
-    <div className="ag-theme-alpine" style={{ height: '100%', width: '100%' }}>
-      <AgGridReact
+    <div className="ag-theme-alpine" style={{ height: '100%', width: '100%', justifyContent: 'left', textAlign: 'left' }}>
+      <AgGridReact 
         onGridReady={onGridReady}
         rowData={data}
         columnDefs={columns}
         rowSelection="multiple"
+        
       />
     </div>
   );

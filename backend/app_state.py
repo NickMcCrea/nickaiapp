@@ -60,7 +60,9 @@ def get_function_response(socket_io: SocketIO, session_id: str, actions_manager:
 
         #emit a progress event to the client
         progress_data = {'status': function_name, 'message': 'function called'}
-        socket_io.emit('progress', progress_data, room=session_id)
+
+        if socket_io is not None:
+             socket_io.emit('progress', progress_data, room=session_id)
 
         data,metadata,commentary = actions_manager.execute_function(socket_io, session_id, conversation_history, response_message, user_input, function_name, function_args)
         return data,metadata, commentary

@@ -3,7 +3,8 @@ from enum import Enum
 class AppState(Enum):
     Default = 1
     Workspace = 2
-    DataSetLoad = 3
+    SpecificData = 3
+   
 
 class UserSessionState:
 
@@ -49,7 +50,7 @@ class UserSessionState:
     def get_app_state(self):
 
         #if we have a specific data set always return default
-        if self.specific_data_set is not None:
+        if self.specific_data_set is None:
             return AppState.Default
         else:
             return self.app_state

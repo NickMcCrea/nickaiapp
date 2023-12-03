@@ -8,6 +8,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import BasicTable from './Charts/BasicTable';
 import BasicDataGridAgGrid from './Charts/BasicAgGrid';
+import MiniAskAI from './MiniAskAI';
 
 
 
@@ -26,6 +27,8 @@ const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSource
 
   const[fields, setFields] = useState<any>(null);
 
+  
+ 
 
 
   const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
@@ -35,6 +38,7 @@ const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSource
     if (newValue === 1) {
       fetchSampleData(selectedCard!);
     }
+
   };
 
 
@@ -60,6 +64,11 @@ const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSource
     setSelectedCard(dataSource.name); // assuming 'name' is unique for each dataSource
     fetchMetaData(dataSource.name);
     setActiveTab(-1);
+
+   
+    //clear fields and sample data
+    setFields(null);
+    setSampleData(null);
    
   };
 
@@ -166,7 +175,7 @@ const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSource
             textColor="primary"
             centered
             variant='fullWidth'
-            style={{ overflow: 'auto'}}
+           
           
           >
             <Tab label="Fields"  />
@@ -191,6 +200,32 @@ const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSource
               {sampleData &&(   <BasicTable data={sampleData} />) }
             </div>
           )}
+
+          {activeTab === 2 && (
+            <div  style= {{overflow: 'auto', margin: '10px' }}>
+              <p>Request Access</p>
+            </div>
+          )}
+
+          {activeTab === 3 && (
+            <div  style= {{overflow: 'auto', margin: '10px' }}>
+              <p>Data Quality</p>
+            </div>
+          )}
+
+          {activeTab === 4 && (
+            <div  style= {{overflow: 'auto', margin: '10px' }}>
+              <p>Data Dictionary</p>
+            </div>
+          )}
+
+          {activeTab === 5 && (
+            <div  style= {{margin: '10px', overflow: 'auto' }}>
+             <MiniAskAI dataSourceName={selectedCard} />
+            </div>
+          )}
+
+          {/* Add more tabs as needed */}
         </>
       )}
       </div>

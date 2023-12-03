@@ -35,27 +35,11 @@ class ActionsManager:
             "recommend_analysis": self.function_recommend_analysis, 
             "create_workspace": self.function_enter_workspace_state, 
             "define_new_data_set": self.function_generate_pipeline_definition,
-            "create_new_data_set": self.execute_pipeline_definition
+            "create_new_data_set": self.execute_pipeline_definition,
+            "ask_panel_fetch_data": self.ask_panel_fetch_data,
             # Add more function mappings here...
         }
 
-    
-
-
-        # pipeline_definition = [
-        #         {'action': 'load_from_service', 'params': {'data_source_name': 'trial_balance_data'}},
-        #         {'action': 'filter', 'params': {'name': 'trial_balance_data', 'conditions': {'company_code': {'equals': '0302'}}}},
-        #         {'action': 'load_from_service', 'params': {'data_source_name': 'counterparty_data'}},
-        #         {'action': 'join', 'params': {'name': 'trial_balance_data', 'other_name': 'counterparty_data', 'on': 'counterparty_id'}},
-        #         {'action': 'select_columns', 'params': {'name': 'trial_balance_data', 'columns': ['company_code', 'counterparty_name', 'balance']}}
-        # ]
-
-        
-        # executor = DataPipelineExecutor(DataProcessor, self.data_service)
-        # result_data_frames = executor.run(pipeline_definition)
-        # self.data_service.persist_data_source("counterparty_balances", result_data_frames['trial_balance_data'], "Description of the data set", "Category of the data set")
-
-  
 
     def execute_pipeline_definition(self, socketio, session_id, convo_history: UserSessionState, user_input, data_source_name, data_source_description):
 
@@ -111,7 +95,6 @@ class ActionsManager:
         metadata = None
         return data, metadata, commentary
     
-
     def function_recommend_analysis(self, socketio, session_id, convo_history, user_input: str, data_source_name: str):
         
         data_source = self.data_service.get_data_source(data_source_name)
@@ -198,6 +181,21 @@ class ActionsManager:
        
        
         return data, metadata, commentary
+
+
+    def ask_panel_fetch_data(self, socketio, session_id, convo_history: UserSessionState, user_input, data_source_name):
+
+        data_source_name = convo_history.get_specific_data_set()
+        data_source = self.data_service.get_data_source(data_source_name)
+
+        response = self.open_ai_generate_sql(socketio, session_id, convo_history, user_input,data_source["meta"], completion_builder.table_sql_prompt(convo_history, user_input, data_source["meta"]))
+        print(response)
+        data = self.data_service.query(response["SQL"], data_source_name)
+        convo_history.set_last_executed_query(response["SQL"])
+        metadata = None
+        commentary = f"DataQuery: Data source name: {data_source_name}, Query: {response['SQL']}"
+        return data, metadata, commentary
+
 
     def function_fetch_data(self, socketio, session_id, convo_history: UserSessionState, user_input, data_source_name):
         #if data source is not none
@@ -330,7 +328,8 @@ class ActionsManager:
     def open_ai_generate_sql(self, socketio, session_id, convo_history, user_input, data_source_meta, prompt):
 
         progress_data = {'status': 'data_query_generation', 'message': 'Generating Data Query'}
-        socketio.emit('progress', progress_data, room=session_id)
+        if socketio is not None:
+            socketio.emit('progress', progress_data, room=session_id)
 
         #get the data source name
         data_source_name = data_source_meta["name"]
@@ -369,6 +368,9 @@ class ActionsManager:
             raise ValueError(f"Function '{name}' not found.")
         
     def get_functions(self, state: AppState):
+
+        if state == state.SpecificData:
+            return function_defs.data_set_lock_functions()
 
         if state == state.Default:
             return function_defs.default_functions()

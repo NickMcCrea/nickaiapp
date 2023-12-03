@@ -82,6 +82,20 @@ fetch_data = {
     }
 }
 
+ask_panel_fetch_data = {
+    "name": "ask_panel_fetch_data",
+    "description": "Use this function when a user asks for a question that requires a data query.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "data_source_name": {
+                "type": "string",
+                "description": "The name of the data source to fetch data from."
+            }
+        }
+    }
+}
+
 fetch_bar_chart_data = {
     "name": "fetch_bar_chart_data",
     "description": "Use this function when a user asks for a question that requires a bar chart or bar graph.",
@@ -232,11 +246,14 @@ create_new_data_set = {
 }
 
 
+#functions for the "Ask" panel in the UI
+def data_set_lock_functions():
+    return [
+        ask_panel_fetch_data,
+    ]
 
 
-
-
-# Method to return all functions except 'exit_workspace'
+#standard functions
 def default_functions():
     return [
         query_data_catalogue, 
@@ -252,6 +269,7 @@ def default_functions():
         create_workspace
     ]
 
+#Functions for the workspace functionality
 def workspace_functions():
     return [
         define_new_data_set,

@@ -12,6 +12,7 @@ from typing import Dict, List, Any
 from app_state import DefaultAppState
 from meta_data_service import MetaDataService
 from user_session_state import UserSessionState
+from user_session_state import AppState
 
 
 load_dotenv()
@@ -98,11 +99,17 @@ def ask_specific():
     session_id = session.get("session_id")
     user_input = request.json.get("input", "")
     data_source_name = request.json.get("data_source_name", "")
+
+    #log the data source name
+    print("data_source_name: ", data_source_name)
+    user_input = "data source " + data_source_name + " " + user_input 
+
     user_session_state.set_specific_data_set(data_source_name)
+    user_session_state.set_app_state(AppState.SpecificData)
 
     try:
         state = get_server_state(user_session_state)
-        return state.process_request(socketio, session_id, actions_manager, user_session_state, user_input)
+        return state.process_request(None, session_id, actions_manager, user_session_state, user_input)
                     
 
     except Exception as e:
@@ -121,6 +128,7 @@ def ask():
     if user_session_state.get_specific_data_set() is not None:
         #set it to none
         user_session_state.set_specific_data_set(None)
+        user_session_state.set_app_state(AppState.Default)
    
 
     try:
