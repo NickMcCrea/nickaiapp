@@ -49,13 +49,12 @@ class UserSessionState:
     
     def get_app_state(self):
 
-        #if we have a specific data set always return default
-        if self.specific_data_set is None:
-            return AppState.Default
-        else:
-            return self.app_state
+        return self.app_state
     
     def set_app_state(self, state):
+        
+        #log this
+        print("setting app state to: ", state)
         self.app_state = state
 
     def get_current_data_pipeline(self):

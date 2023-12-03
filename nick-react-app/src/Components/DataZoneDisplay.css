@@ -26,7 +26,7 @@ p {
   
 
 .data-zone-card{
-    margin: 2px;
+    margin-bottom: 1px;
     display: flex;
     flex-direction: row;
     border: 1px solid #ccc;
@@ -69,7 +69,6 @@ p {
     height: 100%;
     min-width: 40%;
     max-width: 40%;
-   
     margin-right: 10px;
     overflow: auto;
 }
@@ -79,10 +78,10 @@ p {
 .right-panel{
     display: flex;
     flex-direction: column;
-    width: 60%;
-    min-width: 60%;
-    max-width: 60%;
-    height: 100%;
+    width: 59%;
+    min-width: 59%;
+    max-width: 59%;
+    height: 99%;
     border: 1px solid #ccc;
 }
 
