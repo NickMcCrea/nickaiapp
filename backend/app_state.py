@@ -31,7 +31,7 @@ class DefaultAppState:
             data, metadata, commentary = get_function_response(socketio, session_id, actions_manager, user_session_state, response_message, user_input)
   
         else:
-            commentary = response['choices'][0]['message']['content']
+            commentary = response['content']
 
     
 
