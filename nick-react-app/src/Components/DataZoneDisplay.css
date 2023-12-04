@@ -103,6 +103,8 @@ p {
     min-width: 59%;
     max-width: 59%;
     height: 99%;
+    min-height: 99%;
+    max-height: 99%;
     border: 1px solid #ccc;
 }
 

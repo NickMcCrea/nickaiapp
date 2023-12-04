@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import InputWithSendButton from './InputWithSendButton'; // assuming this is in the same directory
 import BasicTable from './Charts/BasicTable';
+import LinearProgress from '@mui/material/LinearProgress'; // Import a progress indicator component
+
 
 interface MiniAskAIProps {
     dataSourceName: string;
@@ -12,6 +14,8 @@ const MiniAskAI: React.FC<MiniAskAIProps> = ({ dataSourceName }) => {
 
     //store meta data we get back from the api
     const [tableData, setTableData] = useState<any>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(false); // New state for loading indicator
+
 
 
     const handleAskSubmit = async (input: string) => {
@@ -20,6 +24,8 @@ const MiniAskAI: React.FC<MiniAskAIProps> = ({ dataSourceName }) => {
             input: input,
             data_source_name: dataSourceName
         };
+
+        setIsLoading(true); 
 
         try {
             const response = await fetch(url, {
@@ -39,18 +45,25 @@ const MiniAskAI: React.FC<MiniAskAIProps> = ({ dataSourceName }) => {
         } catch (error) {
             console.error('Error in MiniAskAI:', error);
         }
+        finally {
+            setIsLoading(false); // Set loading to false when request completes
+        }
     };
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             <div style={{ marginTop: '20px' }}>
                 <InputWithSendButton onSubmit={handleAskSubmit} />
             </div>
           
 
-                <div style={{}}>
-                    {tableData && <BasicTable data={tableData} />}
-                </div>
+            <div>
+                {isLoading ? (
+                    <LinearProgress /> // Show progress indicator when loading
+                ) : (
+                    tableData && <BasicTable data={tableData} />
+                )}
+            </div>
             
 
         </div>

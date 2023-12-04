@@ -465,7 +465,7 @@ function App() {
       <IconButton onClick={fetchCatalogue} style={catalogueButtonStyle}>
         <FolderCopyIcon />
       </IconButton>
-      <div style={{ display: 'flex', height: 900 }}> {/* Flex container */}
+      <div style={{ display: 'flex', height: 1200 }}> {/* Flex container */}
       < div style={leftPanelStyle}>
           <AIChatBox messages={messages} handleSendMessage={handleSendMessage} />
         </div>
