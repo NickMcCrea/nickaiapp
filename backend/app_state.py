@@ -17,7 +17,7 @@ class DefaultAppState:
 
         #print the time up til now
        
-        response_message = response["choices"][0]["message"]
+        response_message = response
         print("response_message: ", response_message)
         
         function_response = None

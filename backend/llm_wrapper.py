@@ -22,7 +22,7 @@ def llm_call(messages):
 
     calc_cost(response,current_model)
     
-    return response
+    return response['choices'][0]['message']['content']
 
 def llm_call_with_functions(message_array, function_list):
         response = openai.ChatCompletion.create(
@@ -36,7 +36,7 @@ def llm_call_with_functions(message_array, function_list):
 
       
         
-        return response
+        return response["choices"][0]["message"]
 
 def calc_cost(response, current_model):
     prompt_tokens = response['usage']['prompt_tokens']

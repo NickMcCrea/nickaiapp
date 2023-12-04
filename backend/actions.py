@@ -77,11 +77,11 @@ class ActionsManager:
         response = llm_wrapper.llm_call(messages)
 
         #print the pipeline
-        print("Pipeline Definition: ", response['choices'][0]['message']['content'])
+        print("Pipeline Definition: ", response)
 
         commentary = "Pipeline Generated"
         data = None
-        metadata = response['choices'][0]['message']['content']
+        metadata = response
         metadata = self.check_for_json_tag(metadata)
         metadata = json.loads(metadata)
         convo_history.set_current_data_pipeline(metadata)
@@ -108,7 +108,7 @@ class ActionsManager:
         prompt = completion_builder.add_custom_prompt_elements(prompt, data_source_name)
         messages = completion_builder.build_basic_message_list(prompt)
         response =  llm_wrapper.llm_call(messages)
-        commentary = response['choices'][0]['message']['content']
+        commentary = response
         data = None
         metadata= None
         return data, metadata, commentary
@@ -149,7 +149,7 @@ class ActionsManager:
             prompt = completion_builder.build_data_analysis_prompt(convo_history, user_input, data_str)
             messages = completion_builder.build_basic_message_list(prompt)
             response =  llm_wrapper.llm_call(messages)
-            commentary = response['choices'][0]['message']['content']
+            commentary = response
             data = None
             metadata= None
 
@@ -169,7 +169,7 @@ class ActionsManager:
         print(f"User input: {user_input}")
         messages = completion_builder.build_basic_message_list(prompt)
         response =  llm_wrapper.llm_call(messages)
-        commentary = response['choices'][0]['message']['content']
+        commentary = response
         commentary = self.check_for_json_tag(commentary)
         data = None
 
@@ -314,7 +314,7 @@ class ActionsManager:
         print(f"User input: {user_input}")
         messages = completion_builder.build_basic_message_list(prompt)
         response =  llm_wrapper.llm_call(messages)
-        output = response['choices'][0]['message']['content']
+        output = response
         data_source_json = json.loads(output)
 
         data_source_name = data_source_json["data_source"]
@@ -342,7 +342,7 @@ class ActionsManager:
         messages = completion_builder.build_message_list_for_sql_generation(prompt)
 
         response = llm_wrapper.llm_call(messages)
-        output = response['choices'][0]['message']['content']
+        output = response
 
         #GPT-4-Turbo generally tags JSON output with "json" at the start of the string.
         #Remove the json tagging if it exists.
