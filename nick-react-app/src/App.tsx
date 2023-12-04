@@ -63,6 +63,7 @@ function App() {
       // Update the state with the fetched data
       setDataCatalogueMeta(data);
       setActiveContent("catalogue");
+      toggleChatBoxVisibility();
     } catch (error) {
       console.error("Failed to fetch catalogue:", error);
       // You may want to handle errors more gracefully in a real app
