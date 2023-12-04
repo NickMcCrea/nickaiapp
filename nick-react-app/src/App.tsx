@@ -50,6 +50,25 @@ function App() {
     handleSendMessage('Show me the catalogue please');
   };
 
+  const fetchCatalogue = async () => {
+    try {
+      // Make a GET request to the specified URL
+      const response = await fetch('http://localhost:5001/get_catalogue');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      // Parse the response JSON
+      const data = await response.json();
+  
+      // Update the state with the fetched data
+      setDataCatalogueMeta(data);
+      setActiveContent("catalogue");
+    } catch (error) {
+      console.error("Failed to fetch catalogue:", error);
+      // You may want to handle errors more gracefully in a real app
+    }
+  };
+
 
    // Dynamic styles for panels based on AIChatBox visibility
   const leftPanelStyle = {
@@ -442,7 +461,7 @@ function App() {
       <IconButton onClick={toggleChatBoxVisibility} style={chatVisibleStyle}>
         <ChatIcon />
       </IconButton>
-      <IconButton onClick={addCatalogueMessage} style={catalogueButtonStyle}>
+      <IconButton onClick={fetchCatalogue} style={catalogueButtonStyle}>
         <FolderCopyIcon />
       </IconButton>
       <div style={{ display: 'flex', height: 900 }}> {/* Flex container */}

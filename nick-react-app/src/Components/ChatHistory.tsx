@@ -69,7 +69,7 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({ messages }) => {
   };
 
   useEffect(() => {
-    scrollToBottom();
+    //scrollToBottom();
   }, [messages]);
 
   const lastMessageIsFromHuman = !!messages.length && messages[messages.length - 1].sender != 'Assistant';

@@ -58,6 +58,14 @@ actions_manager = ActionsManager(current_model, meta_data_service)
 
 # Costs for different models
 
+#route for getting the catalogue
+@app.route("/get_catalogue", methods=["GET"])
+def get_catalogue():
+    user_session_state = get_user_session_state()
+    session_id = session.get("session_id")
+    catalogue = meta_data_service.get_all_meta_data()
+    return jsonify(catalogue), 200
+
 
 #app route for getting meta data for a specific data source
 @app.route("/get_meta_data", methods=["GET"])
