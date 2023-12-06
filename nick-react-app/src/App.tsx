@@ -1,5 +1,4 @@
 import { CSSProperties, useState, useEffect, useCallback } from 'react';
-import { ResizableBox } from 'react-resizable';
 import ChatService from './Services/ChatService';
 import { Message } from './Components/ChatHistory';
 import Header from './Components/Header';
@@ -9,7 +8,6 @@ import './App.css';
 import MetaDataCollectionDisplay from './Components/MetaDataDisplay/MetaDataDisplayCards';
 import { BarChartData } from './Components/Charts/SimpleBarChart';
 import { LineChartData } from './Components/Charts/SimpleLineChart';
-import DataSourceCatalogueDisplay from './Components/DataCatalogueDisplay';
 import GenericChart from './Components/Charts/GenericChart';
 import { PieChartData } from './Components/Charts/SimplePieChart';
 import { ScatterChartData } from './Components/Charts/SimpleScatterChart';
@@ -20,7 +18,6 @@ import DataZoneDisplay from './Components/DataZoneDisplay';
 import IconButton from '@mui/material/IconButton';
 import ChatIcon from '@mui/icons-material/Chat';
 import FolderCopyIcon from '@mui/icons-material/FolderCopy';
-
 
 
 const dataSets: any[] = [];
@@ -113,7 +110,6 @@ function App() {
   const [pieChartData, setPieChartData] = useState<PieChartData[]>([]);
   const [scatterChartData, setScatterChartData] = useState<ScatterChartData[]>([]);
   const [dataSourceNames, setDataSourceNames] = useState<string[]>([]);
-  const [catalogueCommentary, setCatalogueCommentary] = useState<string>("");
   const [fadeIn, setFadeIn] = useState(false);
 
   const [chatService, setChatService] = useState<ChatService | null>(null);

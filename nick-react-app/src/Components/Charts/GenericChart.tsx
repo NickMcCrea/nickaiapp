@@ -7,7 +7,6 @@ import { PieChartData } from './SimplePieChart';
 import SimplePieChart from './SimplePieChart';
 import SimpleScatterChart from './SimpleScatterChart';
 import { ScatterChartData } from './SimpleScatterChart';
-import BasicDataGridPremium from './BasicDataGrid';
 import BasicDataGridAgGrid from './BasicAgGrid';
 
 type ChartType = 'bar' | 'line' | 'table' | 'pie' | 'scatter';
