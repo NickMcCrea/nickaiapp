@@ -21,6 +21,8 @@ class MetaDataService:
         #self.add_data_source('datasources/football.json', 'datasources/football.csv')
         #self.add_data_source('datasources/fifa.json', 'datasources/fifa.csv')
         #self.add_data_source('datasources/glbal.json', 'datasources/glbal.csv')
+
+        self.add_stubs()
      
 
 
@@ -38,6 +40,43 @@ class MetaDataService:
             'meta': data_source_meta,
             'db': data_source_db,
         }
+
+    def add_stubs(self):
+        self.add_stub_data_sources('e382_sap_gl', 'SAP GL e382', 'SAP GL balances for KPI', 'Finance > Balances > GL Balances')
+        self.add_stub_data_sources('e571_sap_gl', 'SAP GL e571', 'SAP GL balances for KPI', 'Finance > Balances > GL Balances')
+        self.add_stub_data_sources('net_capital_2021', 'Net Capital 2021', 'Net Capital dataset for MSCO', 'Finance > Capital > Net Capital')
+
+        # Finance > Capital > RWA > SACCR > RWA per legal entity, on exposure per counterparty
+        self.add_stub_data_sources('rwa_saccr', 'RWA SACCR MIP', 'RWA SACCR data set for MIP', 'Finance > Capital > RWA')
+        
+        # Finance > Capital > Large Exposures > Oct ME MST Large Exposures
+        self.add_stub_data_sources('large_exposures', 'Large Exposures MIP', 'Large Exposures data set for MSTP', 'Finance > Capital > Large Exposures')
+        
+        # Finance > Capital > Millions Reporting > Oct ME MSSE Millions Reporting data set for MSSE
+        self.add_stub_data_sources('millions_reporting', 'Millions Reporting MSSE', 'Millions Reporting data set for MSSE', 'Finance > Capital > Millions Reporting')
+        
+        # Finance > Capital > Risk Shifting > Oct ME MSSE Risk Shifting
+        self.add_stub_data_sources('risk_shifting', 'Risk Shifting MSSE', 'Risk Shifting data set for MSSE', 'Finance > Capital > Risk Shifting')
+
+        self.add_stub_data_sources('msbil_boe_oct_me', 'MSBIL BOE Oct ME', 'MSBIL Bank of England Reporting for Oct ME', 'Finance > Regulatory > Bank of England Reporting')
+
+    def add_stub_data_sources(self, name, display_name, description, category):
+    # Create in-memory databases
+        data_source_db = InMemoryDB()
+        
+        # Add the metadata and databases to the data_sources dictionary
+        self.data_sources[name] = {
+            'meta': {
+                'name': name,
+                'stub': True,
+                'displayname': display_name,
+                'description': description,
+                'category': category,
+                'fields': []
+            },
+            'db': data_source_db,
+        }
+    
 
     def load_json(self, file_path):
         with open(file_path, 'r') as file:
