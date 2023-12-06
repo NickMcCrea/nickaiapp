@@ -50,10 +50,10 @@ const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSource
       return <FolderCopyIcon className="icon" style={{ fontSize: fontsize, color: '#94C5EB' }} />;
     }
     if (metadata.category.includes('Regulatory')) {
-      return <BarChartIcon className="icon" style={{ fontSize: fontsize, color: '#E01594' }} />;
+      return <BarChartIcon className="icon" style={{ fontSize: fontsize, color: '#94C5EB' }} />;
     }
     if (metadata.category.includes('Capital')) {
-      return <AddchartIcon className="icon" style={{ fontSize: fontsize, color: '#D09DC9' }} />;
+      return <AddchartIcon className="icon" style={{ fontSize: fontsize, color: '#0D9CD9' }} />;
     }
     if (metadata.category.includes('Sports')) {
       return <SportsBasketballIcon className="icon" style={{ fontSize: fontsize, color: '#C9E0F5' }} />;
@@ -62,7 +62,7 @@ const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSource
       return <PieChartIcon className="icon" style={{ fontSize: fontsize, color: '#95A3AB' }} />;
     }
     else {
-      return <StorageIcon className="icon" style={{ fontSize: fontsize }} />;
+      return <StorageIcon className="icon" style={{ fontSize: fontsize, color: '#94C5EB' }} />;
     }
   };
   
@@ -86,7 +86,7 @@ interface SegmentColorMap {
 }
 
 const renderCategory = (category: string) => {
-  let segments = category.split(';');
+  let segments = category.split('>');
   let color = '#000000';
 
   segments = segments.map((segment) => segment.trim());
@@ -95,17 +95,17 @@ const renderCategory = (category: string) => {
   // Can add more segments as needed
   // Can add more colors as needed
   const segmentToColorMap: SegmentColorMap = {
-    'Finance': '#187ABA',
+    'Finance': '#015C94',
     'Capital': '#A1A5D9',
-    'RWA': '#A6FA7A',
+    'RWA': '#95A3AB',
     'Balances': '#01C5C4',
-    'Reference': '#E0C095',
-    'Counterparty': '#E1C594',
-    'Product': '#A5C7A4',
-    'FINREP': '#E0F195',
-    'GL Balances': '#A6FA7A',
-    'Sports': '#E0C095',
-    'Regulatory': '#E1C594',
+    'Reference': '#015C94',
+    'Counterparty': '#0D9CD9',
+    'Product': '#0D9CD9',
+    'FINREP': '#0D9CD9',
+    'GL Balances': '#015C94',
+    'Sports': '#015C94',
+    'Regulatory': '#015C94',
   };
 
   // How do I call this segmentToColorMap with the segment name?
