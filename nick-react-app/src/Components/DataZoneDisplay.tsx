@@ -12,6 +12,14 @@ import MiniAskAI from './MiniAskAI';
 import StorageIcon from '@mui/icons-material/Storage';
 import ListIcon from '@mui/icons-material/List';
 import FolderCopyIcon from '@mui/icons-material/FolderCopy';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import TableChartIcon from '@mui/icons-material/TableChart';
+import AddchartIcon  from '@mui/icons-material/Addchart';
+import PieChartIcon from '@mui/icons-material/PieChart';
+import ShowChartIcon from '@mui/icons-material/ShowChart';
+import SportsBasketballIcon from '@mui/icons-material/SportsBasketball';
+
+
 import Icon from '@mui/material/Icon';
 import powerBiImage from './power-bi.png';
 
@@ -36,13 +44,28 @@ const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSource
   const [fields, setFields] = useState<any>(null);
 
   const renderIcon = (metadata: any) => {
+    let fontsize = 60;
     // Example condition, replace with your actual logic
-    if (metadata.icon === 'folder') {
-      return <FolderCopyIcon className="icon" style={{ fontSize: 80, color: metadata.iconcolor }} />;
-    } else {
-      return <StorageIcon className="icon" style={{ fontSize: 80 }} />;
+    if (metadata.category.includes('Reference')) {
+      return <FolderCopyIcon className="icon" style={{ fontSize: fontsize, color: '#94C5EB' }} />;
+    }
+    if (metadata.category.includes('Regulatory')) {
+      return <BarChartIcon className="icon" style={{ fontSize: fontsize, color: '#E01594' }} />;
+    }
+    if (metadata.category.includes('Capital')) {
+      return <AddchartIcon className="icon" style={{ fontSize: fontsize, color: '#D09DC9' }} />;
+    }
+    if (metadata.category.includes('Sports')) {
+      return <SportsBasketballIcon className="icon" style={{ fontSize: fontsize, color: '#C9E0F5' }} />;
+    }
+    if (metadata.category.includes('Balances')) {
+      return <PieChartIcon className="icon" style={{ fontSize: fontsize, color: '#95A3AB' }} />;
+    }
+    else {
+      return <StorageIcon className="icon" style={{ fontSize: fontsize }} />;
     }
   };
+  
 
   // 
 const renderPowerBiIcon = (metadata: any, onClickHandler : (powerBiValue: string) => void) => {
@@ -58,7 +81,50 @@ const renderPowerBiIcon = (metadata: any, onClickHandler : (powerBiValue: string
   }
 };
 
+interface SegmentColorMap {
+  [key: string]: string;
+}
 
+const renderCategory = (category: string) => {
+  let segments = category.split(';');
+  let color = '#000000';
+
+  segments = segments.map((segment) => segment.trim());
+
+  // A map of strings to colour
+  // Can add more segments as needed
+  // Can add more colors as needed
+  const segmentToColorMap: SegmentColorMap = {
+    'Finance': '#187ABA',
+    'Capital': '#A1A5D9',
+    'RWA': '#A6FA7A',
+    'Balances': '#01C5C4',
+    'Reference': '#E0C095',
+    'Counterparty': '#E1C594',
+    'Product': '#A5C7A4',
+    'FINREP': '#E0F195',
+    'GL Balances': '#A6FA7A',
+    'Sports': '#E0C095',
+    'Regulatory': '#E1C594',
+  };
+
+  // How do I call this segmentToColorMap with the segment name?
+  // How do I get the color from the map?
+
+  return (
+    <p>
+      {segments.map((segment, index) => (
+        // Switch statement to change the color of the segment
+        // Based on the segment name
+        // Can add more segments as needed
+        // Can add more colors as needed
+        <span key={index} style={{ color: segmentToColorMap[segment] || color }}>
+          {index < segments.length-1 ? segment + ' > ' : segment}
+        </span>
+      ))}
+    </p>
+  );
+};
 
 
 
@@ -160,7 +226,7 @@ const renderPowerBiIcon = (metadata: any, onClickHandler : (powerBiValue: string
             <div className='data-zone-card-text'>
               <h3>{dataSource.name}</h3>
               <p>{dataSource.description}</p>
-              <p>{dataSource.category}</p>
+             {renderCategory(dataSource.category)}
             </div>
 
           
