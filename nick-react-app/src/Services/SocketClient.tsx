@@ -19,6 +19,11 @@ class SocketClient extends EventEmitter {
     });
   };
 
+  // Subscribe to a specific event
+  subscribe = (event: string, listener: (...args: any[]) => void) => {
+    this.on(event, listener);
+  };
+
   // Method to send a message via WebSocket
   sendSocketMessage = (event: string, message: any) => {
     this.socket.emit(event, message);

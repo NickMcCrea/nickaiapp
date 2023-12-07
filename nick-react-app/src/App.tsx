@@ -1,5 +1,5 @@
 import { CSSProperties, useState, useEffect, useCallback } from 'react';
-import ChatService from './Services/ChatService';
+import ChatService, { ProgressData } from './Services/ChatService';
 import { Message } from './Components/ChatHistory';
 import Header from './Components/Header';
 import AIChatBox from './Components/AIChatBox';
@@ -133,7 +133,8 @@ function App() {
     const service = new ChatService("http://localhost:5001");
     setChatService(service);
 
-    service.on('progress', (progressData: any) => {
+    // Subscribe to the 'progress' event
+    service.socketClient.subscribe('progress', (progressData: ProgressData ) => {
       //set a message using the progressData.status
       setMessages(prevMessages => [...prevMessages, { type: 'text', content: progressData.status, timestamp: new Date(), sender: 'Working' }]);
     });
