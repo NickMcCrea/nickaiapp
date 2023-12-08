@@ -29,19 +29,19 @@ import powerBiImage from './power-bi.png';
 
 
 // Modified DataSourceCatalogueDisplay component
-const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSources, onPowerBiClick }) => {
+const DataZoneDisplay: React.FC<DataSourceCatalogueDisplayProps> = ({ dataSources, onPowerBiClick, chatService : ChatService }) => {
 
 
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState(0);
-
   //store meta data we get back from the api
   const [metaData, setMetaData] = useState<DataSourceManifest | null>(null);
-
   //store meta data we get back from the api
   const [sampleData, setSampleData] = useState<any>(null);
-
   const [fields, setFields] = useState<any>(null);
+
+  //set the chat service
+  const chatService = ChatService;
 
   const renderIcon = (metadata: any) => {
     let fontsize = 60;
@@ -323,7 +323,7 @@ const renderCategory = (category: string) => {
 
             {activeTab === 5 && (
               <div style={{ margin: '10px', overflow: 'auto' }}>
-                <MiniAskAI dataSourceName={selectedCard} />
+                <MiniAskAI dataSourceName={selectedCard} chatService={chatService} />
               </div>
             )}
 

@@ -3,45 +3,46 @@ import React, { useState } from 'react';
 import InputWithSendButton from './InputWithSendButton'; // assuming this is in the same directory
 import BasicTable from './Charts/BasicTable';
 import LinearProgress from '@mui/material/LinearProgress'; // Import a progress indicator component
+import ChatService from '../Services/ChatService'; // Import the ChatService
 
 
 interface MiniAskAIProps {
     dataSourceName: string;
+    chatService: ChatService;
 }
 
-const MiniAskAI: React.FC<MiniAskAIProps> = ({ dataSourceName }) => {
+interface MiniAskAIResponse {
+    data: any;
+}
+
+const MiniAskAI: React.FC<MiniAskAIProps> = ({ dataSourceName, chatService: ChatService }) => {
 
 
     //store meta data we get back from the api
     const [tableData, setTableData] = useState<any>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false); // New state for loading indicator
 
+    //set the chat service
+    const chatService = ChatService;
+
+
 
 
     const handleAskSubmit = async (input: string) => {
-        const url = 'http://127.0.0.1:5001/ask_specific';
+      
         const requestBody = {
             input: input,
             data_source_name: dataSourceName
         };
 
-        setIsLoading(true); 
+        setIsLoading(true);
 
         try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(requestBody)
-            });
-
-            const data = await response.json();
-
+            const data = await chatService.restService.makeRequest<MiniAskAIResponse>('ask_specific', requestBody);
             //set the table data
             setTableData(data.data);
-
             console.log('Response from MiniAskAI:', data);
+
         } catch (error) {
             console.error('Error in MiniAskAI:', error);
         }
@@ -55,7 +56,7 @@ const MiniAskAI: React.FC<MiniAskAIProps> = ({ dataSourceName }) => {
             <div style={{ marginTop: '20px' }}>
                 <InputWithSendButton onSubmit={handleAskSubmit} />
             </div>
-          
+
 
             <div>
                 {isLoading ? (
@@ -64,7 +65,7 @@ const MiniAskAI: React.FC<MiniAskAIProps> = ({ dataSourceName }) => {
                     tableData && <BasicTable data={tableData} />
                 )}
             </div>
-            
+
 
         </div>
     );

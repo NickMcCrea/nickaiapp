@@ -1,5 +1,5 @@
 import SocketClient from "./SocketClient";
-import { RestService } from "./RestService";
+import { RestService } from "./RestClient";
 
 // Define a type for the possible function call responses
 type FunctionCallResponse = {
@@ -34,6 +34,12 @@ class ChatService {
     // Register the endpoints
     this.restService.registerEndpoint('ask', {
       url: `${this.apiUrl}/ask`,
+      method: 'POST',
+    });
+
+
+    this.restService.registerEndpoint('ask_specific', {
+      url: `${this.apiUrl}/ask_specific`,
       method: 'POST',
     });
    

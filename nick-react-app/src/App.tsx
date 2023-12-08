@@ -18,6 +18,7 @@ import DataZoneDisplay from './Components/DataZoneDisplay';
 import IconButton from '@mui/material/IconButton';
 import ChatIcon from '@mui/icons-material/Chat';
 import FolderCopyIcon from '@mui/icons-material/FolderCopy';
+import { service } from 'powerbi-client';
 
 
 const dataSets: any[] = [];
@@ -243,7 +244,7 @@ function App() {
       case "catalogue":
         return (
           <div style={{ width: '90%', height: '90%', overflow: 'auto' }}>
-            <DataZoneDisplay dataSources={dataCatalogueMeta} onPowerBiClick={onPowerBiClick} commentary='' />
+            <DataZoneDisplay dataSources={dataCatalogueMeta} onPowerBiClick={onPowerBiClick} commentary='' chatService={chatService as ChatService} />
           </div>
         );
       case "metaData":
