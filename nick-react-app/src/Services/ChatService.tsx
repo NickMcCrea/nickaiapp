@@ -42,6 +42,11 @@ class ChatService {
       url: `${this.apiUrl}/ask_specific`,
       method: 'POST',
     });
+
+    this.restService.registerEndpoint('get_catalogue', {
+      url: `${this.apiUrl}/get_catalogue`,
+      method: 'GET',
+    });
    
   }
 

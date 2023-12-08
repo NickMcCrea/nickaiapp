@@ -25,24 +25,24 @@ const dataSets: any[] = [];
 
 function App() {
 
-   // State to control the visibility of AIChatBox
-   const [isChatBoxVisible, setIsChatBoxVisible] = useState(true);
+  // State to control the visibility of AIChatBox
+  const [isChatBoxVisible, setIsChatBoxVisible] = useState(true);
 
 
-   // Toggle function for AIChatBox visibility
-   const toggleChatBoxVisibility = () => {
-     setIsChatBoxVisible(!isChatBoxVisible);
-   };
+  // Toggle function for AIChatBox visibility
+  const toggleChatBoxVisibility = () => {
+    setIsChatBoxVisible(!isChatBoxVisible);
+  };
 
-   const addCatalogueMessage = () => {
-    const newMessage = { 
-      type: 'text', 
-      content: 'Show me the catalogue please', 
-      timestamp: new Date(), 
-      sender: 'You' 
+  const addCatalogueMessage = () => {
+    const newMessage = {
+      type: 'text',
+      content: 'Show me the catalogue please',
+      timestamp: new Date(),
+      sender: 'You'
     };
 
-    setMessages([...messages, { type: 'text', content: newMessage.content, timestamp: newMessage.timestamp, sender: newMessage.sender}]);
+    setMessages([...messages, { type: 'text', content: newMessage.content, timestamp: newMessage.timestamp, sender: newMessage.sender }]);
 
     // If you also want to simulate sending this message (like a user would do)
     handleSendMessage('Show me the catalogue please');
@@ -51,25 +51,24 @@ function App() {
   const fetchCatalogue = async () => {
     try {
       // Make a GET request to the specified URL
-      const response = await fetch('http://localhost:5001/get_catalogue');
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+      const data = await chatService?.restService.makeRequest<any>('get_catalogue');
       // Parse the response JSON
-      const data = await response.json();
-  
+
+
       // Update the state with the fetched data
       setDataCatalogueMeta(data);
       setActiveContent("catalogue");
       toggleChatBoxVisibility();
+
     } catch (error) {
       console.error("Failed to fetch catalogue:", error);
       // You may want to handle errors more gracefully in a real app
     }
+
   };
 
 
-   // Dynamic styles for panels based on AIChatBox visibility
+  // Dynamic styles for panels based on AIChatBox visibility
   const leftPanelStyle = {
     width: isChatBoxVisible ? '25%' : '0%',
     transition: 'width 0.3s ease-in-out',
@@ -85,14 +84,14 @@ function App() {
     justifyContent: 'center',
   };
 
-  const chatVisibleStyle: CSSProperties  = {
+  const chatVisibleStyle: CSSProperties = {
     position: 'absolute', // Position it over the other components
     bottom: 0,
     left: 0,
     zIndex: 1000, // Ensure it's above other elements
   };
 
-  const catalogueButtonStyle: CSSProperties  = {
+  const catalogueButtonStyle: CSSProperties = {
     position: 'absolute', // Position it over the other components
     bottom: 0,
     left: 40,
@@ -126,7 +125,7 @@ function App() {
     setActiveContent("powerbi");
     // Add any additional logic you need here
   };
-  
+
 
 
   useEffect(() => {
@@ -135,7 +134,7 @@ function App() {
     setChatService(service);
 
     // Subscribe to the 'progress' event
-    service.socketClient.subscribe('progress', (progressData: ProgressData ) => {
+    service.socketClient.subscribe('progress', (progressData: ProgressData) => {
       //set a message using the progressData.status
       setMessages(prevMessages => [...prevMessages, { type: 'text', content: progressData.status, timestamp: new Date(), sender: 'Working' }]);
     });
@@ -263,8 +262,8 @@ function App() {
       case "powerbi":
         return (
           <div style={{ width: '90%', height: '90%' }}> {/* Ensure this container has width and height */}
-            <PowerBIReport embedUrl='https://app.powerbi.com/reportEmbed?reportId=f6bfd646-b718-44dc-a378-b73e6b528204\u0026groupId=be8908da-da25-452e-b220-163f52476cdd\u0026w=2\u0026config=eyJjbHVzdGVyVXJsIjoiaHR0cHM6Ly9XQUJJLVVTLU5PUlRILUNFTlRSQUwtcmVkaXJlY3QuYW5hbHlzaXMud2luZG93cy5uZXQiLCJlbWJlZEZlYXR1cmVzIjp7InVzYWdlTWV0cmljc1ZOZXh0Ijp0cnVlfX0%3d' 
-            reportId='f6bfd646-b718-44dc-a378-b73e6b528204' accessToken='H4sIAAAAAAAEACWWxQ70CA6E3-W_ZqQwjTSHMDPnFuhQhzlZ7btvr-ZuWfJX5bL_88fOnn7Kyj9__5kzd3Bl06dsX19eytzFrhR6e9Q49mZvZlhynaOUspPKN1OuLedMNoe7GRJmzOBn0ZcEW_2yoBsFoo1Y9m62nFtIxbZYITdXz8NsXnFQwxvHbK-XGq3yrBp8wWj_nlJzTqH9RuymdVxK1S8gSIsZKlF0noQqeESVrtbMwQumwyMMFgqJdGEx3gINiBA_g0WY3wZi5hP1zh_bTWKaUfjGmdd67rhPsKST5PV2W3NDMVsD7jyV36YnLE3Z1rmMRi4DyGa_MrNYRpoAYf-utGBIRkaiCdquvUh0704pYptl0XeUMNeEwIlA2_gsZ2qby5G7V1ViIiYkyqZTL7YR8XwIBpIWEL6Z3jsdkbJAZBGou6pS9_nGLtkQuzuXT49gfa0PHHfAyBeSyB6BmxXFp-XQHsFVYVvSwoRgUn_67pfCY6G61OjN0QWi2HQElKKrbXypN9Wdd7pEMGM_ZO1dukK1NRGO0i1Q3-wC8CF2EuF3ackYgrFwnTHUxlltJwCjPu7pcOyo-mZtizzDLuh12Isnpdl63qX-05WOVN0XNYM0CSENG0UQC5WZAFntXWChf98v5N7Psn32AkndB396LNsDsMyFVJRdd0CXAikxiOwOf68bp4932xuuPGHe136oVUSRu7ZbmnDaz3WfnSskVm6p-KARKqdmCSnHUETneCB0oRTz5zfmypkWmnUHpj6yDUBBqlGcm1hdLROe43atnHt00vakTWSKX9tO1J_-dmc0bFgqxCeRZ4fJ9UAU6v3uehqXdV-OBL3wUcrodHUslmcP7LSu2osndsyCYtFFz4ODyemhDFZVTd3puRuikTAzHK52jbn-OMRITGHZMfhDXEt06ag8KTq6tAhu3h2Ykox9oSp0xN5gGJPM2_7hrHPzvVJeK4UuIbPmM4AlFSMFIB61SduJR5YLWtYyJ1TJlUreyclqgi2bazrlbCPMFuGdYoUrWBeUoLVBwgUQCehS-ogYZnT94h0tOGdQPqHLz0AvA9VMuEP7YZJnb1kcOiS_XS_yh5nxgr3uRU74OoWpMEiWleMwln8fWOXdVHQX2LSN927FBOZy5oIcI6dwUxHSemynjIxAncUUadvtkYJAKTgxd_JRwy_MisbYbqCvEdAEWLYoaF3ClsTzFuK8dPy0EiJZH-mO-IByFo0X91jU3a9TBaeIzxe0DawU2gNq4pQILhbGqFAzNh5_aLvrgph0GDNHBTprt8t2g0lGaN8cATaCmTmDLhGwkZpeMVxIWmCpNM_VVncm76Q1oClmIGjwKLibLwXOkboueA_waSsSt8cV9Zqa9FVXSDFOkapuXteRR5nfWGxdssfiSl-t2gg7wNIqZPISYhA0DmkDazY8mSP9M5Xr2ITIt0KcUVkG2GIERFZVd5EfWYa9p64hWzwLJ_AjQPVqgCQfDZFtvmdfEKqPOUXaefmqVCqJsknR--jHWSlyUIDoPq-9_q-f79K9epy42B5fZ_3u5B7Ez54-6FupGyOH6yHcTqgj355Aaaq7q-66R-6hMJGBIWkqZiHYj4j8kn3LFjM6o6voDl9Ido7ZaXMNxpKDS3QbN4RLzgyMWeUESXw0tx7kfntcNPRRxRE33MvM0bOjpvaWhtuwnWBAHpZdADO4vSYIdnBnPvtReeTrIiqd_rZk5IVKlw1pY2o1yXBH3R56LDcOmCRoa8eyontvusMHR2fBNObNZV3Ae592KD5yso_AbuBkVHRUztfK4UGDws4sRhQuMJD3EhL3TLvVXgAsM3TfYYLalplOdEFXj0jeryjsTBsj0JSd1p29PapIVif0vGwo_OlIFCpUFUQMZ7vnMV83DycxCYChzUnwuYJlAHY4EdR6xlJh-b2m4Oteas0iEWk3t8nRBjSiaacqkB-xTSVtzb2lP39ZVqDbD9va0qG7paIPr9IlFV2u0vQmr6RRLTo8rA1-5V2kadbjSPyM4YDkmfDKHJ4y5UY1MNSziUkNX2GQ2tio0Hc_SlbEPDJTnUUeOC_x9a26DSgGdp-wL7OiUBxqWOU7x3TOJoQP9sQK9pMCzD-WbOsYN6Lum_6KvmXcuFV9hjExb62h0zocKHtAXEePeCsPZU0HW0wEBk2pKo6di3EPMyFa02AlHZabimLNGq5Om3IsWIbvVdYPmUSoSJWZihHFPUfwKMSrGiIbYRqnd6UbxlYriWcw6JM6aGkCs3JExOxTu5PJz-z_VcU3oNiRjwu9MuVmYZa2sGSL4desp3Cmm3XsKuwoT8jadFrc-kyzLqIDWskpnowdp-4NTvioO8D7krYRjCNt2URdbAnif7nbi3lDIDy9DEaIdxLMnfflw7rTRTPgAcFmytfzVEL0TqHvUHxmApqvG1N-J1oq4_CFCMTRKpdwdKqMUtbzd_RJqWY9eTQX_fYoVrOE8gbPqLyR8266cKy4lc8cRiboCG2ocN6GiMN76Pg7_1AGiKmWiox9P7_cc0Zruv75589ff7j1mfdJ-zy_N62KJdfuvCQJyRkZPNU_nuwGgKx-qA4tLv7h4DvXLQ80shj0VQVIP0l08m9GIa7fY8CCeB_G7UYTZjN-jFlwl5GwHikfOMsRMmzenmyvM-N0tGYaZuYQKAejHcqtnfbz_oKbhcBJfSkuuLQ1qmDobTzai2mL17eTpOW0S3BVwojdMNlkz9N4s9vsKcBvLKOmiCROXpwcbXczzWldNmbgK3nNDoYapeB8l91fYfoEQWS0mLl6FLxWcoT7MjjQcdXXgDa8EuMU-45f-I2JMtTGT16ZgOcY9QfPNDRi2w7HyhUOr_aQcQGqHb_gsY_B-oof2GEM2YJ41RHvdlyj0LrkxhsJ1_9ifubmsyrhjzItBHrM-_rRSd_tcfEQXEnvXzG8th6z_Vg_vzJNsT7RcaZAeWDpKLQfZPM3Pedzcuh2H90YfuqeswbMCUM_v1hUJ2_sW7XUeZyaBGnQraPCMjwNZd7JadKqxdmz1PLRCC3QYfLBNbiz2HCpG3wO-n0gtS9iwAm16U1MrQ0Ff1nVnY0duMiCtCxsv_ckWJhOFOnzAnhL2ebHCj-hEzIjZOOCrWBduhBmsoKw8mMxXb8zjjlVb5Cefqhk2cMydHH4h-G186itvoB0jmV0OVXfxCTFSNp5EEBAHk7gkCM6omdVCc7I0b6dQY0tqSgi4FFnOtL2WiT83_fCSrdwCSppnyiGMLyl1URnPkFGArCTFmpkvSEDk5-gwZTi8pShFpkf5v_-D9kgNX-aDAAA.eyJjbHVzdGVyVXJsIjoiaHR0cHM6Ly9XQUJJLVVTLU5PUlRILUNFTlRSQUwtcmVkaXJlY3QuYW5hbHlzaXMud2luZG93cy5uZXQiLCJleHAiOjE3MDE2MzI5NDUsImFsbG93QWNjZXNzT3ZlclB1YmxpY0ludGVybmV0Ijp0cnVlfQ==' />
+            <PowerBIReport embedUrl='https://app.powerbi.com/reportEmbed?reportId=f6bfd646-b718-44dc-a378-b73e6b528204\u0026groupId=be8908da-da25-452e-b220-163f52476cdd\u0026w=2\u0026config=eyJjbHVzdGVyVXJsIjoiaHR0cHM6Ly9XQUJJLVVTLU5PUlRILUNFTlRSQUwtcmVkaXJlY3QuYW5hbHlzaXMud2luZG93cy5uZXQiLCJlbWJlZEZlYXR1cmVzIjp7InVzYWdlTWV0cmljc1ZOZXh0Ijp0cnVlfX0%3d'
+              reportId='f6bfd646-b718-44dc-a378-b73e6b528204' accessToken='H4sIAAAAAAAEACWWxQ70CA6E3-W_ZqQwjTSHMDPnFuhQhzlZ7btvr-ZuWfJX5bL_88fOnn7Kyj9__5kzd3Bl06dsX19eytzFrhR6e9Q49mZvZlhynaOUspPKN1OuLedMNoe7GRJmzOBn0ZcEW_2yoBsFoo1Y9m62nFtIxbZYITdXz8NsXnFQwxvHbK-XGq3yrBp8wWj_nlJzTqH9RuymdVxK1S8gSIsZKlF0noQqeESVrtbMwQumwyMMFgqJdGEx3gINiBA_g0WY3wZi5hP1zh_bTWKaUfjGmdd67rhPsKST5PV2W3NDMVsD7jyV36YnLE3Z1rmMRi4DyGa_MrNYRpoAYf-utGBIRkaiCdquvUh0704pYptl0XeUMNeEwIlA2_gsZ2qby5G7V1ViIiYkyqZTL7YR8XwIBpIWEL6Z3jsdkbJAZBGou6pS9_nGLtkQuzuXT49gfa0PHHfAyBeSyB6BmxXFp-XQHsFVYVvSwoRgUn_67pfCY6G61OjN0QWi2HQElKKrbXypN9Wdd7pEMGM_ZO1dukK1NRGO0i1Q3-wC8CF2EuF3ackYgrFwnTHUxlltJwCjPu7pcOyo-mZtizzDLuh12Isnpdl63qX-05WOVN0XNYM0CSENG0UQC5WZAFntXWChf98v5N7Psn32AkndB396LNsDsMyFVJRdd0CXAikxiOwOf68bp4932xuuPGHe136oVUSRu7ZbmnDaz3WfnSskVm6p-KARKqdmCSnHUETneCB0oRTz5zfmypkWmnUHpj6yDUBBqlGcm1hdLROe43atnHt00vakTWSKX9tO1J_-dmc0bFgqxCeRZ4fJ9UAU6v3uehqXdV-OBL3wUcrodHUslmcP7LSu2osndsyCYtFFz4ODyemhDFZVTd3puRuikTAzHK52jbn-OMRITGHZMfhDXEt06ag8KTq6tAhu3h2Ykox9oSp0xN5gGJPM2_7hrHPzvVJeK4UuIbPmM4AlFSMFIB61SduJR5YLWtYyJ1TJlUreyclqgi2bazrlbCPMFuGdYoUrWBeUoLVBwgUQCehS-ogYZnT94h0tOGdQPqHLz0AvA9VMuEP7YZJnb1kcOiS_XS_yh5nxgr3uRU74OoWpMEiWleMwln8fWOXdVHQX2LSN927FBOZy5oIcI6dwUxHSemynjIxAncUUadvtkYJAKTgxd_JRwy_MisbYbqCvEdAEWLYoaF3ClsTzFuK8dPy0EiJZH-mO-IByFo0X91jU3a9TBaeIzxe0DawU2gNq4pQILhbGqFAzNh5_aLvrgph0GDNHBTprt8t2g0lGaN8cATaCmTmDLhGwkZpeMVxIWmCpNM_VVncm76Q1oClmIGjwKLibLwXOkboueA_waSsSt8cV9Zqa9FVXSDFOkapuXteRR5nfWGxdssfiSl-t2gg7wNIqZPISYhA0DmkDazY8mSP9M5Xr2ITIt0KcUVkG2GIERFZVd5EfWYa9p64hWzwLJ_AjQPVqgCQfDZFtvmdfEKqPOUXaefmqVCqJsknR--jHWSlyUIDoPq-9_q-f79K9epy42B5fZ_3u5B7Ez54-6FupGyOH6yHcTqgj355Aaaq7q-66R-6hMJGBIWkqZiHYj4j8kn3LFjM6o6voDl9Ido7ZaXMNxpKDS3QbN4RLzgyMWeUESXw0tx7kfntcNPRRxRE33MvM0bOjpvaWhtuwnWBAHpZdADO4vSYIdnBnPvtReeTrIiqd_rZk5IVKlw1pY2o1yXBH3R56LDcOmCRoa8eyontvusMHR2fBNObNZV3Ae592KD5yso_AbuBkVHRUztfK4UGDws4sRhQuMJD3EhL3TLvVXgAsM3TfYYLalplOdEFXj0jeryjsTBsj0JSd1p29PapIVif0vGwo_OlIFCpUFUQMZ7vnMV83DycxCYChzUnwuYJlAHY4EdR6xlJh-b2m4Oteas0iEWk3t8nRBjSiaacqkB-xTSVtzb2lP39ZVqDbD9va0qG7paIPr9IlFV2u0vQmr6RRLTo8rA1-5V2kadbjSPyM4YDkmfDKHJ4y5UY1MNSziUkNX2GQ2tio0Hc_SlbEPDJTnUUeOC_x9a26DSgGdp-wL7OiUBxqWOU7x3TOJoQP9sQK9pMCzD-WbOsYN6Lum_6KvmXcuFV9hjExb62h0zocKHtAXEePeCsPZU0HW0wEBk2pKo6di3EPMyFa02AlHZabimLNGq5Om3IsWIbvVdYPmUSoSJWZihHFPUfwKMSrGiIbYRqnd6UbxlYriWcw6JM6aGkCs3JExOxTu5PJz-z_VcU3oNiRjwu9MuVmYZa2sGSL4desp3Cmm3XsKuwoT8jadFrc-kyzLqIDWskpnowdp-4NTvioO8D7krYRjCNt2URdbAnif7nbi3lDIDy9DEaIdxLMnfflw7rTRTPgAcFmytfzVEL0TqHvUHxmApqvG1N-J1oq4_CFCMTRKpdwdKqMUtbzd_RJqWY9eTQX_fYoVrOE8gbPqLyR8266cKy4lc8cRiboCG2ocN6GiMN76Pg7_1AGiKmWiox9P7_cc0Zruv75589ff7j1mfdJ-zy_N62KJdfuvCQJyRkZPNU_nuwGgKx-qA4tLv7h4DvXLQ80shj0VQVIP0l08m9GIa7fY8CCeB_G7UYTZjN-jFlwl5GwHikfOMsRMmzenmyvM-N0tGYaZuYQKAejHcqtnfbz_oKbhcBJfSkuuLQ1qmDobTzai2mL17eTpOW0S3BVwojdMNlkz9N4s9vsKcBvLKOmiCROXpwcbXczzWldNmbgK3nNDoYapeB8l91fYfoEQWS0mLl6FLxWcoT7MjjQcdXXgDa8EuMU-45f-I2JMtTGT16ZgOcY9QfPNDRi2w7HyhUOr_aQcQGqHb_gsY_B-oof2GEM2YJ41RHvdlyj0LrkxhsJ1_9ifubmsyrhjzItBHrM-_rRSd_tcfEQXEnvXzG8th6z_Vg_vzJNsT7RcaZAeWDpKLQfZPM3Pedzcuh2H90YfuqeswbMCUM_v1hUJ2_sW7XUeZyaBGnQraPCMjwNZd7JadKqxdmz1PLRCC3QYfLBNbiz2HCpG3wO-n0gtS9iwAm16U1MrQ0Ff1nVnY0duMiCtCxsv_ckWJhOFOnzAnhL2ebHCj-hEzIjZOOCrWBduhBmsoKw8mMxXb8zjjlVb5Cefqhk2cMydHH4h-G186itvoB0jmV0OVXfxCTFSNp5EEBAHk7gkCM6omdVCc7I0b6dQY0tqSgi4FFnOtL2WiT83_fCSrdwCSppnyiGMLyl1URnPkFGArCTFmpkvSEDk5-gwZTi8pShFpkf5v_-D9kgNX-aDAAA.eyJjbHVzdGVyVXJsIjoiaHR0cHM6Ly9XQUJJLVVTLU5PUlRILUNFTlRSQUwtcmVkaXJlY3QuYW5hbHlzaXMud2luZG93cy5uZXQiLCJleHAiOjE3MDE2MzI5NDUsImFsbG93QWNjZXNzT3ZlclB1YmxpY0ludGVybmV0Ijp0cnVlfQ==' />
           </div>
         );
       default:
@@ -464,7 +463,7 @@ function App() {
         <FolderCopyIcon />
       </IconButton>
       <div style={{ display: 'flex', height: 1200 }}> {/* Flex container */}
-      < div style={leftPanelStyle}>
+        < div style={leftPanelStyle}>
           <AIChatBox messages={messages} handleSendMessage={handleSendMessage} />
         </div>
         <div style={rightPanelStyle}>
