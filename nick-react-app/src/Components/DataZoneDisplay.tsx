@@ -141,10 +141,10 @@ const renderCategory = (category: string) => {
 
   //fetch some rows of data from the api, hit get_sample_data endpoint
   const fetchSampleData = async (dataSourceName: string) => {
-    const url = `http://127.0.0.1:5001/get_sample_data?data_source_name=${encodeURIComponent(dataSourceName)}`;
+  
     try {
-      const response = await fetch(url);
-      const data = await response.json();
+      
+      const data = await chatService.restService.makeRequest<any>('get_sample_data', undefined, { "data_source_name" : dataSourceName });
 
       console.log('sample data');
       console.log(data);
@@ -172,11 +172,12 @@ const renderCategory = (category: string) => {
 
 
   const fetchMetaData = async (dataSourceName: string) => {
-    const url = `http://127.0.0.1:5001/get_meta_data?data_source_name=${encodeURIComponent(dataSourceName)}`;
     try {
-      const response = await fetch(url);
-      const data = await response.json();
 
+      const queryParams =  { "data_source_name" : dataSourceName };
+      console.log(queryParams);
+      const data = await chatService.restService.makeRequest<any>('get_meta_data', undefined, queryParams);
+     
 
       setMetaData(data);
 

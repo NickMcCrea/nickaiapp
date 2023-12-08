@@ -47,6 +47,20 @@ class ChatService {
       url: `${this.apiUrl}/get_catalogue`,
       method: 'GET',
     });
+
+    //get_sample_data
+    this.restService.registerEndpoint('get_sample_data', {
+      url: `${this.apiUrl}/get_sample_data`,
+      method: 'GET',
+    });
+
+    //get_meta_data
+    this.restService.registerEndpoint('get_meta_data', {
+      url: `${this.apiUrl}/get_meta_data`,
+      method: 'GET',
+    });
+
+    //
    
   }
 

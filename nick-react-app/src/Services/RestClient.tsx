@@ -16,7 +16,7 @@ export class RestService {
   }
 
   // Method to make a request to a registered endpoint
-  async makeRequest<T>(key: string, requestData?: any): Promise<T> {
+  async makeRequest<T>(key: string, requestData?: any, queryParams?: Record<string,any>): Promise<T> {
     const endpoint = this.endpoints.get(key);
     if (!endpoint) {
       throw new Error(`Endpoint with key "${key}" not found.`);
@@ -25,7 +25,9 @@ export class RestService {
     const config: AxiosRequestConfig = {
       url: endpoint.url,
       method: endpoint.method,
+      params: queryParams,
     };
+
 
     // Add request body for POST requests
     if (endpoint.method === 'POST' && requestData) {
@@ -35,6 +37,7 @@ export class RestService {
 
     try {
       const response = await axios(config);
+      console.log(response.request)
       return response.data;
     } catch (error) {
       throw error;
