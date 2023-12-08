@@ -132,6 +132,7 @@ def ask():
     user_session_state = get_user_session_state()
     session_id = session.get("session_id")
     user_input = request.json.get("input", "")
+    print("user_input: ", user_input)
 
     if user_session_state.get_specific_data_set() is not None:
         #set it to none

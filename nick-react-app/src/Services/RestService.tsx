@@ -30,6 +30,7 @@ export class RestService {
     // Add request body for POST requests
     if (endpoint.method === 'POST' && requestData) {
       config.data = requestData;
+      console.log("Request Data:" + config.data);
     }
 
     try {

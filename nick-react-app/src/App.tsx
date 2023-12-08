@@ -286,10 +286,10 @@ function App() {
           setCurrentFunctionCall(reply.function_call.name);
 
 
-        if (reply.metaData) {
+        if (reply.metadata) {
           dataSets.length = 0; // Clear dataSets
-          dataSets.push(reply.metaData); // Add reply.metaData to dataSets
-          setMetaData(reply.metaData);
+          dataSets.push(reply.metadata); // Add reply.metaData to dataSets
+          setMetaData(reply.metadata);
         }
 
         if (reply.function_call) {
@@ -334,16 +334,16 @@ function App() {
         if (reply.function_call && reply.function_call.name === "query_data_catalogue") {
 
 
-          if (reply.metaData) {
+          if (reply.metadata) {
 
-            if (Array.isArray(reply.metaData)) {
-              setDataCatalogueMeta(reply.metaData as DataSourceMetaDeta[]);
+            if (Array.isArray(reply.metadata)) {
+              setDataCatalogueMeta(reply.metadata as DataSourceMetaDeta[]);
             }
 
 
             const newDataSourceNames = [];
             const newDataSetDescriptions = [];
-            for (const item of reply.metaData) {
+            for (const item of reply.metadata) {
               if ('name' in item && 'description' in item) {
                 newDataSourceNames.push(item.name);
                 console.log(item.name);
@@ -430,8 +430,8 @@ function App() {
 
 
               //transform metaData to pipeline data
-              console.log('reply.metaData', reply.metaData);
-              var pipelineDataTest = reply.metaData as PipelineStep[];
+              console.log('reply.metaData', reply.metadata);
+              var pipelineDataTest = reply.metadata as PipelineStep[];
               console.log('pipelineDataTest', pipelineDataTest);
               setPipelineData(pipelineDataTest);
 

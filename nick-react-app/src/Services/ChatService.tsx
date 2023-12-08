@@ -1,4 +1,5 @@
 import SocketClient from "./SocketClient";
+import { RestService } from "./RestService";
 
 // Define a type for the possible function call responses
 type FunctionCallResponse = {
@@ -10,7 +11,7 @@ type FunctionCallResponse = {
 type ChatServiceResponse = {
   output: string;
   data?: any[];
-  metaData?: any[];
+  metadata?: any[];
   function_call?: FunctionCallResponse; // This is the new property to handle function call responses
 };
 
@@ -23,13 +24,19 @@ export type ProgressData = {
 class ChatService {
   private apiUrl: string;
   socketClient: SocketClient;
+  restService: RestService = new RestService();
 
   constructor(apiUrl: string) {
     
     this.apiUrl = apiUrl;
     this.socketClient = new SocketClient(apiUrl);
 
-   // Connect to the socket when the service is instantiated
+    // Register the endpoints
+    this.restService.registerEndpoint('ask', {
+      url: `${this.apiUrl}/ask`,
+      method: 'POST',
+    });
+   
   }
 
 
@@ -41,33 +48,19 @@ class ChatService {
 
   // The sendMessage method remains the same as your existing implementation
   async sendMessage(message: string, model: string): Promise<ChatServiceResponse> {
-    try {
-      const response = await fetch(`${this.apiUrl}/ask`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ input: message, model }),
-      });
+    
 
-      const data = await response.json();
+    //make JSON object
+    const body = {
+      input: message,
+      model: model
+    };
 
-      if (!response.ok) {
-        throw new Error(data.error || 'Something went wrong');
-      }
+    // Send the message to the server
+    const response = await this.restService.makeRequest<ChatServiceResponse>('ask',  body );
+  
+    return response;
 
-      const chatResponse: ChatServiceResponse = {
-        output: data.output,
-        data: data.data,
-        metaData: data.metadata,
-        function_call: data.function_call,
-      };
-
-      return chatResponse;
-    } catch (error) {
-      throw error;
-    }
   }
 
   // Add any additional methods as necessary
